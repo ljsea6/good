@@ -9,7 +9,7 @@
             <span class="icon-bar"></span>
         </button>
         <a class="navbar-brand">
-            <div><img  style="width: 29px" src="{{ asset('img/logo-hello.png') }}"></div>
+            <div><img  style="width: 15px" src="{{ asset('img/r_icono.png') }}"></div>
         </a>
         <ul class="nav navbar-nav-xs">
             <li>
