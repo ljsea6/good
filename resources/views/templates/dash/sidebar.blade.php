@@ -2,21 +2,21 @@
     <div class="sidenav-inner">
         <ul class="side-nav magic-nav">
             <br>
-            <li class="first-link active">
+            <li class="has-submenu">
                 <a href="{{ route('admin.index') }}" class="animsition-link text-left">
                     <i class="fa fa-area-chart">
                     </i>
                     <span class="nav-text">Dashboard</span>
                 </a>
             </li>
-            <li class="first-link active">
+            <li class="has-submenu">
                 <a href="{{ route('admin.search') }}" class="animsition-link text-left">
                     <i class="fa fa-search">
                     </i>
                     <span class="nav-text">Buscar</span>
                 </a>
             </li>
-            <li class="first-link active">
+            <li class="has-submenu">
                 <a href="{{ route('admin.network') }}" class="animsition-link text-left">
                     <i class="fa fa-sitemap">
                     </i>
@@ -49,7 +49,7 @@
                 </div>
             </li>
             @permission('configuracion')
-            <li class="first-link active">
+            <li class="has-submenu">
                 <a href="{{ route('admin.networks.index') }}" class="text-left">
                     <i class="fa fa-share-alt">
                     </i>
@@ -58,13 +58,32 @@
                 
             </li>
 
-            <li class="first-link active">
+            <li class="has-submenu">
                 <a href="{{ route('admin.reglas.index') }}" class="text-left">
                     <i class="fa fa-gavel">
                     </i>
                     <span class="nav-text">Gestionar Reglas</span>
                 </a>
             </li>
+            <li class="has-submenu">
+                <a href="#reportes" data-toggle="collapse" aria-expanded="false" class="text-left">
+                    <i class="fa fa-bar-chart">
+                    </i>
+                    <span class="nav-text">Reportes</span>
+                </a>
+                <div class="sub-menu collapse secondary list-style-circle" id="reportes">
+                    <ul>
+                        <li>
+                            <a href="{{ route('admin.reportes.index') }}" class="text-left">
+                                <i class="fa fa-money">
+                                </i>
+                                Referidos
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </li>
+            
             @endpermission('configuracion')
             @permission('configuracion')
             <!-- <li class="has-submenu">

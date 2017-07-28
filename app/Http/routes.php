@@ -205,8 +205,9 @@ Route::group(['prefix' => 'admin', 'middleware' => 'auth'], function () {
     Route::any('envios/resultados', ['uses' => 'EnviosController@resultados', 'as' => 'admin.envios.resultados']);
     Route::resource('envios', 'EnviosController');
     Route::get('envios/{id}/detalle/', ['uses' => 'EnviosController@detalle', 'as' => 'admin.envios.detalle']);
+    
     //Para los reportes
-    Route::any('reportes/datos', ['uses' => 'ReportesController@datos', 'as' => 'admin.reportes.datos']);
+    Route::any('reportes/datos', ['uses' => 'ReportesController@anyData', 'as' => 'admin.reportes.datos']);
     Route::any('reportes/descargar', ['uses' => 'ReportesController@descargar', 'as' => 'admin.reportes.descargar']);
     Route::resource('reportes', 'ReportesController', ['only' => ['index']]);
     //Manifiestos

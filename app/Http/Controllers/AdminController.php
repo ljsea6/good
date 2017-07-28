@@ -19,12 +19,7 @@ class AdminController extends Controller {
     {
         $data = $request->all();
         Mail::send('admin.send.message', $data, function($message) use ($request) {
-           
- 
-           //asunto
            $message->subject($request->body);
- 
-           //receptor
            $message->to($request->email);
         });
         
@@ -158,8 +153,8 @@ class AdminController extends Controller {
             ->addColumn('email', function ($send) {
                 return '<div align=left>' . $send->email . '</div>';
             })
-            ->addColumn('name', function ($results) {
-                return '<div align=left>' . $results->name . '</div>';
+            ->addColumn('name', function ($send) {
+                return '<div align=left>' . $send->name . '</div>';
             })
             ->make(true);
     }
