@@ -65,21 +65,11 @@
                         <th>
                             Apellidos
                         </th>
-                        <th>
-                            Dirección
-                        </th>
-                        <th>
-                            Ciudad
-                        </th>
+                     
                         <th>
                             Rol
                         </th>
-                        <th>
-                            Empresa
-                        </th>
-                        <th>
-                            Permisos
-                        </th>
+                        
                         <th>
                             Acciones
                         </th>
@@ -180,7 +170,7 @@
             serverSide: true,
             deferRender: true,
             pagingType: "full_numbers",
-            ajax: '{!! route('usuarios.data') !!}',
+            //ajax: '{!! route('usuarios.data') !!}',
             columns: [
                 { data: 'avatar', name: 'avatar', orderable: false, searchable: false },
                 { data: 'identificacion', name: 'terceros.identificacion', orderable: false },

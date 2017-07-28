@@ -23,6 +23,31 @@
                     <span class="nav-text">Red Referidos</span>
                 </a>
             </li>
+            <li class="has-submenu">
+                <a href="#send" data-toggle="collapse" aria-expanded="false" class="text-left">
+                    <i class="fa fa-folder-open">
+                    </i>
+                    <span class="nav-text">Gestionar Invitaciones</span>
+                </a>
+                <div class="sub-menu collapse secondary list-style-circle" id="send">
+                    <ul>
+                        <li>
+                            <a href="{{ route('admin.send.mail') }}" class="text-left">
+                                <i class="fa fa-envelope-o">
+                                </i>
+                                Enviar Email
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ route('admin.send.msm') }}" class="text-left">
+                                <i class="fa fa-phone">
+                                </i>
+                                Enviar MSM 
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </li>
             @permission('configuracion')
             <li class="first-link active">
                 <a href="{{ route('admin.networks.index') }}" class="text-left">
@@ -30,6 +55,7 @@
                     </i>
                     <span class="nav-text">Gestionar Redes</span>
                 </a>
+                
             </li>
 
             <li class="first-link active">
@@ -114,77 +140,64 @@
                             </a>
                         </li>
                         <li>
-                            <a href="{{ route('admin.proveedores.index') }}" class="text-left">
+                            <a href="#" class="text-left">
                                 <i class="fa fa-user">
                                 </i>
                                 Proveedores
                             </a>
                         </li>
                         <li>
-                            <a href="{{ route('admin.perfiles.index') }}" class="text-left">
+                            <a href="#" class="text-left">
                                 <i class="fa fa-unlock">
                                 </i>
                                 Roles
                             </a>
                         </li>
                         <li>
-                        <a href="{{ route('admin.dominios.index') }}" class="text-left">
+                        <a href="#" class="text-left">
                             <i class="fa fa-share-alt">
                             </i>
                             Dominios
                         </a>
                     </li>
                     <li>
-                        <a href="{{ route('admin.ciudades.index') }}" class="text-left">
+                        <a href="#" class="text-left">
                             <i class="fa fa-bank">
                             </i>
                             Ciudades
                         </a>
                     </li>
                     <li>
-                        <a href="{{ route('admin.productos.index') }}" class="text-left">
+                        <a href="#" class="text-left">
                             <i class="fa  fa-list">
                             </i>
                             Productos
                         </a>
                     </li>
                     <li>
-                        <a href="{{ route('admin.resoluciones.index') }}" class="text-left">
+                        <a href="#" class="text-left">
                             <i class="fa fa-sort-numeric-asc">
                             </i>
                             Resoluciones
                         </a>
                     </li>                   
                     <li>
-                        <a href="{{ route('admin.oficinas.index') }}" class="text-left">
+                        <a href="#" class="text-left">
                             <i class="fa fa-building">
                             </i>
                             Oficinas
                         </a>
                     </li>
                     <li>
-                        <a href="{{ route('admin.oficinas.index') }}" class="text-left">
+                        <a href="#" class="text-left">
                             <i class="fa fa-building">
                             </i>
                             Centros de negocio
                         </a>
                     </li>
+                    
                     <li>
-                        <a href="{{ route('admin.networks.index') }}" class="text-left">
-                            <i class="fa fa-sitemap">
-                            </i>
-                            Redes
-                        </a>
-                    </li>
-                     <li>
-                        <a href="{{ route('admin.reglas.index') }}" class="text-left">
-                            <i class="fa fa-gavel">
-                            </i>
-                            Reglas
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ route('admin.comisiones.index') }}" class="text-left">
+                        <a href="#" class="text-left">
                             <i class="fa fa-money">
                             </i>
                             Comisiones

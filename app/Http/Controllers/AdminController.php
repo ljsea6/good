@@ -7,8 +7,29 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Yajra\Datatables\Datatables;
-
+use Mail;
 class AdminController extends Controller {
+    
+    public function email()
+    {
+        return view('admin.send.mail');
+    }
+    
+    public function send(Request $request)
+    {
+        $data = $request->all();
+        Mail::send('admin.send.message', $data, function($message) use ($request) {
+           
+ 
+           //asunto
+           $message->subject($request->body);
+ 
+           //receptor
+           $message->to($request->email);
+        });
+        
+        return view('admin.send.success');
+    }
 
     public function buscar(Request $request)
     {

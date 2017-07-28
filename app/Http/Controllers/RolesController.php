@@ -21,7 +21,7 @@ class RolesController extends Controller {
     }
 
     public function anyData() {
-        // dd(Datatables::of(Estado::select('*'))->make(true));
+        
 
         $roles = Roles::select('id', 'name', 'description');
         return Datatables::of($roles)

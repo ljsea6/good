@@ -47,6 +47,10 @@ Route::group(['prefix' => 'admin', 'middleware' => 'auth'], function () {
     Route::get('/network', ['uses' => 'AdminController@network', 'as' => 'admin.network']);
     Route::get('/search', ['uses' => 'AdminController@search', 'as' => 'admin.search']);
     Route::post('/finder', ['uses' => 'AdminController@finder', 'as' => 'admin.finder']);
+    
+    Route::get('/send/email', ['uses' => 'AdminController@email', 'as' => 'admin.send.mail']);
+    Route::get('/send/msm', ['uses' => 'AdminController@msm', 'as' => 'admin.send.msm']);
+    Route::post('/send', ['uses' => 'AdminController@send', 'as' => 'admin.send']);
 
     Route::post('/buscar', ['uses' => 'AdminController@buscar', 'as' => 'admin.buscar']);
 
@@ -108,17 +112,22 @@ Route::group(['prefix' => 'admin', 'middleware' => 'auth'], function () {
     Route::post('tarifas.masivos', ['uses' => 'TarifasController@masivos', 'as' => 'admin.tarifas.masivos']);
     Route::get('tarifas.costos', ['uses' => 'TarifasController@costos', 'as' => 'admin.tarifas.costos']);
     Route::post('tarifas/valor', ['as' => 'tarifas.valor', 'uses' => 'TarifasController@valor']);
+    
     // Roles
     Route::get('roles/data', ['uses' => 'RolesController@anyData', 'as' => 'roles.data']);
     Route::resource('roles', 'RolesController');
     Route::get('roles/{id}/destroy', ['uses' => 'RolesController@destroy', 'as' => 'admin.roles.destroy']);
+    
     //Perfiles
     Route::resource('perfiles', 'PerfilesController');
     Route::get('perfiles/{id}/destroy', ['uses' => 'PerfilesController@destroy', 'as' => 'admin.perfiles.destroy']);
+    
     //Permisos
     Route::post('permisos/datos', ['as' => 'get.permisos', 'uses' => 'PermisosController@datos']);
     Route::post('permisos/asignar', ['as' => 'asignar.permisos', 'uses' => 'PermisosController@asignar']);
     Route::post('permisos/desasignar', ['as' => 'desasignar.permisos', 'uses' => 'PermisosController@desasignar']);
+    
+
     // Estados
     Route::get('estados/data', ['uses' => 'EstadosController@anyData', 'as' => 'estados.data']);
     Route::resource('estados', 'EstadosController');
