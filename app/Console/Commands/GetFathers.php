@@ -67,7 +67,7 @@ class GetFathers extends Command
 
                                  if (empty($finder['apellidos']) || $finder['apellidos'] === null || $finder['apellidos'] === '') {
 
-                                    $finder->networks()->attach($network['id'], ['padre_id' => null]);
+                                    $finder->networks()->attach($network['id'], ['padre_id' => 5]);
                                  }
 
                                 if (!empty($finder['apellidos'])) {
@@ -76,9 +76,19 @@ class GetFathers extends Command
 
                                     if (count($father) > 0) {
                                         $finder->networks()->attach($network['id'], ['padre_id' => $father[0]['id']]);
-                                    } else {
-                                        $finder->networks()->attach($network['id'], ['padre_id' => null]);
+                                    } 
+                                    
+                                    if (count($father) == 0 ) {
+                                        if ($finder['id'] <= 52) {
+                                            $finder->networks()->attach($network['id'], ['padre_id' => null]);
+                                        }
+                                        
+                                        if ($finder['id'] > 52) {
+                                            $finder->networks()->attach($network['id'], ['padre_id' => 5]);
+                                        }
                                     }
+                                    
+                                    
                                 }     
                             }
 
@@ -94,6 +104,38 @@ class GetFathers extends Command
                     if(count($terceros) > 0){
                         return 'to go tiene.';
                     }
+                }
+                
+                $referidosaux = array();
+                
+                $tercerosaux = Tercero::select('id', 'identificacion', 'nombres', 'apellidos', 'email')
+                    ->where('state', true)
+                    ->orderBy('id')
+                    ->get();
+               
+                foreach ($tercerosaux as $tercero) {
+                    $sons = DB::table('terceros_networks')
+                            ->where('terceros_networks.padre_id', '=', $tercero['id'])
+                            ->get();
+                    $find = Tercero::find($tercero['id']); 
+                    $find->numero_referidos = count($sons);
+                   
+                    $i = 0;
+                    foreach ($sons as $son)
+                    {
+                        $result = Tercero::find($son->customer_id);
+                        
+                        if ($result->state) {
+                            $resultOrders = DB::table('orders')
+                                    ->where('orders.customer_id', $result->customer_id)
+                                    ->where('orders.email', $result->email)
+                                    ->get();
+                            $i = $i + count($resultOrders);
+                        }
+                        
+                    }
+                    $find->numero_ordenes_referidos = $i;
+                    $find->save();
                 }
         }
         

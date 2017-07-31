@@ -152,44 +152,6 @@ class GetCustomers extends Command
                     }
                 }
             
-            
-                $referidosaux = array();
-                $tercerosaux = Tercero::select('id', 'identificacion', 'nombres', 'apellidos', 'email')
-                    ->where('network_id', $customer['network_id'])
-                    ->where('state', true)
-                    ->orderBy('id')
-                    ->get();
-               
-                foreach ($tercerosaux as $tercero) {
-                    $result  = DB::table('terceros')
-                        ->join('customers', 'terceros.email', '=', 'customers.last_name')
-                        ->where('terceros.email', $tercero['email'])
-                        ->where('terceros.state', true)
-                        ->select('customers.id')
-                        ->get();
-                    $resultOrders  = DB::table('terceros')
-                        ->join('customers', 'terceros.email', '=', 'customers.last_name')
-                        ->join('orders', 'orders.customer_id', '=', 'customers.customer_id')
-                        ->where('terceros.email', $tercero['email'])
-                        ->where('terceros.state', true)
-                        ->select('customers.id')
-                        ->get();
-                    $results = [
-                        'id' => $tercero['id'],
-                        'referidos' => count($result),
-                        'ordenes' => count($resultOrders)
-                    ];
-                array_push($referidosaux, $results);
-                
-                }
-                
-                foreach ($referidosaux as $referido) {
-                    $aux = Tercero::find($referido['id']);
-                    $aux->numero_referidos = $referido['referidos'];
-                    $aux->numero_ordenes_referidos = $referido['ordenes'];
-                    $aux->save();
-                }
-            
                 
         }
         

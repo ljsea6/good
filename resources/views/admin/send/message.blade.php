@@ -149,9 +149,9 @@ a {
 
 .btn-primary {
   text-decoration: none;
-  color: #FFF;
-  background-color: #348eda;
-  border: solid #348eda;
+  color: #fff;
+  background-color: #c9302c;
+  border: solid #c9302c;
   border-width: 10px 20px;
   line-height: 2em;
   /* 2em * 14px = 28px, use px to get airier line-height also in Thunderbird, and Yahoo!, Outlook.com, AOL webmail clients */
@@ -161,7 +161,7 @@ a {
   cursor: pointer;
   display: inline-block;
   border-radius: 5px;
-  text-transform: capitalize;
+  
 }
 
 /* -------------------------------------
@@ -302,35 +302,40 @@ a {
 					<tr>
 						<td class="content-wrap">
 							<meta itemprop="name" content="Confirm Email"/>
-							<table width="100%" cellpadding="0" cellspacing="0">
+							<table  style="width:100%;border-spacing:0;border-collapse:collapse;">
+                                                            <tr>
+                                                                <td style='font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen,Ubuntu,Cantarell,"Fira Sans","Droid Sans","Helvetica Neue",sans-serif;'>
+                                                                    <img width="180px"
+                                                                         alt="Vive Hello" src="https://resize.yandex.net/mailservice?url=https%3A%2F%2Fcdn.shopify.com%2Fs%2Ffiles%2F1%2F1935%2F1047%2Femail_settings%2Fr_Mall.png%3F13981863490009258166&proxy=yes&key=0a5cb0596579d5eed7c8855d0296237d"></img>
+                                                                </td>
+                                                            </tr>
+							</table>
+                                                        <table  style="width:100%;border-spacing:0;border-collapse:collapse;">
+                                                          
 								<tr>
 									<td class="content-block">
-										Please confirm your email address by clicking the link below.
+                                                                            <p style="color:#777;line-height:150%;font-size:16px;margin:0;">
+                                                                                Ahorra comprando, gana invitando con Hello.
+                                                                            </p>
+										
 									</td>
 								</tr>
-								<tr>
-									<td class="content-block">
-										We may need to send you critical information about our service and it is important that we have an accurate email address.
-									</td>
-								</tr>
+				
 								<tr>
 									<td class="content-block" itemprop="handler" itemscope itemtype="http://schema.org/HttpActionHandler">
-										<a href="http://www.mailgun.com" class="btn-primary" itemprop="url">Código: {{$code}}</a>
+                                                                            <a href="https://diahello.co/account/register" class="btn-primary" itemprop="url">¡Registrate con tu código <strong>{{$code}}</strong> dando click aquí!</a>
 									</td>
 								</tr>
-								<tr>
-									<td class="content-block">
-										&mdash; Referidos
-									</td>
-								</tr>
+								
 							</table>
+                                                       
 						</td>
 					</tr>
 				</table>
 				<div class="footer">
 					<table width="100%">
 						<tr>
-							<td class="aligncenter content-block">Follow <a href="http://twitter.com/mail_gun">@hello</a> on Twitter.</td>
+							<td class="aligncenter content-block">Siguenos en <a href="https://es-la.facebook.com/vivehello/">facebook</a> ViveHello.</td>
 						</tr>
 					</table>
 				</div></div>

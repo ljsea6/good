@@ -18,10 +18,78 @@ class AdminController extends Controller {
     public function send(Request $request)
     {
         $data = $request->all();
-        Mail::send('admin.send.message', $data, function($message) use ($request) {
-           $message->subject($request->body);
-           $message->to($request->email);
-        });
+        
+
+        if(isset($data['email'])) {
+            Mail::send('admin.send.message', $data, function($message) use ($request) {
+                $message->subject($request->body);
+                $message->to($request->email);
+            });
+        }
+        
+        if(isset($data['emailone'])) {
+            Mail::send('admin.send.message', $data, function($message) use ($request) {
+                $message->subject($request->body);
+                $message->to($request->emailone);
+            });
+        }
+        
+        if(isset($data['emailtwo'])) {
+            Mail::send('admin.send.message', $data, function($message) use ($request) {
+                $message->subject($request->body);
+                $message->to($request->emailtwo);
+            });
+        }
+        
+        if(isset($data['email1'])) {
+            Mail::send('admin.send.message', $data, function($message) use ($request) {
+                $message->subject($request->body);
+                $message->to($request->email1);
+            });
+        }
+        
+        if(isset($data['email2'])) {
+            Mail::send('admin.send.message', $data, function($message) use ($request) {
+                $message->subject($request->body);
+                $message->to($request->email2);
+            });
+        }
+        
+        if(isset($data['email3'])) {
+            Mail::send('admin.send.message', $data, function($message) use ($request) {
+                $message->subject($request->body);
+                $message->to($request->email3);
+            });
+        }
+        
+        if(isset($data['email4'])) {
+            Mail::send('admin.send.message', $data, function($message) use ($request) {
+                $message->subject($request->body);
+                $message->to($request->email4);
+            });
+        }
+        
+         if(isset($data['email5'])) {
+            Mail::send('admin.send.message', $data, function($message) use ($request) {
+                $message->subject($request->body);
+                $message->to($request->email2);
+            });
+        }
+        
+        if(isset($data['email6'])) {
+            Mail::send('admin.send.message', $data, function($message) use ($request) {
+                $message->subject($request->body);
+                $message->to($request->email3);
+            });
+        }
+        
+        if(isset($data['email7'])) {
+            Mail::send('admin.send.message', $data, function($message) use ($request) {
+                $message->subject($request->body);
+                $message->to($request->email4);
+            });
+        }
+        
         
         return view('admin.send.success');
     }

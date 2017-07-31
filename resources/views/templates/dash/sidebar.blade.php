@@ -38,13 +38,7 @@
                                 Enviar Email
                             </a>
                         </li>
-                        <li>
-                            <a href="{{ route('admin.send.msm') }}" class="text-left">
-                                <i class="fa fa-phone">
-                                </i>
-                                Enviar MSM 
-                            </a>
-                        </li>
+                       
                     </ul>
                 </div>
             </li>

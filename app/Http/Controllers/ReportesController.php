@@ -20,7 +20,7 @@ class ReportesController extends Controller {
             return view('admin.reportes.index');
 	}
         
-         public function anyData()
+        public function anyData()
         {
              
            $referidos  = DB::table('terceros')
@@ -52,14 +52,10 @@ class ReportesController extends Controller {
                     'porcentaje' => '%10',
                     'ganancia' => number_format($total * 0.1)
                 ];
-                
-                
-                
+               
                 array_push($report, $aux);
-                
             }
             
-             
             $send = collect($report);
             return Datatables::of($send)
                 ->addColumn('id', function ($send) {
