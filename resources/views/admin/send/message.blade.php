@@ -320,6 +320,14 @@ a {
 										
 									</td>
 								</tr>
+                                                                <tr>
+									<td class="content-block">
+                                                                            <p style="color:#777;line-height:150%;font-size:16px;margin:0;">
+                                                                                {{$body}}
+                                                                            </p>
+										
+									</td>
+								</tr>
 				
 								<tr>
 									<td class="content-block" itemprop="handler" itemscope itemtype="http://schema.org/HttpActionHandler">

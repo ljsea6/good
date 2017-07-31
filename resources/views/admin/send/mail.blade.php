@@ -13,21 +13,21 @@
                     {{ csrf_field() }}
                     <div class="form-group text-left">
                         <label for="email">Email</label>
-                        <input id="email" name="email" class="form-control" type="email" required>
+                        <input id="email" name="email" class="form-control" type="email">
                     </div>
                     <div class="form-group text-left">
                         <label for="emailone">Email</label>
-                        <input id="email" name="emailone" class="form-control" type="email" required>
+                        <input id="email" name="emailone" class="form-control" type="email">
                     </div>
                     <div class="form-group text-left">
                         <label for="emailtwo">Email</label>
-                        <input id="email" name="emailtwo" class="form-control" type="email" required>
+                        <input id="email" name="emailtwo" class="form-control" type="email">
                     </div>
                     <div id="buildyourform">
                         
                     </div>
                     <div class="form-group text-right">
-                        <a class="btn btn-danger" id="add">
+                        <a class="btn btn-danger" id="add" style="bottom: 47.7px; position: relative">
                             <span class="glyphicon glyphicon-plus" ></span> 
                         </a>
                     </div>
@@ -56,7 +56,7 @@
         if(intId < 8) {
             var fieldWrapper = $("<div class=\"form-group text-left\" />");
             var la = ("<label for=\"email" + intId + "\"> Email</label>");
-            var fName = $("<input id=\"email" + intId + "\" name=\"email" + intId + "\" type=\"email\" class=\"form-control\" required />");
+            var fName = $("<input style=\"position: relative;\" id=\"email" + intId + "\" name=\"email" + intId + "\" type=\"email\" class=\"form-control\" />");
             var fType = $("<br>");
             var removeButton = $("<a type=\"button\" class=\"btn btn-danger\"> <span class=\"glyphicon glyphicon-minus\" ></span>  </a>");
 

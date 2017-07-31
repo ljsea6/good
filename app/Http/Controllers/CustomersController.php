@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-ini_set('max_execution_time', 300);
+ini_set('max_execution_time', 500);
 
 use App\Customer;
 use App\Order;
@@ -72,38 +72,22 @@ class CustomersController extends Controller
 
     public function getCostumers()
     {
-                       
-                $referidosaux = array();
-                
-                $tercerosaux = Tercero::select('id', 'identificacion', 'nombres', 'apellidos', 'email')
-                    ->where('state', true)
-                    ->orderBy('id')
-                    ->get();
-               
-                foreach ($tercerosaux as $tercero) {
-                    $sons = DB::table('terceros_networks')
-                            ->where('terceros_networks.padre_id', '=', $tercero['id'])
-                            ->get();
-                    $find = Tercero::find($tercero['id']); 
-                    $find->numero_referidos = count($sons);
-                   
-                    $i = 0;
-                    foreach ($sons as $son)
-                    {
-                        $result = Tercero::find($son->customer_id);
-                        
-                        if ($result->state) {
-                            $resultOrders = DB::table('orders')
-                                    ->where('orders.customer_id', $result->customer_id)
-                                    ->where('orders.email', $result->email)
-                                    ->get();
-                            $i = $i + count($resultOrders);
-                        }
-                        
-                    }
-                    $find->numero_ordenes_referidos = $i;
-                    $find->save();
-                }
+        
+        
+        $terceros = Tercero::all();
+        
+        foreach ($terceros as $tercero) {
+            $find = Tercero::find($tercero->id);
+            $email = $find->email;
+            $aux = explode('@', $email);
+  
+            $password = $aux[0];
+ 
+            $find->usuario = $email;
+            $find->contraseña = bcrypt($password);
+            $find->save();
+            
+        }
     }
        
     

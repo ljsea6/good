@@ -18,78 +18,76 @@ class AdminController extends Controller {
     public function send(Request $request)
     {
         $data = $request->all();
-        
-
-        if(isset($data['email'])) {
+       
+        if(isset($data['email']) && $data['email'] !== '') {
             Mail::send('admin.send.message', $data, function($message) use ($request) {
                 $message->subject($request->body);
                 $message->to($request->email);
             });
         }
         
-        if(isset($data['emailone'])) {
+        if(isset($data['emailone']) && $data['emailone'] !== '') {
             Mail::send('admin.send.message', $data, function($message) use ($request) {
                 $message->subject($request->body);
                 $message->to($request->emailone);
             });
         }
         
-        if(isset($data['emailtwo'])) {
+        if(isset($data['emailtwo']) && $data['emailtwo'] !== '') {
             Mail::send('admin.send.message', $data, function($message) use ($request) {
                 $message->subject($request->body);
                 $message->to($request->emailtwo);
             });
         }
         
-        if(isset($data['email1'])) {
+        if(isset($data['email1']) && $data['email1'] !== '') {
             Mail::send('admin.send.message', $data, function($message) use ($request) {
                 $message->subject($request->body);
                 $message->to($request->email1);
             });
         }
         
-        if(isset($data['email2'])) {
+        if(isset($data['email2']) && $data['email2'] !== '') {
             Mail::send('admin.send.message', $data, function($message) use ($request) {
                 $message->subject($request->body);
                 $message->to($request->email2);
             });
         }
         
-        if(isset($data['email3'])) {
+        if(isset($data['email3']) && $data['email3'] !== '') {
             Mail::send('admin.send.message', $data, function($message) use ($request) {
                 $message->subject($request->body);
                 $message->to($request->email3);
             });
         }
         
-        if(isset($data['email4'])) {
+        if(isset($data['email4']) && $data['email4'] !== '') {
             Mail::send('admin.send.message', $data, function($message) use ($request) {
                 $message->subject($request->body);
                 $message->to($request->email4);
             });
         }
         
-         if(isset($data['email5'])) {
+         if(isset($data['email5']) && $data['email5'] !== '') {
             Mail::send('admin.send.message', $data, function($message) use ($request) {
                 $message->subject($request->body);
                 $message->to($request->email2);
             });
         }
         
-        if(isset($data['email6'])) {
+        if(isset($data['email6']) && $data['email6'] !== '') {
             Mail::send('admin.send.message', $data, function($message) use ($request) {
                 $message->subject($request->body);
                 $message->to($request->email3);
             });
         }
         
-        if(isset($data['email7'])) {
+        if(isset($data['email7']) && $data['email7'] !== '') {
             Mail::send('admin.send.message', $data, function($message) use ($request) {
                 $message->subject($request->body);
                 $message->to($request->email4);
             });
         }
-        
         
         return view('admin.send.success');
     }
@@ -107,9 +105,17 @@ class AdminController extends Controller {
 
     public function finder(Request $request)
     {
-        $results = Tercero::where('email', 'like', '%' .strtolower($request['email']) . '%')->get();
+        if(currentUser()->tipo_id == 2) {
+            $results = Tercero::where('email', 'like', '%' .strtolower($request['email']) . '%')->get();
         
-        return view('admin.find', compact('results'));
+            return view('admin.find', compact('results'));
+        } else {
+            $results = Tercero::where('email', '=', $request['email'])
+                    ->get();
+        
+            return view('admin.find', compact('results'));
+        }
+        
     }
 
     public function network()
@@ -160,7 +166,7 @@ class AdminController extends Controller {
         return view('admin.network', compact('send'));
     }
 
-	public function index()
+    public function index()
     {
         $tercero = Tercero::find(currentUser()->id);
         $referidos  = DB::table('terceros')
@@ -200,7 +206,7 @@ class AdminController extends Controller {
             'redes' => $networks
         ];
         return view('admin.index', compact('send'));
-	}
+    }
 
     public function anyData(Request $request)
     {
