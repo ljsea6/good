@@ -168,43 +168,7 @@ class AdminController extends Controller {
 
     public function index()
     {
-        $tercero = Tercero::find(currentUser()->id);
-        $referidos  = DB::table('terceros')
-            ->where('apellidos',  $tercero['email'])
-            ->select('id', 'nombres', 'email')
-            ->get();
-        $orders = Order::where('email', $tercero['email'])->get();
-        $total = 0;
-        foreach ($referidos as $referido) {
-            $results = Order::where('email', $referido->email)->get();
-            if (count($results) > 0) {
-                foreach ($results as $result) {
-                    $total = $total + (double)$result['total_price'];
-                }
-            }
-        }
-        $totalPrice = number_format($total, 0);
-        $networks = Network::all();
-        $terceros = [];
-        foreach ($networks as $network) {
-            $results = DB::table('terceros')
-                ->join('networks', 'terceros.network_id', '=', 'networks.id')
-                ->where('terceros.apellidos',  $tercero['email'])
-                ->where('networks.id', $network['id'])
-                ->select('terceros.id', 'terceros.nombres', 'terceros.apellidos','terceros.email', 'terceros.network_id')
-                ->take(10)->get();
-            foreach ($results as $result) {
-                array_push($terceros, (array)$result);
-            }
-        }
-        $send = [
-            'referidos' => number_format(count($referidos)),
-            'orders'  => number_format(count($orders)),
-            'total' => $totalPrice,
-            'terceros' => collect($terceros),
-            'tercero' => $tercero,
-            'redes' => $networks
-        ];
+        $send = Tercero::find(currentUser()->id);
         return view('admin.index', compact('send'));
     }
 

@@ -7,6 +7,8 @@ use App\Order;
 use Carbon\Carbon;
 use App\Entities\Network;
 use DB;
+use App\Customer;
+use App\Entities\Tercero;
 
 class GetOrders extends Command
 {
@@ -157,7 +159,36 @@ class GetOrders extends Command
                             'checkout_id' => $order['checkout_id'],
                         ]);
                     }
-
+                    
+                 
+                    
+                     
+                    $result = Customer::where('email', strtolower($order['email']))
+                                ->where('customer_id', $order['customer']['id'])
+                                ->get();
+                    
+                    
+                    
+                    if (count($result) > 0) {
+                                 
+                       $tercero = Tercero::where('email', strtolower($result[0]['last_name']))->get();
+                       
+                        if (count($tercero) > 0) {
+                           $find = Tercero::find($tercero[0]['id']);
+                           $total = $find->total_price_orders + $order['total_price'];
+                           $find->total_price_orders = (double)$total;
+                           $find->save();
+                        }
+                        
+                        if (count($tercero) == 0) {
+                           $find = Tercero::find(5);
+                           $total = $find->total_price_orders + $order['total_price'];
+                           $find->total_price_orders = (double)$total;
+                           $find->save();
+                        }
+                    }
+                    
+                    
                 }
             }
         }

@@ -26,31 +26,20 @@ class ReportesController extends Controller {
            $referidos  = DB::table('terceros')
                 ->where('numero_referidos', '>', 0)
                 ->where('numero_ordenes_referidos', '>', 0)
-                ->select('id', 'nombres', 'email')
+                ->select('id', 'nombres', 'total_price_orders')
                 ->get();
             
             $report = array();
             
             foreach ($referidos as $referido) {
-                $total = 0;
-                $results = Customer::where('last_name', $referido->email)->get();
-                if (count($results) > 0) {
-                    foreach ($results as $result) {
-                        $orders = Order::where('customer_id', $result['customer_id'])->get();
-                        if(count($orders) > 0) {
-                            foreach ($orders as $order) {
-                                $total = $total + (double)$order['total_price'];
-                            }  
-                        }
-                    }
-                }
+                
                
                 $aux = [
                     'id' => $referido->id,
                     'name' => $referido->nombres,
-                    'total' => number_format($total),
+                    'total' => number_format($referido->total_price_orders),
                     'porcentaje' => '%10',
-                    'ganancia' => number_format($total * 0.1)
+                    'ganancia' => number_format($referido->total_price_orders * 0.1)
                 ];
                
                 array_push($report, $aux);

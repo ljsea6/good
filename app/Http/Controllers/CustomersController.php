@@ -74,20 +74,7 @@ class CustomersController extends Controller
     {
         
         
-        $terceros = Tercero::all();
         
-        foreach ($terceros as $tercero) {
-            $find = Tercero::find($tercero->id);
-            $email = $find->email;
-            $aux = explode('@', $email);
-  
-            $password = $aux[0];
- 
-            $find->usuario = $email;
-            $find->contraseña = bcrypt($password);
-            $find->save();
-            
-        }
     }
        
     

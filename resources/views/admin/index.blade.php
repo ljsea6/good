@@ -17,10 +17,10 @@
                         <div class="panel panel-default bg-info panel-stat no-icon">
                             <div class="panel-body content-wrap">
                                 <div class="value">
-                                    <h2 class="font-header no-m">{{$send['referidos']}}</h2>
+                                    <h2 class="font-header no-m">{{number_format($send->numero_referidos)}}</h2>
                                 </div>
                                 <div class="detail text-right">
-                                    <div class="text-upper">Referidos</div>
+                                    <div class="text-upper">#Referidos</div>
                                 </div>
                             </div>
                         </div>
@@ -29,10 +29,10 @@
                         <div class="panel panel-default bg-success panel-stat no-icon">
                             <div class="panel-body content-wrap">
                                 <div class="value">
-                                    <h2 class="font-header no-m">{{$send['orders']}}</h2>
+                                    <h2 class="font-header no-m">{{number_format($send->numero_ordenes_referidos)}}</h2>
                                 </div>
                                 <div class="detail text-right">
-                                    <div class="text-upper">Compras</div>
+                                    <div class="text-upper">#Compras</div>
                                 </div>
                             </div>
                         </div>
@@ -41,10 +41,10 @@
                         <div class="panel panel-default bg-purple panel-stat no-icon">
                             <div class="panel-body content-wrap">
                                 <div class="value">
-                                    <h2 class="font-header no-m">{{$send['total']}}</h2>
+                                    <h2 class="font-header no-m">{{number_format($send->total_price_orders)}}</h2>
                                 </div>
                                 <div class="detail text-right">
-                                    <small class="text-upper">Total</small>
+                                    <small class="text-upper">$ Total Compras</small>
                                 </div>
                             </div>
                         </div>

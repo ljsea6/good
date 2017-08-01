@@ -13,21 +13,21 @@
                 <a href="{{ route('admin.search') }}" class="animsition-link text-left">
                     <i class="fa fa-search">
                     </i>
-                    <span class="nav-text">Buscar</span>
+                    <span class="nav-text">Buscar Referidos</span>
                 </a>
             </li>
             <li class="has-submenu">
                 <a href="{{ route('admin.network') }}" class="animsition-link text-left">
                     <i class="fa fa-sitemap">
                     </i>
-                    <span class="nav-text">Red Referidos</span>
+                    <span class="nav-text">Referidos</span>
                 </a>
             </li>
             <li class="has-submenu">
                 <a href="#send" data-toggle="collapse" aria-expanded="false" class="text-left">
                     <i class="fa fa-folder-open">
                     </i>
-                    <span class="nav-text">Gestionar Invitaciones</span>
+                    <span class="nav-text">Invitaciones</span>
                 </a>
                 <div class="sub-menu collapse secondary list-style-circle" id="send">
                     <ul>
@@ -47,7 +47,7 @@
                 <a href="{{ route('admin.networks.index') }}" class="text-left">
                     <i class="fa fa-share-alt">
                     </i>
-                    <span class="nav-text">Gestionar Redes</span>
+                    <span class="nav-text">Redes</span>
                 </a>
                 
             </li>
@@ -56,7 +56,7 @@
                 <a href="{{ route('admin.reglas.index') }}" class="text-left">
                     <i class="fa fa-gavel">
                     </i>
-                    <span class="nav-text">Gestionar Reglas</span>
+                    <span class="nav-text">Reglas</span>
                 </a>
             </li>
             <li class="has-submenu">

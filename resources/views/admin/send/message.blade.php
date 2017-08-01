@@ -312,14 +312,7 @@ a {
 							</table>
                                                         <table  style="width:100%;border-spacing:0;border-collapse:collapse;">
                                                           
-								<tr>
-									<td class="content-block">
-                                                                            <p style="color:#777;line-height:150%;font-size:16px;margin:0;">
-                                                                                Ahorra comprando, gana invitando con Hello.
-                                                                            </p>
-										
-									</td>
-								</tr>
+								
                                                                 <tr>
 									<td class="content-block">
                                                                             <p style="color:#777;line-height:150%;font-size:16px;margin:0;">
@@ -331,7 +324,7 @@ a {
 				
 								<tr>
 									<td class="content-block" itemprop="handler" itemscope itemtype="http://schema.org/HttpActionHandler">
-                                                                            <a href="https://diahello.co/account/register" class="btn-primary" itemprop="url">¡Registrate con tu código <strong>{{$code}}</strong> dando click aquí!</a>
+                                                                            <a href="https://diahello.co/account/register" class="btn-primary" itemprop="url">¡Registrate con mi código <strong>{{$code}}</strong> dando click aquí!</a>
 									</td>
 								</tr>
 								

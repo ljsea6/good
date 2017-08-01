@@ -29,11 +29,11 @@
 
                             <div class="form-group">
                                 <div class="col-sm-offset-3 col-sm-6 text-left">
-                                    <button class="btn btn-primary" type="submit" >Buscar</button>
+                                    <button class="btn btn-primary text-left" type="submit" >Buscar</button>
                                 </div>
                             </div>
-
-
+                            
+                            
                             @if ($errors->any())
                                 <div class="alert alert-danger fade in col-sm-offset-3 col-sm-6">
                                     <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>

@@ -31,12 +31,10 @@
                             <span class="glyphicon glyphicon-plus" ></span> 
                         </a>
                     </div>
-                    <div class="form-group text-left">
-                        <input id="code" name="code" class="form-control" type="hidden" value="{{currentUser()->email}}">
-                    </div>
+                    <input type="hidden" id="code" name="code" value="{{currentUser()->email}}">
                     <div class="form-group text-left">
                         <label for="body">Mensaje</label>
-                        <textarea id="body" name="body" class="form-control"></textarea>
+                        <input id="body" name="body" class="form-control" value="Ahorra comprando, gana invitando con Hello. Mi código es: {{currentUser()->email}}">
                     </div>
                     <div class="form-group text-left">
                         <button class="btn btn-danger" type="submit">Enviar</button>

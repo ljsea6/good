@@ -21,7 +21,7 @@
                         <tr>
                             <th>#</th>
                             <th>Nombres</th>
-                            <th># Total Compras Referidos</th>
+                            <th>Total Compras Referidos</th>
                             <th>%</th>
                             <th>Ganancia</th>
                         </tr>
