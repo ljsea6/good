@@ -10,9 +10,7 @@
 |
  */
 //<a href="{{ route('reset') }}">Olvido contraseña?</a>
-Route::get('/', function () {
-    return redirect()->route('login');
-});
+
 //Pdfs
 Route::get('pdf', 'PdfController@invoice');
 Route::get('terceros/data', 'TercerosController@anyData');
@@ -24,8 +22,8 @@ Route::get('products/count', 'ProductsController@countAllProducts');
 Route::get('products/variants/price/zero', 'ProductsController@ProductsWithVariantsPriceZero');
 Route::get('products/variants/price/no-zero', 'ProductsController@ProductsWithVariantsPriceNotZero');
 // Authentication routes...
-Route::get('login', ['as' => 'login', 'uses' => 'Auth\AuthController@getLogin']);
-Route::post('login', ['as' => 'login', 'uses' => 'Auth\AuthController@postLogin']);
+Route::get('/', ['as' => 'login', 'uses' => 'Auth\AuthController@getLogin']);
+Route::post('/', ['as' => 'login', 'uses' => 'Auth\AuthController@postLogin']);
 Route::get('logout', ['as' => 'logout', 'uses' => 'Auth\AuthController@getLogout']);
 // Password reset link
 Route::get('olvido-contraseña', ['as' => 'reset', 'uses' => 'auth\PasswordController@getEmail']);

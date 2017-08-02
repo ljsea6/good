@@ -70,15 +70,14 @@ class GetOrders extends Command
             }
 
             $resultsOrders = array();
-
-          
+            
             foreach ($totalOrders as $order) {
                 foreach ($order['orders'] as $value){
                     array_push($resultsOrders, $value);
                 }
                 
             }
-
+            
             $network_id = Network::select('id')->where('name', 'shopify')->get();
             
             foreach ($resultsOrders as $order) {
@@ -159,16 +158,11 @@ class GetOrders extends Command
                             'checkout_id' => $order['checkout_id'],
                         ]);
                     }
-                    
-                 
-                    
-                     
+             
                     $result = Customer::where('email', strtolower($order['email']))
                                 ->where('customer_id', $order['customer']['id'])
                                 ->get();
-                    
-                    
-                    
+             
                     if (count($result) > 0) {
                                  
                        $tercero = Tercero::where('email', strtolower($result[0]['last_name']))->get();
