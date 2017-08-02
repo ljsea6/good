@@ -84,7 +84,10 @@ class GetOrders extends Command
 
                 if ($order['financial_status'] == 'paid') {
                     
-                    $response = Order::where('network_id', $network_id[0]['id'])->where('order_id', $order['id'])->get();
+                    $response = Order::where('network_id', $network_id[0]['id'])
+                            ->where('email', $order['email'])
+                            ->where('order_id', $order['id'])
+                            ->get();
                     
                     if(count($response) > 0) {
                         DB::table('orders')
@@ -157,30 +160,31 @@ class GetOrders extends Command
                             'device_id' => $order['device_id'],
                             'checkout_id' => $order['checkout_id'],
                         ]);
-                    }
-             
-                    $result = Customer::where('email', strtolower($order['email']))
-                                ->where('customer_id', $order['customer']['id'])
-                                ->get();
-             
-                    if (count($result) > 0) {
-                                 
-                       $tercero = Tercero::where('email', strtolower($result[0]['last_name']))->get();
-                       
-                        if (count($tercero) > 0) {
-                           $find = Tercero::find($tercero[0]['id']);
-                           $total = $find->total_price_orders + $order['total_price'];
-                           $find->total_price_orders = (double)$total;
-                           $find->save();
-                        }
                         
-                        if (count($tercero) == 0) {
-                           $find = Tercero::find(5);
-                           $total = $find->total_price_orders + $order['total_price'];
-                           $find->total_price_orders = (double)$total;
-                           $find->save();
+                        $result = Customer::where('email', strtolower($order['email']))
+                                    ->where('customer_id', $order['customer']['id'])
+                                    ->get();
+
+                        if (count($result) > 0) {
+
+                           $tercero = Tercero::where('email', strtolower($result[0]['last_name']))->get();
+
+                            if (count($tercero) > 0) {
+                               $find = Tercero::find($tercero[0]['id']);
+                               $total = $find->total_price_orders + $order['total_price'];
+                               $find->total_price_orders = (double)$total;
+                               $find->save();
+                            }
+
+                            if (count($tercero) == 0) {
+                               $find = Tercero::find(5);
+                               $total = $find->total_price_orders + $order['total_price'];
+                               $find->total_price_orders = (double)$total;
+                               $find->save();
+                            }
                         }
                     }
+             
                     
                     
                 }
