@@ -24,8 +24,8 @@
                             <th>Nombres</th>
                             <th>Apellidos</th>
                             <th>Email</th>
-                            <th># Referidos</th>
-                            <th># Ordenes Referidos</th>
+                            <th>Referidos</th>
+                            <th>Ordenes Referidos</th>
                             <th style="text-align: center;">Ver redes</th>
                             <th style="text-align: center;">Acciones</th>
                         </tr>
@@ -57,8 +57,8 @@
                     { data: 'nombres', name: 'nombres', orderable: true, searchable: true  },
                     { data: 'apellidos', name: 'apellidos', orderable: true },
                     { data: 'email', name: 'email', orderable: true },
-                    { data: 'referidos', name: 'referidos', orderable: true },
-                    { data: 'ordenes', name: 'ordenes', orderable: true },
+                    { data: 'numero_referidos', name: 'numero_referidos', orderable: true },
+                    { data: 'numero_ordenes_referidos', name: 'numero_ordenes_referidos', orderable: true },
                     { data: 'action', name: 'red', orderable: false, searchable: false, className: "centrar"},
                     { data: 'edit', name: 'editar', orderable: false, searchable: false, className: "centrar"}
                 ],

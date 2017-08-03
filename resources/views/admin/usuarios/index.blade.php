@@ -170,7 +170,7 @@
             serverSide: true,
             deferRender: true,
             pagingType: "full_numbers",
-            //ajax: '{!! route('usuarios.data') !!}',
+            ajax: '{!! route('usuarios.data') !!}',
             columns: [
                 { data: 'avatar', name: 'avatar', orderable: false, searchable: false },
                 { data: 'identificacion', name: 'terceros.identificacion', orderable: false },

@@ -20,15 +20,58 @@ class ReportesController extends Controller {
             return view('admin.reportes.index');
 	}
         
+        public function ordersData()
+        {
+             
+            $totals = array();
+            $orders = Order::get();
+
+            foreach ($orders as $order) {
+
+                $line_item = $order['line_items'];
+
+                if ($line_item[0]['product_id'] === null) {
+
+                    array_push($totals, $order);
+                }
+            }
+            
+            $report = array();
+            
+            foreach ($totals as $total) {
+             
+                $aux = [
+                    'id' => $total['order_id'],
+                    'name' => $total['name'],
+                    
+                ];
+               
+                array_push($report, $aux);
+            }
+           
+            $send = collect($report);
+            return Datatables::of($send)
+                ->addColumn('id', function ($send) {
+                    return '<div align=left>' . $send['id'] . '</div>';
+                })
+                ->addColumn('name', function ($send) {
+                    return '<div align=left>' . $send['name'] . ' </div>';
+                })
+                
+                ->make(true);
+        }
+        
         public function anyData()
         {
              
            $referidos  = DB::table('terceros')
-                ->where('numero_referidos', '>', 0)
-                ->where('numero_ordenes_referidos', '>', 0)
-                ->select('id', 'nombres', 'total_price_orders')
-                ->get();
-            
+                            ->where('numero_referidos', '>', 0)
+                            ->where('numero_ordenes_referidos', '>', 0)
+                            ->where('total_price_orders', '>', 0)
+                            ->select('id', 'nombres', 'total_price_orders')
+                            //->orderBy('total_price_orders', 'desc')
+                            ->get();
+
             $report = array();
             
             foreach ($referidos as $referido) {
@@ -37,9 +80,9 @@ class ReportesController extends Controller {
                 $aux = [
                     'id' => $referido->id,
                     'name' => $referido->nombres,
-                    'total' => number_format($referido->total_price_orders),
+                    'total' => $referido->total_price_orders,
                     'porcentaje' => '%10',
-                    'ganancia' => number_format($referido->total_price_orders * 0.1)
+                    'ganancia' => $referido->total_price_orders * 0.1
                 ];
                
                 array_push($report, $aux);
@@ -48,19 +91,19 @@ class ReportesController extends Controller {
             $send = collect($report);
             return Datatables::of($send)
                 ->addColumn('id', function ($send) {
-                    return '<div align=left>' . $send['id'] . '</div>';
+                    return '<div align=left><input type=text id="row-1-age" name="row-1-age" value=' . $send['id'] . '></div>';
                 })
                 ->addColumn('nombres', function ($send) {
-                    return '<div align=left>' . $send['name'] . '</div>';
+                    return '<div align=left><input type=text id=name name=name value=' . $send['name'] . ' disabled></div>';
                 })
                 ->addColumn('total', function ($send) {
-                    return '<div align=left>$ ' . $send['total'] . '</div>';
+                    return '<div align=left><input type=text id=total name=total value=' . number_format($send['total']) . ' disabled></div>';
                 })
                 ->addColumn('porcentaje', function ($send) {
-                    return '<div align=left>' . $send['porcentaje'] . '</div>';
+                    return '<div align=left><input type=text id=porcentaje name=porcentaje value=' . $send['porcentaje'] . ' disabled></div>';
                 })
                 ->addColumn('ganancia', function ($send) {
-                    return '<div align=left>$ ' . $send['ganancia'] . '</div>';
+                    return '<div align=left><input type=text id=ganancia name=ganancia value=' . number_format($send['ganancia']) . ' disabled></div>';
                 })
                 ->make(true);
         }

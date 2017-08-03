@@ -206,6 +206,7 @@ Route::group(['prefix' => 'admin', 'middleware' => 'auth'], function () {
     
     //Para los reportes
     Route::any('reportes/datos', ['uses' => 'ReportesController@anyData', 'as' => 'admin.reportes.datos']);
+    Route::any('reportes/datos/orders', ['uses' => 'ReportesController@ordersData', 'as' => 'admin.reportes.datos.orders']);
     Route::any('reportes/descargar', ['uses' => 'ReportesController@descargar', 'as' => 'admin.reportes.descargar']);
     Route::resource('reportes', 'ReportesController', ['only' => ['index']]);
     //Manifiestos
