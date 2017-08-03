@@ -17,7 +17,7 @@
     {!! Html::style('css/jquery.dataTables.min.css') !!}
     {!! Html::style('css/buttons.dataTables.min.css') !!}
 
-    <link rel="stylesheet" href="//cdn.datatables.net/responsive/2.1.1/css/dataTables.responsive.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.0.2/css/responsive.bootstrap.min.css">
 
     {!! Html::style('js/Jit/Examples/css/base.css') !!}
     {!! Html::style('js/Jit/Examples/css/Spacetree.css') !!}
@@ -71,8 +71,9 @@
 
 
     {!! Html::script('js/dataTables.bootstrap.min.js') !!}
-    <script src="//cdn.datatables.net/responsive/2.1.1/js/dataTables.responsive.js"></script>
-
+    
+    <script src="https://cdn.datatables.net/responsive/2.0.2/js/dataTables.responsive.min.js"></script>
+ 
     {!! Html::script('js/Jit/Extras/excanvas.js') !!}
     {!! Html::script('js/Jit/jit.js') !!}
     {!! Html::script('js/Jit/Examples/Spacetree/example1.js') !!}
