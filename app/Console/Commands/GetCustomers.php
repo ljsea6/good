@@ -141,10 +141,13 @@ class GetCustomers extends Command
 
 
                     if(count($result) == 0) {
+                        $aux = explode('@', strtolower($customer['email']));
                         $tercero = new Tercero();
                         $tercero->nombres = (empty($customer['first_name']) || $customer['first_name'] == null || $customer['first_name'] == '') ? $customer['email'] : $customer['first_name'];
                         $tercero->apellidos = strtolower($customer['last_name']);
                         $tercero->email = strtolower($customer['email']);
+                        $tercero->usuario = strtolower($customer['email']);
+                        $tercero->contraseña = bcrypt($aux[0]);
                         $tercero->tipo_id = 1;
                         $tercero->customer_id = $customer['customer_id'];
                         $tercero->network_id = $customer['network_id'];

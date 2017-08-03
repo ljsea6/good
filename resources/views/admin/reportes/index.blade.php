@@ -64,50 +64,7 @@
 @push('scripts')
 <script>
     
-    
     $(document).ready(function(){
-            var editor = new $.fn.dataTable.Editor( {
-                ajax: {
-                    create: {
-                        type: 'POST',
-                        url:  '../php/rest/create.php'
-                    },
-                    edit: {
-                        type: 'PUT',
-                        url:  '../php/rest/edit.php?id=_id_'
-                    },
-                    remove: {
-                        type: 'DELETE',
-                        url:  '../php/rest/remove.php?id=_id_'
-                    }
-                },
-                table: "#terceros",
-                fields: [ {
-                        label: "First name:",
-                        name: "first_name"
-                    }, {
-                        label: "Last name:",
-                        name: "last_name"
-                    }, {
-                        label: "Position:",
-                        name: "position"
-                    }, {
-                        label: "Office:",
-                        name: "office"
-                    }, {
-                        label: "Extension:",
-                        name: "extn"
-                    }, {
-                        label: "Start date:",
-                        name: "start_date"
-                    }, {
-                        label: "Salary:",
-                        name: "salary"
-                    }
-                ]
-            } );
-
-            
             var table = $('#terceros').DataTable({
                dom: 'Bfrtip',
                buttons: [

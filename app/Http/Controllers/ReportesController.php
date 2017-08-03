@@ -69,7 +69,6 @@ class ReportesController extends Controller {
                             ->where('numero_ordenes_referidos', '>', 0)
                             ->where('total_price_orders', '>', 0)
                             ->select('id', 'nombres', 'total_price_orders')
-                            //->orderBy('total_price_orders', 'desc')
                             ->get();
 
             $report = array();
