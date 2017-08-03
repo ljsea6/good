@@ -75,11 +75,11 @@
                 </div>
                 {!! Form::submit('Iniciar sesión', ['class' => 'btn btn-main btn-lg btn-block font-14 m-t-30']) !!}
                 <div class="m-t-15 text-right">
-                    <a href="{{ route('reset') }}">Olvido contraseña?</a>
+                   <!-- <a href="{{ route('reset') }}">Olvido contraseña?</a> -->
 
                 </div>
                  <div class="m-t-15 text-right">
-                <a href="{{ route('Registro') }}">Registrarse</a>
+               <!-- <a href="{{ route('Registro') }}">Registrarse</a> -->
                    </div>
             </div>
             {!! Form::close() !!}
