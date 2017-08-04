@@ -81,7 +81,6 @@ class ReportesController extends Controller {
                     'name' => $referido->nombres,
                     'email' => $referido->email,
                     'total' => $referido->total_price_orders,
-                    'porcentaje' => '%10',
                     'ganancia' => $referido->total_price_orders * 0.1
                 ];
                
@@ -102,9 +101,7 @@ class ReportesController extends Controller {
                 ->addColumn('total', function ($send) {
                     return '<div align=left>' . number_format($send['total']) . '</div>';
                 })
-                ->addColumn('porcentaje', function ($send) {
-                    return '<div align=left>' . $send['porcentaje'] . '</div>';
-                })
+                
                 ->addColumn('ganancia', function ($send) {
                     return '<div align=left>' . number_format($send['ganancia']) . '</div>';
                 })
