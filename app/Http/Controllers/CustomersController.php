@@ -29,14 +29,69 @@ class CustomersController extends Controller
 
     public function getCostumers()
     {
-        $referidos  = DB::table('terceros')
-                            ->where('numero_referidos', '>', 0)
-                            ->where('numero_ordenes_referidos', '>', 0)
-                            ->where('total_price_orders', '>', 0)
-                            ->select('id', 'nombres', 'total_price_orders')
-                            ->orderBy('total_price_orders', 'desc')
-                            ->get();
-        return $referidos;
+        $totals = array();
+            $orders = Order::get();
+
+            foreach ($orders as $order) {
+
+                $line_item = $order['line_items'];
+
+                if ($line_item[0]['product_id'] === null) {
+
+                    array_push($totals, $order);
+                }
+            }
+            
+            $report = array();
+            
+            foreach ($totals as $total) {
+             
+                $aux = [
+                    'id' => $total['order_id'],
+                    'name' => $total['name'],
+                    
+                ];
+               
+                array_push($report, $aux);
+            }
+            
+            $totalOrders = array();
+
+        $api_url = 'https://c17edef9514920c1d2a6aeaf9066b150:afc86df7e11dcbe0ab414fa158ac1767@mall-hello.myshopify.com';
+        $client = new \GuzzleHttp\Client();
+        $result_url = explode('.', $api_url);
+
+    
+
+            $res = $client->request('GET', $api_url . '/admin/orders/count.json?financial_status=paid');
+            $countOrders = json_decode($res->getBody(), true);
+            return $countOrders;
+
+            $pagesNumber = (int)$countOrders['count']/250;
+            $number = explode( '.', $pagesNumber);
+            $entera = (int)$number[0];
+            $decimal = (int)$number[1];
+
+            if($decimal !== 0) {
+                $entera = $entera + 1;
+            }
+
+            for ($i = 1; $i <= $entera; $i++) {
+                $res = $client->request('GET', $api_url . '/admin/orders.json?limit=250&&financial_status=any&&page=' . $i);
+                $results = json_decode($res->getBody(), true);
+                array_push($totalOrders, $results);
+            }
+
+            $resultsOrders = array();
+            
+            foreach ($totalOrders as $order) {
+                foreach ($order['orders'] as $value){
+                    array_push($resultsOrders, $value);
+                }
+                
+            }
+            
+            
     }
        
     
