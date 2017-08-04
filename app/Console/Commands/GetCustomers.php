@@ -42,7 +42,6 @@ class GetCustomers extends Command
      */
     public function handle()
     {
-
         $totalCustomers = array();
 
         $api_url = 'https://c17edef9514920c1d2a6aeaf9066b150:afc86df7e11dcbe0ab414fa158ac1767@mall-hello.myshopify.com';
@@ -53,7 +52,6 @@ class GetCustomers extends Command
 
                 $res = $client->request('GET', $api_url . '/admin/customers/count.json');
                 $countCustomers = json_decode($res->getBody(), true);
-
 
                 $pagesNumber = (int)$countCustomers['count']/250;
                 $number = explode( '.', $pagesNumber);
@@ -71,9 +69,7 @@ class GetCustomers extends Command
                     array_push($totalCustomers, $results);
                 }
 
-
                 $resultsCustomers = array();
-
 
                 for ($j = 0; $j < count($totalCustomers); $j++) {
                     $aux = $totalCustomers[$j]['customers'];
@@ -126,21 +122,14 @@ class GetCustomers extends Command
 
                 }
 
-
                 $customersresults = Customer::all();
 
 
                 foreach ($customersresults as $customer) {
 
-
-                    $result = Tercero::where('network_id', $customer['network_id'])
-                        ->where('customer_id', $customer['customer_id'])
-                        ->where('email', $customer['email'])
-                        ->get();
-
-
-
-                    if(count($result) == 0) {
+                    $result = Tercero::where('email', $customer['email'])->get();
+                    
+                    if(count($result) === 0) {
                         $aux = explode('@', strtolower($customer['email']));
                         $tercero = new Tercero();
                         $tercero->nombres = (empty($customer['first_name']) || $customer['first_name'] == null || $customer['first_name'] == '') ? $customer['email'] : $customer['first_name'];
@@ -155,7 +144,6 @@ class GetCustomers extends Command
                     }
                 }
             
-                
         }
         
         $this->info('Los clientes han sido descargados correctamente');

@@ -36,15 +36,15 @@ class Kernel extends ConsoleKernel
                  ->everyFiveMinutes();
 
         $schedule->command('get:products')
-                 ->everyFiveMinutes();
+                 ->twiceDaily(1, 20);
 
         $schedule->command('get:customers')
-                 ->everyFiveMinutes();
+                 ->twiceDaily(2, 21);
         
         $schedule->command('get:fathers')
-                 ->everyFiveMinutes();
+                 ->twiceDaily(3, 22);
         
         $schedule->command('get:orders')
-                 ->twiceDaily(5, 22);
+                 ->dailyAt('23:45');
     }
 }
