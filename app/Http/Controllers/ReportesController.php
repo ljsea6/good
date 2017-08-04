@@ -90,7 +90,7 @@ class ReportesController extends Controller {
             $send = collect($report);
             return Datatables::of($send)
                 ->addColumn('id', function ($send) {
-                    return '<div align=left><input type=text id="row-1-age" name="row-1-age" value=' . $send['id'] . '></div>';
+                    return '<div align=left><input type=text id="row-1-age" name="row-1-age" value=' . $send['id'] . ' disabled></div>';
                 })
                 ->addColumn('nombres', function ($send) {
                     return '<div align=left><input type=text id=name name=name value=' . $send['name'] . ' disabled></div>';

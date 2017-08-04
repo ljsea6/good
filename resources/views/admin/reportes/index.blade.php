@@ -15,7 +15,7 @@
                         </ul>
                     </div>
                 @endif
-                <button type="submit">Oye</button>
+                
                 <div id="datatable_wrapper" class="dataTables_wrapper form-inline dt-bootstrap no-footer">
                     
                     <table data-order='[[ 0, "asc" ]]' id="terceros" class="table table-striped font-12 dataTable no-footer" role="grid" aria-describedby="datatable_info">
@@ -36,7 +36,7 @@
 
     <div class="box">
         <div class="panel panel-default">
-            <div class="panel-heading font-header">Listado Reporte Ordenes sin productos relacionados</div>
+            <div class="panel-heading font-header">Listado reporte ordenes sin productos relacionados</div>
             <div class="panel-body">
                 @if (session('status'))
                     <div class="alert alert-info fade in col-sm-12 col-md-12 col-lg-12">

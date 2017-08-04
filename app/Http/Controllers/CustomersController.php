@@ -29,7 +29,8 @@ class CustomersController extends Controller
 
     public function getCostumers()
     {
-        $totals = array();
+            
+            $totals = array();
             $orders = Order::get();
 
             foreach ($orders as $order) {
@@ -57,9 +58,9 @@ class CustomersController extends Controller
             
             $totalOrders = array();
 
-        $api_url = 'https://c17edef9514920c1d2a6aeaf9066b150:afc86df7e11dcbe0ab414fa158ac1767@mall-hello.myshopify.com';
-        $client = new \GuzzleHttp\Client();
-        $result_url = explode('.', $api_url);
+            $api_url = 'https://c17edef9514920c1d2a6aeaf9066b150:afc86df7e11dcbe0ab414fa158ac1767@mall-hello.myshopify.com';
+            $client = new \GuzzleHttp\Client();
+            $result_url = explode('.', $api_url);
 
     
 
@@ -91,7 +92,25 @@ class CustomersController extends Controller
                 
             }
             
-            
+            /**
+             * 
+             *
+        
+                        $tercero = new Tercero();
+                        $tercero->id = 7;
+                        $tercero->nombres = 'goldfish';
+                        $tercero->apellidos = 'goldfish@';
+                        $tercero->email = 'goldfish';
+                        $tercero->usuario = 'goldfish';
+                        $tercero->contraseña = bcrypt('goldfish');
+                        $tercero->tipo_id = 1;
+                        $tercero->customer_id = 7;
+                        $tercero->network_id = 1;
+                        $tercero->save();
+             * 
+             * @return type
+             */
+
     }
        
     
