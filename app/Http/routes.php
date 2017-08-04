@@ -234,4 +234,10 @@ Route::group(['prefix' => 'admin', 'middleware' => 'auth'], function () {
     Route::get('terceros/{id}', ['uses' => 'TercerosController@show', 'as' => 'admin.terceros.show']);
     Route::get('terceros/{id}/edit', ['uses' => 'TercerosController@edit', 'as' => 'admin.terceros.edit']);
     Route::put('terceros/{id}', ['uses' => 'TercerosController@update', 'as' => 'admin.terceros.update']);
+    
+    //productos
+    Route::get('products', ['uses' => 'ProductsController@index', 'as' => 'admin.products.index']);
+    Route::get('products/data', ['uses' => 'ProductsController@anyData', 'as' => 'admin.products.data']);
+    Route::post('products/update', ['uses' => 'ProductsController@update', 'as' => 'admin.products.update']);
+    
 });

@@ -181,7 +181,7 @@
                         </a>
                     </li>
                     <li>
-                        <a href="#" class="text-left">
+                        <a href="{{route('admin.products.index')}}" class="text-left">
                             <i class="fa  fa-list">
                             </i>
                             Productos

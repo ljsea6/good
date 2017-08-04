@@ -21,156 +21,35 @@ class ProductsController extends Controller
 
     public function index()
     {
-        $results= Product::all();
-        $products = array_map(function ($value) {
-            return ['product' => $value];
-        }, $results->toArray());
-        return $products;
+        return view('admin.productos.home');
     }
-
-    public function getProducts() 
+    
+    public function anyData()
     {
+        $products = Product::select('id', 'title', 'precio_unidad', 'unidades_vendidas', 'porcentaje')
+                ->where('unidades_vendidas', '>', 0)
+                ->get();
+        
+        $send = collect($products);
 
-        $totalProducts = array();
-
-        $api_url = 'https://c17edef9514920c1d2a6aeaf9066b150:afc86df7e11dcbe0ab414fa158ac1767@mall-hello.myshopify.com/';
-        $client = new \GuzzleHttp\Client();
-        $res = $client->request('GET', $api_url . '/admin/products/count.json');
-        $countProducts = json_decode($res->getBody(), true);
-        return $countProducts;
-
-        $pagesNumber = (int)$countProducts['count']/50;
-        $number = explode( '.', $pagesNumber);
-        $entera = (int)$number[0];
-        $decimal = (int)$number[1];
-
-
-
-
-        if($decimal !== 0) {
-            $entera = $entera + 1;
-        }
-
-        for ($i = 1; $i <= $entera; $i++) {
-            $res = $client->request('GET', $api_url . '/admin/products.json?page=' . $i);
-            $results = json_decode($res->getBody(), true);
-            array_push($totalProducts, $results);
-        }
-
-        //return count($totalProducts[1]['products']);
-
-        $resultsProducts = array();
-
-
-        for ($j = 0; $j < count($totalProducts); $j++) {
-            $aux = $totalProducts[$j]['products'];
-            for ($i = 0; $i < count($aux); $i++) {
-                array_push($resultsProducts, $aux[$i]);
-            }
-
-        }
-
-        $products = array_map(function ($value) {
-            return ['product' => $value];
-        }, $resultsProducts);
-
-
-        foreach ($products as $product) {
-            $response = Product::find((int)$product['product']['id']);
-
-            if(!$response) {
-                Product::create([
-                    'body_html' => $product['product']['body_html'],
-                    'created_at' => Carbon::parse($product['product']['created_at']),
-                    'handle' => $product['product']['handle'],
-                    'id' => $product['product']['id'],
-                    'image' => $product['product']['image'],
-                    'images' => $product['product']['images'],
-                    'options' => $product['product']['options'],
-                    'product_type' => $product['product']['product_type'],
-                    'published_at' => Carbon::parse($product['product']['published_at']),
-                    'published_scope' => $product['product']['published_scope'],
-                    'tags' => $product['product']['tags'],
-                    'template_suffix' => ($product['product']['template_suffix'] !== null ) ? $product['product']['template_suffix'] : null,
-                    'title' => $product['product']['title'],
-                    'metafields_global_title_tag' => (isset($product['product']['metafields_global_title_tag'])) ? $product['product']['metafields_global_title_tag'] : null,
-                    'metafields_global_description_tag' => (isset($product['product']['metafields_global_description_tag'])) ? $product['product']['metafields_global_description_tag'] : null,
-                    'updated_at' => Carbon::parse($product['product']['updated_at']),
-                    'variants' => $product['product']['variants'],
-                    'vendor' => $product['product']['vendor'],
-                ]);
-            }
-
-        }
-        //return $products;
-    }
-
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function ProductsWithVariantsPriceZero()
-    {
-        $products = Product::all();
-
-        $zero = array();
-        $productsFinder = array();
-
-        foreach ($products as $product){
-            $variants = $product->variants;
-            for ($i = 0; $i < count($variants); $i++) {
-                $decimal = explode('.', $variants[0]['price']);
-                if ((int)$decimal[0] <= 3000) {
-                    array_push($zero, $variants[0]['product_id']);
-                    break;
-                }
-            }
-        }
-
-        for ($i = 0; $i < count($zero); $i++) {
-            $product = Product::find($zero[$i]);
-            array_push($productsFinder, $product);
-        }
-
-
-        return view('admin.productos.home', compact('productsFinder'));
-    }
-
-    public function ProductsWithVariantsPriceNotZero()
-    {
-        $products = Product::all();
-
-        $zero = array();
-        $productsFinder = array();
-
-        foreach ($products as $product){
-            $variants = $product->variants;
-            for ($i = 0; $i < count($variants); $i++) {
-                $decimal = explode('.', $variants[0]['price']);
-                if ((int)$decimal[0] !== 0) {
-                    array_push($zero, $variants[0]['product_id']);
-                    break;
-                }
-            }
-        }
-
-        for ($i = 0; $i < count($zero); $i++) {
-            $product = Product::find($zero[$i]);
-            array_push($productsFinder, $product);
-        }
-
-
-        return view('admin.productos.home', compact('productsFinder'));
-    }
-
-    public function countAllProducts()
-    {
-        $api_url = 'https://c17edef9514920c1d2a6aeaf9066b150:afc86df7e11dcbe0ab414fa158ac1767@mall-hello.myshopify.com/';
-        $client = new \GuzzleHttp\Client();
-        $res = $client->request('GET', $api_url . '/admin/products/count.json');
-        $results = json_decode($res->getBody(), true);
-        return $results;
+        return Datatables::of($send )
+           
+            ->addColumn('id', function ($send) {
+                return '<div align=left>' . $send['id'] . '</div>';
+            })
+            ->addColumn('title', function ($send) {
+                return '<div align=left>' . $send['title'] . '</div>';
+            })
+            ->addColumn('precio_unidad', function ($send) {
+                return '<div align=left>' . number_format($send['precio_unidad']) . '</div>';
+            })
+            ->addColumn('unidades_vendidas', function ($send) {
+                return '<div align=left>' . $send['unidades_vendidas'] . '</div>';
+            })
+            ->addColumn('porcentaje', function ($send) {
+                return '<div align=left><input id='.$send['id'].' name='.$send['id'].' type=number min=0 max=100 value=' . $send['porcentaje'] . ' ></div>';
+            })
+            ->make(true);
     }
 
     /**
@@ -223,9 +102,31 @@ class ProductsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request)
     {
-        //
+       if (isset($request['value'])) {
+           $datas = explode('&', $request['value']);
+            foreach ($datas as $data) {
+                $result = explode('=', $data);
+                $product = Product::find($result[0]);
+
+                if ($result[1] !== "") {
+                    $value = (int)$result[1];
+                    
+                    if ($value <= 100) {
+                        $product->porcentaje = $result[1];
+                        $product->save();
+                    } else {
+                        return response()->json(['data' => 'No se permiten valores mayores a 100. Verifique sus datos']);
+                    }
+                }else {
+                    $product->porcentaje = null;
+                    $product->save();
+                }
+            }
+            
+            return response()->json(['data' => 'actualización terminada']);
+       }
     }
 
     /**

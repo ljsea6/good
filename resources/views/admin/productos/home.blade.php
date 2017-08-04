@@ -8,27 +8,18 @@
             <div class="panel-heading font-header">Listado de productos</div>
             <div class="panel-body">
                 {!! Alert::render() !!}
-                <a href="{{ route('admin.productos.create') }}" class="btn btn-primary">Nuevo producto</a>
-                <br><br>
+                <input type="button" class="btn btn-danger" id="update" value="Actualizar">
                 <div id="datatable_wrapper" class="dataTables_wrapper form-inline dt-bootstrap no-footer">
                     <table data-order='[[ 0, "asc" ]]' id="tabla_productos" class="table table-striped font-12 dataTable no-footer" role="grid" aria-describedby="datatable_info">
                         <thead>
                         <tr>
                             <th>#</th>
                             <th>Título</th>
-                            <th>Tipo</th>
+                            <th>Precio Unidad</th>
+                            <th>Unidades Vendidas</th>
+                            <th>Porcentaje</th>
                         </tr>
                         </thead>
-                        <tbody>
-                            @foreach($productsFinder as $product)
-                                <tr>
-                                    <td>{{$product['id']}}</td>
-                                    <td>{{$product['title']}}</td>
-                                    <td>{{$product['product_type']}}</td>
-                                </tr>
-                                @endforeach
-                        </tbody>
-
                     </table>
                 </div>
             </div>
@@ -38,24 +29,50 @@
 @push('scripts')
 <script>
     $(function() {
-        var table = $('#tabla_productos').DataTable({
-            serverSide:false,
-            deferRender: true,
-            processing: false,
+      var table = $('#tabla_productos').DataTable({
+      
             dom: 'Bfrtip',
             buttons: [
-                'copy', 'csv', 'excel', 'pdf', 'print'
-            ],
-
-            "columns": [
-                { "products": "#" },
-                { "products": "title" },
-                { "products": "product_type" }
-            ],
-            "language": {
-                "url": "{{ asset('css/Spanish.json') }}"
-            }
+                    'copy', 'csv', 'excel', 'pdf', 'print'
+                ],
+               responsive: true,
+               processing: true,
+               serverSide: true,
+               deferRender: true,
+               pagingType: "full_numbers",
+               ajax: '{{route('admin.products.data')}}',
+               columns: [
+                    { data: 'id', name: 'id', orderable: true, searchable: false },
+                    { data: 'title', name: 'title', orderable: true, searchable: true },
+                    { data: 'precio_unidad', name: 'precio_unidad', orderable: true, searchable: true  },
+                    { data: 'unidades_vendidas', name: 'unidades_vendidad', orderable: true },
+                    { data: 'porcentaje', name: 'porcentaje', orderable: true },
+                ],
+                language: {
+                    url: "{{ asset('css/Spanish.json') }}"
+                },
         });
+        
+            $('#update').click( function() {
+                var data = table.$('input, select').serialize();
+              
+                $.ajax({
+                    url: "{{route('admin.products.update')}}",
+                    data: { value: data, _token: '{{ csrf_token() }}'},
+                    type: 'POST',
+                    dataType: 'json',
+                    success: function(data) {
+                        alert(data.data);
+                    },
+                    error : function(xhr, status) {
+                        alert('Disculpe, existió un problema');
+                    },
+                    
+                });
+                
+                table._fnAjaxUpdate();
+                return false;
+            } );
     });
 
 </script>

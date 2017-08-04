@@ -68,7 +68,7 @@ class ReportesController extends Controller {
                             ->where('numero_referidos', '>', 0)
                             ->where('numero_ordenes_referidos', '>', 0)
                             ->where('total_price_orders', '>', 0)
-                            ->select('id', 'nombres', 'total_price_orders')
+                            ->select('id', 'nombres', 'email', 'total_price_orders')
                             ->get();
 
             $report = array();
@@ -79,6 +79,7 @@ class ReportesController extends Controller {
                 $aux = [
                     'id' => $referido->id,
                     'name' => $referido->nombres,
+                    'email' => $referido->email,
                     'total' => $referido->total_price_orders,
                     'porcentaje' => '%10',
                     'ganancia' => $referido->total_price_orders * 0.1
@@ -90,19 +91,22 @@ class ReportesController extends Controller {
             $send = collect($report);
             return Datatables::of($send)
                 ->addColumn('id', function ($send) {
-                    return '<div align=left><input type=text id="row-1-age" name="row-1-age" value=' . $send['id'] . ' disabled></div>';
+                    return '<div align=left> '. $send['id'] .'</div>';
                 })
                 ->addColumn('nombres', function ($send) {
-                    return '<div align=left><input type=text id=name name=name value=' . $send['name'] . ' disabled></div>';
+                    return '<div align=left>' . $send['name'] . '</div>';
+                })
+                ->addColumn('email', function ($send) {
+                    return '<div align=left>' . $send['email'] . '</div>';
                 })
                 ->addColumn('total', function ($send) {
-                    return '<div align=left><input type=text id=total name=total value=' . number_format($send['total']) . ' disabled></div>';
+                    return '<div align=left>' . number_format($send['total']) . '</div>';
                 })
                 ->addColumn('porcentaje', function ($send) {
-                    return '<div align=left><input type=text id=porcentaje name=porcentaje value=' . $send['porcentaje'] . ' disabled></div>';
+                    return '<div align=left>' . $send['porcentaje'] . '</div>';
                 })
                 ->addColumn('ganancia', function ($send) {
-                    return '<div align=left><input type=text id=ganancia name=ganancia value=' . number_format($send['ganancia']) . ' disabled></div>';
+                    return '<div align=left>' . number_format($send['ganancia']) . '</div>';
                 })
                 ->make(true);
         }

@@ -23,7 +23,7 @@
                             <th>Identificacón</th>
                             <th>Nombres</th>
                             <th>Apellidos</th>
-                            <th>Email</th>
+                            <th>Código</th>
                             <th>Referidos</th>
                             <th>Ordenes Referidos</th>
                             <th style="text-align: center;">Ver redes</th>

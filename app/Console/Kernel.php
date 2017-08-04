@@ -45,6 +45,6 @@ class Kernel extends ConsoleKernel
                  ->twiceDaily(3, 22);
         
         $schedule->command('get:orders')
-                 ->dailyAt('23:45');
+                 ->twiceDaily(14, 23);
     }
 }

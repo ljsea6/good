@@ -8,6 +8,7 @@ use App\Customer;
 use App\Order;
 use App\Entities\Network;
 use App\Entities\Tercero;
+use App\Product;
 use Illuminate\Http\Request;
 
 
@@ -29,7 +30,9 @@ class CustomersController extends Controller
 
     public function getCostumers()
     {
-            
+            /**
+             * 
+             *
             $totals = array();
             $orders = Order::get();
 
@@ -92,9 +95,7 @@ class CustomersController extends Controller
                 
             }
             
-            /**
-             * 
-             *
+            
         
                         $tercero = new Tercero();
                         $tercero->id = 7;
@@ -107,10 +108,28 @@ class CustomersController extends Controller
                         $tercero->customer_id = 7;
                         $tercero->network_id = 1;
                         $tercero->save();
+           
+        $orders = Order::get();
+        
+        foreach ($orders as $order) {
+            
+           if ($order['line_items'][0]['product_id'] !== null) {
+                $product = Product::where('id', $order['line_items'][0]['product_id'])->get();
+               
+                if (count($product) > 0) {
+                   $find = Product::find($product[0]['id']);
+                   $find->unidades_vendidas = $find->unidades_vendidas + 1;
+                   $find->save();
+                }
+           } 
+        }
+        
+        return 'echo';
              * 
+             * @return type  * 
              * @return type
              */
-
+        
     }
        
     

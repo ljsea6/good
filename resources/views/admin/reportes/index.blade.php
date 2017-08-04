@@ -23,6 +23,7 @@
                         <tr>
                             <th>#</th>
                             <th>Nombres</th>
+                            <th>Código</th>
                             <th>Total Compras Referidos</th>
                             <th>%</th>
                             <th>Ganancia</th>
@@ -80,6 +81,7 @@
                     
                     { data: 'id', name: 'id', orderable: true, searchable: false },
                     { data: 'nombres', name: 'nombres', orderable: true, searchable: true },
+                    { data: 'email', name: 'email', orderable: true, searchable: true },
                     { data: 'total', name: 'total', orderable: true, searchable: true  },
                     { data: 'porcentaje', name: 'porcentaje', orderable: false },
                     { data: 'ganancia', name: 'ganancia', orderable: true },

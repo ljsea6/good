@@ -9,6 +9,7 @@ use App\Entities\Network;
 use DB;
 use App\Customer;
 use App\Entities\Tercero;
+use App\Product;
 
 class GetOrders extends Command
 {
@@ -166,6 +167,17 @@ class GetOrders extends Command
                                 'device_id' => $order['device_id'],
                                 'checkout_id' => $order['checkout_id'],
                             ]);
+                            
+                            if ($order['line_items'][0]['product_id'] !== null) {
+                                $product = Product::where('id', $order['line_items'][0]['product_id'])->get();
+
+                                if (count($product) > 0) {
+                                   $find = Product::find($product[0]['id']);
+                                   $find->precio_unidad = $order['line_items'][0]['price'];
+                                   $find->unidades_vendidas = $find->unidades_vendidas + 1;
+                                   $find->save();
+                                }
+                           }
 
                             $result = Customer::where('email', strtolower($order['email']))
                                         ->where('customer_id', $order['customer']['id'])
