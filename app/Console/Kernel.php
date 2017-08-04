@@ -33,18 +33,18 @@ class Kernel extends ConsoleKernel
                  ->hourly();
 
         $schedule->command('subirbd')
-                 ->everyMinute();
+                 ->everyFiveMinutes();
 
         $schedule->command('get:products')
-                 ->hourly();
-
-        $schedule->command('get:orders')
-                 ->hourly();
+                 ->everyFiveMinutes();
 
         $schedule->command('get:customers')
-                 ->hourly();
+                 ->everyFiveMinutes();
         
         $schedule->command('get:fathers')
-                 ->hourly();
+                 ->everyFiveMinutes();
+        
+        $schedule->command('get:orders')
+                 ->twiceDaily(5, 22);
     }
 }
