@@ -36,7 +36,7 @@ class CustomersController extends Controller
                 'accepts_marketing' => $event_json['accepts_marketing'],
                 'addresses' => $event_json['addresses'],
                 'created_at' => Carbon::parse($event_json['created_at']),
-                'default_address' => (isset($customer['customer']['default_address'])) ? $event_json['default_address'] : null,
+                'default_address' => (isset($event_json['customer']['default_address'])) ? $event_json['default_address'] : null,
                 'email' => strtolower($event_json['email']),
                 'phone' => $event_json['phone'],
                 'first_name' => $event_json['first_name'],
@@ -57,19 +57,19 @@ class CustomersController extends Controller
                 'verified_email' => $event_json['verified_email'],
             ]);
             
-            $result = Tercero::where('email', $customer['email'])->get();
+            $result = Tercero::where('email', $event_json['email'])->get();
                     
                     if(count($result) === 0) {
-                        $aux = explode('@', strtolower($customer['email']));
+                        $aux = explode('@', strtolower($event_json['email']));
                         $tercero = new Tercero();
-                        $tercero->nombres = (empty($customer['first_name']) || $customer['first_name'] == null || $customer['first_name'] == '') ? $customer['email'] : $customer['first_name'];
-                        $tercero->apellidos = strtolower($customer['last_name']);
-                        $tercero->email = strtolower($customer['email']);
-                        $tercero->usuario = strtolower($customer['email']);
+                        $tercero->nombres = (empty($event_json['first_name']) || $event_json['first_name'] == null || $event_json['first_name'] == '') ? $customer['email'] : $customer['first_name'];
+                        $tercero->apellidos = strtolower($event_json['last_name']);
+                        $tercero->email = strtolower($event_json['email']);
+                        $tercero->usuario = strtolower($event_json['email']);
                         $tercero->contraseña = bcrypt($aux[0]);
                         $tercero->tipo_id = 1;
-                        $tercero->customer_id = $customer['customer_id'];
-                        $tercero->network_id = $customer['network_id'];
+                        $tercero->customer_id = $event_json['customer_id'];
+                        $tercero->network_id = $event_json['network_id'];
                         $tercero->save();
                     }
             
