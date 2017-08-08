@@ -24,6 +24,10 @@ class VerifyCsrfToken extends BaseVerifier {
                 'admin/recogidas/calendario/',
                 'admin/firmar',
                 'admin/uploads',
-                'admin/terceros/*'
+                'admin/terceros/*',
+                'customers/create',
+                'orders/create',
+                'orders/update',
+                'orders/delete'
         ];
 }

@@ -14,7 +14,14 @@
 //Pdfs
 Route::get('pdf', 'PdfController@invoice');
 Route::get('terceros/data', 'TercerosController@anyData');
-Route::get('customers', 'CustomersController@getCostumers');
+
+
+Route::post('customers/create', 'CustomersController@create');
+Route::post('orders/create', 'OrdersController@create');
+Route::post('orders/update', 'OrdersController@update');
+Route::post('orders/delete', 'OrdersController@delete');
+
+
 Route::get('tests', 'CustomersController@index');
 Route::get('orders', 'OrdersController@index');
 Route::get('products', 'ProductsController@getProducts')->name('products');

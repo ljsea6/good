@@ -45,7 +45,7 @@
                     { data: 'id', name: 'id', orderable: true, searchable: false },
                     { data: 'title', name: 'title', orderable: true, searchable: true },
                     { data: 'precio_unidad', name: 'precio_unidad', orderable: true, searchable: true  },
-                    { data: 'unidades_vendidas', name: 'unidades_vendidad', orderable: true },
+                    { data: 'unidades_vendidas', name: 'unidades_vendidas', orderable: true },
                     { data: 'porcentaje', name: 'porcentaje', orderable: true },
                 ],
                 language: {

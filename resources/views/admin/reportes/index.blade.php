@@ -110,7 +110,7 @@
                ajax: '{{route('admin.reportes.datos.orders')}}',
                columns: [
                     
-                    { data: 'id', name: 'id', orderable: true, searchable: false },
+                    { data: 'id', name: 'id', orderable: true, searchable: true },
                     { data: 'name', name: 'name', orderable: true, searchable: true },
                    
                     

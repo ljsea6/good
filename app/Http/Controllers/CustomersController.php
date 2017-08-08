@@ -20,188 +20,45 @@ use Illuminate\Support\Facades\DB;
 
 class CustomersController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-
-  
-
-    public function getCostumers()
+   
+    public function create(Request $request)
     {
-            /**
-             * 
-             *
-            $totals = array();
-            $orders = Order::get();
-
-            foreach ($orders as $order) {
-
-                $line_item = $order['line_items'];
-
-                if ($line_item[0]['product_id'] === null) {
-
-                    array_push($totals, $order);
-                }
-            }
+        $input = file_get_contents('php://input');
+        $event_json = json_decode($input, true);
+         
+        $result = Customer::where('customer_id', $event_json['id'])
+                 ->where('email', strtolower($event_json['email']))
+                 ->where('network_id', 1)
+                 ->get();
+         
+        if (count($result) === 0) {
+            Customer::create([
+                'accepts_marketing' => $event_json['accepts_marketing'],
+                'addresses' => $event_json['addresses'],
+                'created_at' => Carbon::parse($event_json['created_at']),
+                'default_address' => (isset($customer['customer']['default_address'])) ? $event_json['default_address'] : null,
+                'email' => strtolower($event_json['email']),
+                'phone' => $event_json['phone'],
+                'first_name' => $event_json['first_name'],
+                'customer_id' => $event_json['id'],
+                'metafield' => null,
+                'multipass_identifier' => $event_json['multipass_identifier'],
+                'last_name' => strtolower($event_json['last_name']),
+                'last_order_id' => $event_json['last_order_id'],
+                'last_order_name' => $event_json['last_order_name'],
+                'network_id' => 1,
+                'note' => $event_json['note'],
+                'orders_count' => $event_json['orders_count'],
+                'state' => $event_json['state'],
+                'tags' => $event_json['tags'],
+                'tax_exempt' => $event_json['tax_exempt'],
+                'total_spent' => $event_json['total_spent'],
+                'updated_at' => Carbon::parse($event_json['updated_at']),
+                'verified_email' => $event_json['verified_email'],
+            ]);
             
-            $report = array();
-            
-            foreach ($totals as $total) {
-             
-                $aux = [
-                    'id' => $total['order_id'],
-                    'name' => $total['name'],
-                    
-                ];
-               
-                array_push($report, $aux);
-            }
-            
-            $totalOrders = array();
-
-            $api_url = 'https://c17edef9514920c1d2a6aeaf9066b150:afc86df7e11dcbe0ab414fa158ac1767@mall-hello.myshopify.com';
-            $client = new \GuzzleHttp\Client();
-            $result_url = explode('.', $api_url);
-
-    
-
-            $res = $client->request('GET', $api_url . '/admin/orders/count.json?financial_status=paid');
-            $countOrders = json_decode($res->getBody(), true);
-            return $countOrders;
-
-            $pagesNumber = (int)$countOrders['count']/250;
-            $number = explode( '.', $pagesNumber);
-            $entera = (int)$number[0];
-            $decimal = (int)$number[1];
-
-            if($decimal !== 0) {
-                $entera = $entera + 1;
-            }
-
-            for ($i = 1; $i <= $entera; $i++) {
-                $res = $client->request('GET', $api_url . '/admin/orders.json?limit=250&&financial_status=any&&page=' . $i);
-                $results = json_decode($res->getBody(), true);
-                array_push($totalOrders, $results);
-            }
-
-            $resultsOrders = array();
-            
-            foreach ($totalOrders as $order) {
-                foreach ($order['orders'] as $value){
-                    array_push($resultsOrders, $value);
-                }
-                
-            }
-            
-            
-        
-                        $tercero = new Tercero();
-                        $tercero->id = 7;
-                        $tercero->nombres = 'goldfish';
-                        $tercero->apellidos = 'goldfish@';
-                        $tercero->email = 'goldfish';
-                        $tercero->usuario = 'goldfish';
-                        $tercero->contraseña = bcrypt('goldfish');
-                        $tercero->tipo_id = 1;
-                        $tercero->customer_id = 7;
-                        $tercero->network_id = 1;
-                        $tercero->save();
-           
-        $orders = Order::get();
-        
-        foreach ($orders as $order) {
-            
-           if ($order['line_items'][0]['product_id'] !== null) {
-                $product = Product::where('id', $order['line_items'][0]['product_id'])->get();
-               
-                if (count($product) > 0) {
-                   $find = Product::find($product[0]['id']);
-                   $find->unidades_vendidas = $find->unidades_vendidas + 1;
-                   $find->save();
-                }
-           } 
+            return response()->json(['status' => 'The resource is created successfully'], 200);
         }
-        
-        return 'echo';
-             * 
-             * @return type  * 
-             * @return type
-             */
-        
-    }
-       
-    
-
-    public function index()
-    {
-        return Test::all();
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
+                        
     }
 }
