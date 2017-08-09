@@ -27,7 +27,7 @@ class OrdersController extends Controller
                                     ->where('network_id', 1)
                                     ->get();
            
-           if (count($result === 0)) {
+           if (count($result) === 0) {
                Order::create([
                                 'billing_address' => $order['billing_address'],
                                 'browser_ip' => $order['browser_ip'],
