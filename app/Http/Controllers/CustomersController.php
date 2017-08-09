@@ -69,7 +69,7 @@ class CustomersController extends Controller
                         $tercero->contraseña = bcrypt($aux[0]);
                         $tercero->tipo_id = 1;
                         $tercero->customer_id = $event_json['id'];
-                        $tercero->network_id = $event_json['network_id'];
+                        $tercero->network_id = 1;
                         $tercero->save();
                     }
             
