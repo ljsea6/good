@@ -351,7 +351,7 @@ class OrdersController extends Controller
         $client = new \GuzzleHttp\Client();
         $result_url = explode('.', $api_url);
 
-        $res = $client->request('GET', $api_url . '/admin/orders/count.json');
+        $res = $client->request('GET', $api_url . '/admin/orders/count.json?status=any');
         $countOrders = json_decode($res->getBody(), true);
         
         $pagesNumber = (int)$countOrders['count']/250;
@@ -364,7 +364,7 @@ class OrdersController extends Controller
         }
 
         for ($i = 1; $i <= $entera; $i++) {
-            $res = $client->request('GET', $api_url . '/admin/orders.json?limit=250&&financial_status=any&&page=' . $i);
+            $res = $client->request('GET', $api_url . '/admin/orders.json?limit=250&&status=any&&page=' . $i);
             $results = json_decode($res->getBody(), true);
             array_push($totalOrders, $results);
         }

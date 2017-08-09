@@ -52,10 +52,8 @@ class GetOrders extends Command
 
         if($result_url[1] == 'myshopify') {
 
-            $res = $client->request('GET', $api_url . '/admin/orders/count.json');
+            $res = $client->request('GET', $api_url . '/admin/orders/count.json?status=any');
             $countOrders = json_decode($res->getBody(), true);
-            
-           
 
             $pagesNumber = (int)$countOrders['count']/250;
             $number = explode( '.', $pagesNumber);
@@ -67,10 +65,11 @@ class GetOrders extends Command
             }
 
             for ($i = 1; $i <= $entera; $i++) {
-                $res = $client->request('GET', $api_url . '/admin/orders.json?limit=250&&financial_status=any&&page=' . $i);
+                $res = $client->request('GET', $api_url . '/admin/orders.json?limit=250&&status=any&&page=' . $i);
                 $results = json_decode($res->getBody(), true);
                 array_push($totalOrders, $results);
             }
+
 
             $resultsOrders = array();
             
