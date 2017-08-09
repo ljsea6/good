@@ -329,6 +329,14 @@ class OrdersController extends Controller
                                         $find->total_price_orders = (double)$total;
                                         $find->save();
                                      }
+                                     
+                                    if (count($tercero) == 0) {
+                                       $find = Tercero::find(5);
+                                       $total = $find->total_price_orders - $order['total_price'];
+                                       $find->numero_ordenes_referidos = $find->numero_ordenes_referidos - 1;
+                                       $find->total_price_orders = (double)$total;
+                                       $find->save();
+                                    }
                                 }
         
             return response()->json(['status' => 'The resource is created successfully'], 200);   
