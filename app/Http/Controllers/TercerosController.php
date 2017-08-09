@@ -79,7 +79,7 @@ class TercerosController extends Controller
         $networks = $tercero->networks;
         foreach ($networks as $network) {
             $results = Tercero::select('id', 'nombres', 'apellidos', 'email')
-            ->where('apellidos', $tercero['email'])
+            ->where('apellidos', strtolower($tercero['email']))
             ->where('state', true)
             ->where('network_id', $network['id'])
             ->get();

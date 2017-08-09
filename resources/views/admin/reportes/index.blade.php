@@ -66,10 +66,10 @@
     
     $(document).ready(function(){
             var table = $('#terceros').DataTable({
-               dom: 'Bfrtip',
-               buttons: [
-                    'copy', 'csv', 'excel', 'pdf', 'print'
-                ],
+               //dom: 'Bfrtip',
+               //buttons: [
+                //    'copy', 'csv', 'excel', 'pdf', 'print'
+                //],
                responsive: true,
                processing: true,
                serverSide: true,
@@ -99,9 +99,9 @@
             
             $('#ordenes').DataTable({
                dom: 'Bfrtip',
-               buttons: [
-                    'copy', 'csv', 'excel', 'pdf', 'print'
-                ],
+               //buttons: [
+                //    'copy', 'csv', 'excel', 'pdf', 'print'
+                //],
                responsive: true,
                processing: true,
                serverSide: true,

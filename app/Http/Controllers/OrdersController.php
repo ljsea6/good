@@ -342,5 +342,48 @@ class OrdersController extends Controller
             return response()->json(['status' => 'The resource is created successfully'], 200);   
        }
       
-    } 
+    }
+    
+    public function orders () 
+    {
+        $totalOrders = array();
+        $api_url = 'https://c17edef9514920c1d2a6aeaf9066b150:afc86df7e11dcbe0ab414fa158ac1767@mall-hello.myshopify.com';
+        $client = new \GuzzleHttp\Client();
+        $result_url = explode('.', $api_url);
+
+        $res = $client->request('GET', $api_url . '/admin/orders/count.json');
+        $countOrders = json_decode($res->getBody(), true);
+        
+        $pagesNumber = (int)$countOrders['count']/250;
+        $number = explode( '.', $pagesNumber);
+        $entera = (int)$number[0];
+        $decimal = (int)$number[1];
+
+        if($decimal !== 0) {
+            $entera = $entera + 1;
+        }
+
+        for ($i = 1; $i <= $entera; $i++) {
+            $res = $client->request('GET', $api_url . '/admin/orders.json?limit=250&&financial_status=any&&page=' . $i);
+            $results = json_decode($res->getBody(), true);
+            array_push($totalOrders, $results);
+        }
+
+        $resultsOrders = array();
+            
+        foreach ($totalOrders as $order) {
+            foreach ($order['orders'] as $value){
+                array_push($resultsOrders, $value);
+            }   
+        }
+        $i = 0;
+        foreach ($resultsOrders as $order) {
+
+            if ($order['financial_status'] == 'paid') {  
+                $i++;
+            }
+        }
+        
+        return $i;
+    }
 }

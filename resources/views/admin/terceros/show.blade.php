@@ -44,12 +44,12 @@
 <script>
     $(function() {
         $('#{{$network['name']}}' ).DataTable({
-            dom: 'Bfrtip',
+            //dom: 'Bfrtip',
             responsive: true,
             processing: true,
-            buttons: [
-                'copy', 'csv', 'excel', 'pdf', 'print'
-            ],
+          //buttons: [
+          //     'copy', 'csv', 'excel', 'pdf', 'print'
+          //  ],
                 
             "language": {
                 "url": "{{ asset('css/Spanish.json') }}"

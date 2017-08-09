@@ -41,10 +41,10 @@
     $(document).ready(function(){
         $(function() {
             $('#terceros').DataTable({
-               dom: 'Bfrtip',
-               buttons: [
-                    'copy', 'csv', 'excel', 'pdf', 'print'
-                ],
+               //dom: 'Bfrtip',
+               //buttons: [
+                //    'copy', 'csv', 'excel', 'pdf', 'print'
+               // ],
                responsive: true,
                processing: true,
                serverSide: true,

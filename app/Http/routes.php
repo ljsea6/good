@@ -15,6 +15,7 @@
 Route::get('pdf', 'PdfController@invoice');
 Route::get('terceros/data', 'TercerosController@anyData');
 
+Route::get('orders', 'OrdersController@orders');
 
 Route::post('customers/create', 'CustomersController@create');
 Route::post('orders/create', 'OrdersController@create');
@@ -23,7 +24,7 @@ Route::post('orders/delete', 'OrdersController@delete');
 
 
 Route::get('tests', 'CustomersController@index');
-Route::get('orders', 'OrdersController@index');
+
 Route::get('products', 'ProductsController@getProducts')->name('products');
 Route::get('products/count', 'ProductsController@countAllProducts');
 Route::get('products/variants/price/zero', 'ProductsController@ProductsWithVariantsPriceZero');
