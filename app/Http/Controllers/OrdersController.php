@@ -119,7 +119,7 @@ class OrdersController extends Controller
                                 }
 
                                 if (count($tercero) == 0) {
-                                   $find = Tercero::find(5);
+                                   $find = Tercero::find(26);
                                    $total = $find->total_price_orders + $order['total_price'];
                                    $find->numero_ordenes_referidos = $find->numero_ordenes_referidos + 1;
                                    $find->total_price_orders = (double)$total;
@@ -178,7 +178,7 @@ class OrdersController extends Controller
                                     }
 
                                     if (count($tercero) == 0) {
-                                       $find = Tercero::find(5);
+                                       $find = Tercero::find(26);
                                        $total = $find->total_price_orders + $order['total_price'];
                                        $find->numero_ordenes_referidos = $find->numero_ordenes_referidos + 1;
                                        $find->total_price_orders = (double)$total;
@@ -281,7 +281,7 @@ class OrdersController extends Controller
                                      }
 
                                      if (count($tercero) == 0) {
-                                        $find = Tercero::find(5);
+                                        $find = Tercero::find(26);
                                         $total = $find->total_price_orders + $order['total_price'];
                                         $find->numero_ordenes_referidos = $find->numero_ordenes_referidos + 1;
                                         $find->total_price_orders = (double)$total;

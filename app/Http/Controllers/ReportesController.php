@@ -81,7 +81,7 @@ class ReportesController extends Controller {
                     'name' => $referido->nombres,
                     'email' => $referido->email,
                     'total' => $referido->total_price_orders,
-                    'ganancia' => $referido->total_price_orders * 0.1
+                    'ganancia' => $referido->total_price_orders * 0.05
                 ];
                
                 array_push($report, $aux);

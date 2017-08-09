@@ -67,7 +67,7 @@ class GetFathers extends Command
 
                                  if (empty($finder['apellidos']) || $finder['apellidos'] === null || $finder['apellidos'] === '') {
 
-                                    $finder->networks()->attach($network['id'], ['padre_id' => 5]);
+                                    $finder->networks()->attach($network['id'], ['padre_id' => 26]);
                                  }
 
                                 if (!empty($finder['apellidos'])) {
@@ -84,7 +84,7 @@ class GetFathers extends Command
                                         }
                                         
                                         if ($finder['id'] > 52) {
-                                            $finder->networks()->attach($network['id'], ['padre_id' => 5]);
+                                            $finder->networks()->attach($network['id'], ['padre_id' => 26]);
                                         }
                                     }
                                     
