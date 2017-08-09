@@ -62,7 +62,7 @@ class CustomersController extends Controller
                     if(count($result) === 0) {
                         $aux = explode('@', strtolower($event_json['email']));
                         $tercero = new Tercero();
-                        $tercero->nombres = (empty($event_json['first_name']) || $event_json['first_name'] == null || $event_json['first_name'] == '') ? $customer['email'] : $customer['first_name'];
+                        $tercero->nombres = (empty($event_json['first_name']) || $event_json['first_name'] == null || $event_json['first_name'] == '') ? $event_json['email'] : $event_json['first_name'];
                         $tercero->apellidos = strtolower($event_json['last_name']);
                         $tercero->email = strtolower($event_json['email']);
                         $tercero->usuario = strtolower($event_json['email']);
