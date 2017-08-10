@@ -23,8 +23,6 @@ Route::post('orders/update', 'OrdersController@update');
 Route::post('orders/delete', 'OrdersController@delete');
 
 
-Route::get('tests', 'CustomersController@users');
-
 Route::get('products', 'ProductsController@getProducts')->name('products');
 Route::get('products/count', 'ProductsController@countAllProducts');
 Route::get('products/variants/price/zero', 'ProductsController@ProductsWithVariantsPriceZero');

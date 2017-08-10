@@ -15,19 +15,24 @@
                             <tr>
                                 <th>#</th>
                                 <th>Nombres</th>
-                                <th>Código referido</th>
+                                
                                 <th>Email</th>
                             </tr>
                             </thead>
                             <tbody>
-                                @foreach($send['referidos'][0] as  $referido)
-                                <tr>
-                                    <td class="text-left">{{$referido['id']}}</td>
-                                    <td class="text-left">{{$referido['nombres']}}</td>
-                                    <td class="text-left">{{$referido['apellidos']}}</td>
-                                    <td class="text-left">{{$referido['email']}}</td>
-                                </tr>
-                               @endforeach
+                               
+                                
+                               
+                                    @foreach($send['referidos'] as  $referido)
+                                    <tr>
+                                        <td class="text-left">{{$referido['id']}}</td>
+                                        <td class="text-left">{{$referido['nombres']}}</td>
+                                        
+                                        <td class="text-left">{{$referido['email']}}</td>
+                                    </tr>
+                                   @endforeach
+                                
+                                
                             </tbody>
                         </table>
                         

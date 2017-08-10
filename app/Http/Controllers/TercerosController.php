@@ -77,22 +77,52 @@ class TercerosController extends Controller
      */
     public function show($id)
     {
+        
         $referidos = array();
-        $tercero = Tercero::with('networks')->find($id);
-        $networks = $tercero->networks;
-        foreach ($networks as $network) {
-            $results = Tercero::select('id', 'nombres', 'apellidos', 'email')
-            ->where('apellidos', strtolower($tercero['email']))
-            ->where('state', true)
-            ->where('network_id', $network['id'])
-            ->get();
-            array_push($referidos, $results);
+        
+        if ($id == 26) {
+            $tercero = Tercero::with('networks')->find($id);
+            $networks = $tercero->networks;
+            
+                 $results = DB::table('terceros')
+                    ->select('terceros_networks.customer_id')
+                    ->join('terceros_networks', 'terceros.id', '=', 'terceros_networks.padre_id')
+                    ->where('terceros.id', $id)  
+                     ->where('terceros_networks.network_id', 1)
+                    ->get();
+               
+            foreach ($results as $result) {
+                $ter = Tercero::select('id', 'nombres', 'apellidos', 'email')->find($result->customer_id);
+                array_push($referidos, $ter);
+            }   
+           
+            
+            $send = [
+                'networks' => $networks,
+                'referidos' => $referidos
+            ];
+            
+            
+            return view('admin.terceros.show', compact('send')); 
+        } else {
+            $tercero = Tercero::with('networks')->find($id);
+            $networks = $tercero->networks;
+            foreach ($networks as $network) {
+                $results = Tercero::select('id', 'nombres', 'apellidos', 'email')
+                ->where('apellidos', strtolower($tercero['email']))
+                ->where('state', true)
+                ->where('network_id', $network['id'])
+                ->get();
+                array_push($referidos, $results);
+            }
+            
+            $send = [
+                'networks' => $networks,
+                'referidos' => $referidos[0]
+            ];
+            return view('admin.terceros.show', compact('send')); 
+        
         }
-        $send = [
-            'networks' => $networks,
-            'referidos' => $referidos
-        ];
-        return view('admin.terceros.show', compact('send'));
     }
 
     public function edit($id)
