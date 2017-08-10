@@ -77,10 +77,8 @@ class TercerosController extends Controller
      */
     public function show($id)
     {
-        
-        $referidos = array();
-        
-        
+            $referidos = array();
+       
             $tercero = Tercero::with('networks')->find($id);
             $networks = $tercero->networks;
             foreach ($networks as $network) {
@@ -97,17 +95,12 @@ class TercerosController extends Controller
                 }  
             }
                   
-           
-            
             $send = [
                 'networks' => $networks,
                 'referidos' => $referidos
             ];
             
-            
             return view('admin.terceros.show', compact('send')); 
-        
-        
         
     }
 
