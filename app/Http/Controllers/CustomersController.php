@@ -77,4 +77,24 @@ class CustomersController extends Controller
         }
                         
     }
+    
+    public function meta () 
+    {
+        return 'hola';
+    }
+    
+    public function users () 
+    {
+        $user = new Tercero();
+        $user->id = 14;
+        $user->nombres = 'Frank';
+        $user->apellidos = 'Mina';
+        $user->email = 'ladivacol';
+        $user->usuario = 'fladivacarlojamparo@hotmail.com';
+        $user->contraseña = bcrypt('fladivacarlojamparo');
+        $user->tipo_id = 1;
+        $user->customer_id = 14;
+        $user->network_id = 1;
+        $user->save();
+    }
 }

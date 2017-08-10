@@ -26,7 +26,7 @@ class TercerosController extends Controller
     public function anyData()
     {
       
-        $referidos = Tercero::select('id', 'identificacion', 'nombres', 'apellidos', 'email', 'numero_referidos', 'numero_ordenes_referidos')
+        $referidos = Tercero::select('id', 'identificacion', 'nombres', 'apellidos', 'email', 'numero_referidos', 'numero_ordenes_referidos', 'total_price_orders')
                 ->where('state', true)
                 ->get();
         
@@ -58,6 +58,9 @@ class TercerosController extends Controller
             })
             ->addColumn('numero_ordenes_referidos', function ($send) {
                 return '<div align=left>' . number_format($send['numero_ordenes_referidos']) . '</div>';
+            })
+            ->addColumn('total_price_orders', function ($send) {
+                return '<div align=left>' . number_format($send['total_price_orders']) . '</div>';
             })
              ->addColumn('edit', function ($send) {
                 return '<div align=center><a href="' . route('admin.terceros.edit', $send['id']) . '"  class="btn btn-warning btn-xs">

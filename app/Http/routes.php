@@ -16,14 +16,14 @@ Route::get('pdf', 'PdfController@invoice');
 Route::get('terceros/data', 'TercerosController@anyData');
 
 Route::get('orders', 'OrdersController@orders');
-
+Route::get('customers/meta', 'CustomersController@meta');
 Route::post('customers/create', 'CustomersController@create');
 Route::post('orders/create', 'OrdersController@create');
 Route::post('orders/update', 'OrdersController@update');
 Route::post('orders/delete', 'OrdersController@delete');
 
 
-Route::get('tests', 'CustomersController@index');
+Route::get('tests', 'CustomersController@users');
 
 Route::get('products', 'ProductsController@getProducts')->name('products');
 Route::get('products/count', 'ProductsController@countAllProducts');

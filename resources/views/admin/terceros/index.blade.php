@@ -26,6 +26,7 @@
                             <th>Código</th>
                             <th>Referidos</th>
                             <th>Ordenes Referidos</th>
+                            <th>Valor Compras Referidos</th>
                             <th style="text-align: center;">Ver redes</th>
                             <th style="text-align: center;">Acciones</th>
                         </tr>
@@ -59,6 +60,7 @@
                     { data: 'email', name: 'email', orderable: true },
                     { data: 'numero_referidos', name: 'numero_referidos', orderable: true },
                     { data: 'numero_ordenes_referidos', name: 'numero_ordenes_referidos', orderable: true },
+                    { data: 'total_price_orders', name: 'total_price_orders', orderable: true },
                     { data: 'action', name: 'red', orderable: false, searchable: false, className: "centrar"},
                     { data: 'edit', name: 'editar', orderable: false, searchable: false, className: "centrar"}
                 ],
