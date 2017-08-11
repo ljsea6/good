@@ -15,7 +15,8 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\DB;
+
+use DB;
 
 
 class CustomersController extends Controller
@@ -72,20 +73,22 @@ class CustomersController extends Controller
                         $tercero->network_id = 1;
                         $tercero->save();
                         
-                       $finder = Tercero::where('email', $event_json['last_name'])->where('state', true)->get();
+                       $finder = Tercero::where('email', $event_json['last_name'])->where('state', true)->firts();
                         
                         if (count($finder) > 0) {
                             DB::table('terceros_networks')->insert([
                                 'customer_id' => $tercero->id,
                                 'network_id' => 1,
-                                'padre_id' => $finder[0]['id'],
+                                'padre_id' => $finder->id,
                                 'created_at' => Carbon::now(),
                                 'updated_at' => Carbon::now()
                             ]);
                             
-                            $count = Tercero::find($finder[0]['id']);
-                            $count->numero_referidos = $count->numeroreferidos + 1;
-                            $count->save();
+                            //$count = Tercero::find($finder->id);
+                            //$sum = $count->numero_referidos + 1;
+                            //DB::table('terceros')->where('id', $finder->id)->update(['numero_referidos' => $sum]);
+                            
+                            
                             
                         } else {
                             DB::table('terceros_networks')->insert([
@@ -95,9 +98,10 @@ class CustomersController extends Controller
                                 'created_at' => Carbon::now(),
                                 'updated_at' => Carbon::now()
                             ]);
-                            $count = Tercero::find(26);
-                            $count->numero_referidos = $count->numero_referidos + 1;
-                            $count->save();
+                            
+                            //$count = Tercero::find($finder->id);
+                            //$sum = $count->numero_referidos + 1;
+                            //DB::table('terceros')->where('id', 26)->update(['numero_referidos' => $sum]);
                         }
                     }
             
@@ -111,22 +115,24 @@ class CustomersController extends Controller
      
         $api_url = 'https://c17edef9514920c1d2a6aeaf9066b150:afc86df7e11dcbe0ab414fa158ac1767@mall-hello.myshopify.com';
         $client = new \GuzzleHttp\Client();
+     
+        /*
+        $res = $client->request('post', $api_url . '/admin/customers/6274186433/metafields.json', array(
+            'form_params' => array(
+                'metafield' => array(
+                    'namespace'=>'customers',                                                                                              
+                    'key'=> 'other',
+                    'value'=> 23,
+                    'value_type'=>'integer'
+                )
+            )
+        ));
         
-        $data = [
-            
-                    "metafield" => 
-
-                            array(
-                                "namespace" => "c_f",
-                                "key" => "label",
-                                "value" => "Am:pm",          
-                                "value_type" => "string" 
-                            )
-                    
-                
-        ];
-        //return $data;
-        $res = $client->request('POST', $api_url . '/admin/products/10007772609/metafields.json', $data);
+        return json_decode($res->getBody(), true);
+         * 
+         */
+        
+        $res = $client->request('get', $api_url . '/admin/customers/6274186433/metafields.json');
         
         return json_decode($res->getBody(), true);
     }
