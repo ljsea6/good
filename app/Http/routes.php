@@ -16,7 +16,7 @@ Route::get('pdf', 'PdfController@invoice');
 Route::get('terceros/data', 'TercerosController@anyData');
 
 Route::get('orders', 'OrdersController@orders');
-Route::get('customers/meta', 'CustomersController@meta');
+Route::post('customers/meta', 'CustomersController@meta');
 Route::post('customers/create', 'CustomersController@create');
 Route::post('orders/create', 'OrdersController@create');
 Route::post('orders/update', 'OrdersController@update');

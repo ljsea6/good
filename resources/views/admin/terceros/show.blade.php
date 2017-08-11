@@ -20,9 +20,6 @@
                             </tr>
                             </thead>
                             <tbody>
-                               
-                                
-                               
                                     @foreach($send['referidos'] as  $referido)
                                     <tr>
                                         <td class="text-left">{{$referido['id']}}</td>
@@ -30,9 +27,7 @@
                                         
                                         <td class="text-left">{{strtolower($referido['email'])}}</td>
                                     </tr>
-                                   @endforeach
-                                
-                                
+                                   @endforeach           
                             </tbody>
                         </table>
                         

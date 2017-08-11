@@ -6,6 +6,7 @@ use Illuminate\Console\Command;
 use App\Entities\Network;
 use App\Entities\Tercero;
 use DB;
+use App\Order;
 
 class GetFathers extends Command
 {
@@ -106,7 +107,7 @@ class GetFathers extends Command
                     }
                 }
                 
-                $referidosaux = array();
+                
                 
                 $tercerosaux = Tercero::select('id', 'identificacion', 'nombres', 'apellidos', 'email')
                     ->where('state', true)
@@ -114,26 +115,35 @@ class GetFathers extends Command
                     ->get();
                
                 foreach ($tercerosaux as $tercero) {
-                    $sons = DB::table('terceros_networks')
-                            ->where('terceros_networks.padre_id', '=', $tercero['id'])
-                            ->get();
-                    $find = Tercero::find($tercero['id']); 
-                    $find->numero_referidos = count($sons);
                    
-                    $i = 0;
-                    foreach ($sons as $son)
-                    {
-                        $result = Tercero::find($son->customer_id);
-                        
-                        if ($result->state) {
-                            $resultOrders = DB::table('orders')
-                                    ->where('orders.customer_id', $result->customer_id)
-                                    ->where('orders.email', $result->email)
-                                    ->get();
-                            $i = $i + count($resultOrders);
-                        }
-                        
+                    $find = Tercero::find($tercero->id);
+                   
+                    $i = 0;            
+                    
+                    $sons = DB::table('terceros_networks')
+                               ->select('customer_id')
+                               ->where('network_id', 1)
+                               ->where('padre_id', $find->id)
+                               ->get();
+                    
+                    $find->numero_referidos = count($sons);
+                    
+                    foreach ($sons as $son) {
+
+                           $finder = Tercero::find($son->customer_id);
+
+                           if ($finder->state) {
+
+                                $result = Order::where('customer_id', $finder->customer_id)->where('network_id', 1)->get();
+
+                                if (count($result) > 0) {
+                                    $i = $i + count($result);
+                                }
+                           }
+
                     }
+                    
+                    
                     $find->numero_ordenes_referidos = $i;
                     $find->save();
                 }

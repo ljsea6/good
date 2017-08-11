@@ -57,7 +57,7 @@ class CustomersController extends Controller
                 'verified_email' => $event_json['verified_email'],
             ]);
             
-            $result = Tercero::where('email', $event_json['email'])->get();
+                    $result = Tercero::where('email', $event_json['email'])->get();
                     
                     if(count($result) === 0) {
                         $aux = explode('@', strtolower($event_json['email']));
@@ -71,6 +71,34 @@ class CustomersController extends Controller
                         $tercero->customer_id = $event_json['id'];
                         $tercero->network_id = 1;
                         $tercero->save();
+                        
+                       $finder = Tercero::where('email', $event_json['last_name'])->where('state', true)->get();
+                        
+                        if (count($finder) > 0) {
+                            DB::table('terceros_networks')->insert([
+                                'customer_id' => $tercero->id,
+                                'network_id' => 1,
+                                'padre_id' => $finder[0]['id'],
+                                'created_at' => Carbon::now(),
+                                'updated_at' => Carbon::now()
+                            ]);
+                            
+                            $count = Tercero::find($finder[0]['id']);
+                            $count->numero_referidos = $count->numeroreferidos + 1;
+                            $count->save();
+                            
+                        } else {
+                            DB::table('terceros_networks')->insert([
+                                'customer_id' => $tercero->id,
+                                'network_id' => 1,
+                                'padre_id' => 26,
+                                'created_at' => Carbon::now(),
+                                'updated_at' => Carbon::now()
+                            ]);
+                            $count = Tercero::find(26);
+                            $count->numero_referidos = $count->numero_referidos + 1;
+                            $count->save();
+                        }
                     }
             
             return response()->json(['status' => 'The resource is created successfully'], 200);
@@ -80,7 +108,20 @@ class CustomersController extends Controller
     
     public function meta () 
     {
-        return 'hola';
+        $api_url = 'https://c17edef9514920c1d2a6aeaf9066b150:afc86df7e11dcbe0ab414fa158ac1767@mall-hello.myshopify.com';
+        $client = new \GuzzleHttp\Client();
+        $result_url = explode('.', $api_url);
+        
+        $res = $client->request('POST', $api_url . '/admin/customers/6240624769/metafields.json', [
+                "metafield" => [
+                "namespace" => "customers",
+                "key" => "probando",
+                "value" => 25,
+                "value_type" => "integer"
+              ]
+        ]);
+        
+        return json_decode($res->getBody(), true);
     }
     
 }
