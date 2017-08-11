@@ -108,18 +108,25 @@ class CustomersController extends Controller
     
     public function meta () 
     {
+     
         $api_url = 'https://c17edef9514920c1d2a6aeaf9066b150:afc86df7e11dcbe0ab414fa158ac1767@mall-hello.myshopify.com';
         $client = new \GuzzleHttp\Client();
-        $result_url = explode('.', $api_url);
         
-        $res = $client->request('POST', $api_url . '/admin/customers/6240624769/metafields.json', [
-                "metafield" => [
-                "namespace" => "customers",
-                "key" => "probando",
-                "value" => 25,
-                "value_type" => "integer"
-              ]
-        ]);
+        $data = [
+            
+                    "metafield" => 
+
+                            array(
+                                "namespace" => "c_f",
+                                "key" => "label",
+                                "value" => "Am:pm",          
+                                "value_type" => "string" 
+                            )
+                    
+                
+        ];
+        //return $data;
+        $res = $client->request('POST', $api_url . '/admin/products/10007772609/metafields.json', $data);
         
         return json_decode($res->getBody(), true);
     }
