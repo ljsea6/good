@@ -165,6 +165,7 @@ class GetOrders extends Command
                                 'source_url' => $order['source_url'],
                                 'device_id' => $order['device_id'],
                                 'checkout_id' => $order['checkout_id'],
+                                'origin' => 'crons'
                             ]);
                             
                             if ($order['line_items'][0]['product_id'] !== null) {

@@ -12,11 +12,13 @@
 //<a href="{{ route('reset') }}">Olvido contraseña?</a>
 
 //Pdfs
+Route::any('reportes/datos/products', ['uses' => 'ReportesController@products', 'as' => 'admin.reportes.datos.products']);
+
 Route::get('pdf', 'PdfController@invoice');
 Route::get('terceros/data', 'TercerosController@anyData');
 
 Route::get('orders', 'OrdersController@orders');
-Route::post('customers/meta', 'CustomersController@meta');
+Route::get('customers/meta', 'CustomersController@meta');
 Route::post('customers/create', 'CustomersController@create');
 Route::post('orders/create', 'OrdersController@create');
 Route::post('orders/update', 'OrdersController@update');
@@ -212,7 +214,7 @@ Route::group(['prefix' => 'admin', 'middleware' => 'auth'], function () {
     
     //Para los reportes
     Route::any('reportes/datos', ['uses' => 'ReportesController@anyData', 'as' => 'admin.reportes.datos']);
-    Route::any('reportes/datos/orders', ['uses' => 'ReportesController@ordersData', 'as' => 'admin.reportes.datos.orders']);
+    Route::any('reportes/datos/products', ['uses' => 'ReportesController@products', 'as' => 'admin.reportes.datos.products']);
     Route::any('reportes/descargar', ['uses' => 'ReportesController@descargar', 'as' => 'admin.reportes.descargar']);
     Route::resource('reportes', 'ReportesController', ['only' => ['index']]);
     //Manifiestos

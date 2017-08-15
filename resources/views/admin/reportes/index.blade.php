@@ -36,7 +36,7 @@
 
     <div class="box">
         <div class="panel panel-default">
-            <div class="panel-heading font-header">Listado reporte ordenes sin productos relacionados</div>
+            <div class="panel-heading font-header">Listado reporte productos sin fotos</div>
             <div class="panel-body">
                 @if (session('status'))
                     <div class="alert alert-info fade in col-sm-12 col-md-12 col-lg-12">
@@ -48,11 +48,11 @@
                 @endif
                 
                 <div id="datatable_wrapper" class="dataTables_wrapper form-inline dt-bootstrap no-footer">
-                    <table data-order='[[ 0, "asc" ]]' id="ordenes" class="table table-striped font-12 dataTable no-footer" role="grid" aria-describedby="datatable_info">
+                    <table data-order='[[ 0, "asc" ]]' id="productos" class="table table-striped font-12 dataTable no-footer" role="grid" aria-describedby="datatable_info">
                         <thead>
                         <tr>
                             <th>#</th>
-                            <th>Name</th>
+                            <th>Título</th>
                         </tr>
                         </thead>
                     </table>
@@ -97,8 +97,8 @@
             
             
             
-            $('#ordenes').DataTable({
-               dom: 'Bfrtip',
+            $('#productos').DataTable({
+               //dom: 'Bfrtip',
                //buttons: [
                 //    'copy', 'csv', 'excel', 'pdf', 'print'
                 //],
@@ -107,11 +107,11 @@
                serverSide: true,
                deferRender: true,
                pagingType: "full_numbers",
-               ajax: '{{route('admin.reportes.datos.orders')}}',
+               ajax: '{{route('admin.reportes.datos.products')}}',
                columns: [
                     
                     { data: 'id', name: 'id', orderable: true, searchable: true },
-                    { data: 'name', name: 'name', orderable: true, searchable: true },
+                    { data: 'title', name: 'title', orderable: true, searchable: true },
                    
                     
                 ],

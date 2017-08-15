@@ -6,6 +6,7 @@ use App\Entities\Tercero;
 use App\Entities\Network;
 use App\Order;
 use App\Customer;
+use App\Product;
 use App\Entities\OrdenesResumen;
 use App\Entities\OrdenesResumenDetalle;
 use App\Entities\Envio;
@@ -20,42 +21,26 @@ class ReportesController extends Controller {
             return view('admin.reportes.index');
 	}
         
-        public function ordersData()
+        public function products()
         {
-             
+            $products = Product::select('id', 'image')->get();
+            
+            
             $totals = array();
-            $orders = Order::get();
-
-            foreach ($orders as $order) {
-
-                $line_item = $order['line_items'];
-
-                if ($line_item[0]['product_id'] === null) {
-
-                    array_push($totals, $order);
-                }
-            }
-            
-            $report = array();
-            
-            foreach ($totals as $total) {
-             
-                $aux = [
-                    'id' => $total['order_id'],
-                    'name' => $total['name'],
-                    
-                ];
-               
-                array_push($report, $aux);
+            foreach ($products as $product) {
+                if (count($product['image']['src']) === 0) {
+                    $finder = Product::find($product['id']);
+                    array_push($totals, $finder);
+                } 
             }
            
-            $send = collect($report);
+            $send = collect($totals);
             return Datatables::of($send)
                 ->addColumn('id', function ($send) {
                     return '<div align=left>' . $send['id'] . '</div>';
                 })
-                ->addColumn('name', function ($send) {
-                    return '<div align=left>' . $send['name'] . ' </div>';
+                ->addColumn('title', function ($send) {
+                    return '<div align=left>' . $send['title'] . ' </div>';
                 })
                 
                 ->make(true);
