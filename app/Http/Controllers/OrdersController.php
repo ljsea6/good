@@ -14,6 +14,7 @@ use App\Customer;
 
 class OrdersController extends Controller
 {
+    /*
   
     public function create()
     {
@@ -340,5 +341,7 @@ class OrdersController extends Controller
        }
       
     }
+     * *
+     */
     
 }

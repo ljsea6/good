@@ -84,7 +84,7 @@ class GetOrders extends Command
             
             foreach ($resultsOrders as $order) {
 
-                if ($order['financial_status'] == 'paid') {
+               
                     
                     $response = Order::where('network_id', $network_id[0]['id'])
                             ->where('email', $order['email'])
@@ -168,7 +168,7 @@ class GetOrders extends Command
                                 'origin' => 'crons'
                             ]);
                             
-                            if ($order['line_items'][0]['product_id'] !== null) {
+                            if ($order['financial_status'] == 'paid') {
                                 $product = Product::where('id', $order['line_items'][0]['product_id'])->get();
 
                                 if (count($product) > 0) {
@@ -177,35 +177,37 @@ class GetOrders extends Command
                                    $find->unidades_vendidas = $find->unidades_vendidas + 1;
                                    $find->save();
                                 }
-                           }
-
-                            $result = Customer::where('email', strtolower($order['email']))
+                                
+                                $result = Customer::where('email', strtolower($order['email']))
                                         ->where('customer_id', $order['customer']['id'])
+                                        ->where('network_id', 1)
                                         ->get();
 
-                            if (count($result) > 0) {
+                                if (count($result) > 0) {
 
-                               $tercero = Tercero::where('email', strtolower($result[0]['last_name']))->get();
+                                   $tercero = Tercero::where('email', strtolower($result[0]['last_name']))->get();
 
-                                if (count($tercero) > 0) {
-                                   $find = Tercero::find($tercero[0]['id']);
-                                   $total = $find->total_price_orders + $order['total_price'];
-                                   $find->numero_ordenes_referidos = $find->numero_ordenes_referidos + 1;
-                                   $find->total_price_orders = (double)$total;
-                                   $find->save();
+                                    if (count($tercero) > 0) {
+                                       $find = Tercero::find($tercero[0]['id']);
+                                       $total = $find->total_price_orders + $order['total_price'];
+                                       $find->numero_ordenes_referidos = $find->numero_ordenes_referidos + 1;
+                                       $find->total_price_orders = (double)$total;
+                                       $find->save();
+                                    }
+
+                                    if (count($tercero) == 0) {
+                                       $find = Tercero::find(26);
+                                       $total = $find->total_price_orders + $order['total_price'];
+                                       $find->numero_ordenes_referidos = $find->numero_ordenes_referidos + 1;
+                                       $find->total_price_orders = (double)$total;
+                                       $find->save();
+                                    }
                                 }
-
-                                if (count($tercero) == 0) {
-                                   $find = Tercero::find(26);
-                                   $total = $find->total_price_orders + $order['total_price'];
-                                   $find->numero_ordenes_referidos = $find->numero_ordenes_referidos + 1;
-                                   $find->total_price_orders = (double)$total;
-                                   $find->save();
-                                }
-                            }
+                           }
+ 
                         }
                     }            
-                }
+               
             }
         }
 

@@ -11,7 +11,6 @@ use App\Entities\Tercero;
 use App\Product;
 use Illuminate\Http\Request;
 
-
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use Carbon\Carbon;
@@ -21,7 +20,9 @@ use DB;
 
 class CustomersController extends Controller
 {
-   
+    
+    
+    /*
     public function create(Request $request)
     {
         $input = file_get_contents('php://input');
@@ -323,10 +324,13 @@ class CustomersController extends Controller
         }
                         
     }
+    * *
+    */
     
     public function meta () 
     {
-     
+        return Product::find(10027500033);
+        
         $api_url = 'https://c17edef9514920c1d2a6aeaf9066b150:afc86df7e11dcbe0ab414fa158ac1767@mall-hello.myshopify.com';
         $client = new \GuzzleHttp\Client();
         
@@ -334,72 +338,28 @@ class CustomersController extends Controller
         $results = array();
         
         foreach ($terceros as $tercero) {
-            
+            usleep(50000);
             $find = Customer::where('customer_id', $tercero->customer_id)
                     ->where('email', $tercero->email)
                     ->first();
             
             if (count($find) > 0) {
-               
-                $res = $client->request('get', $api_url . '/admin/customers/'. $tercero->customer_id .'/metafields.json');
-                $metafields = json_decode($res->getBody(), true);
-
-                if (count($metafields['metafields']) > 0) {
-                    
-                    foreach ($metafields['metafields'] as $metafield) {
-                     
-                        if ($metafield['key'] === 'referidos') {
-                                $resa = $client->request('put', $api_url . '/admin/customers/'. $tercero->customer_id .'/metafields/'. $metafield['id'] .'.json', array(
-                                        'form_params' => array(
-                                            'metafield' => array(
-                                                'namespace'=>'customers',                                                                                              
-                                                'key'=> 'referidos',
-                                                'value'=> ($tercero->numero_referidos == null) ? 0 : $tercero->numero_referidos,
-                                                'value_type'=>'integer'
-                                            )
-                                        )
-                                    )
-                                );
-
-                                array_push($results, json_decode($resa->getBody(), true));
-                        }
-
-                        if ($metafield['key'] === 'compras') {
-                                $resb = $client->request('put', $api_url . '/admin/customers/'. $tercero->customer_id .'/metafields/'. $metafield['id'] .'.json', array(
-                                        'form_params' => array(
-                                            'metafield' => array(
-                                                'namespace'=>'customers',                                                                                              
-                                                'key'=> 'compras',
-                                                'value'=> ($tercero->numero_ordenes_referidos == null) ? 0 : $tercero->numero_ordenes_referidos,
-                                                'value_type'=>'integer'
-                                            )
-                                        )
-                                    )
-                                );
-
-                                array_push($results, json_decode($resb->getBody(), true));
-                        }
-
-                        if ($metafield['key'] === 'valor') {
-                                $resc = $client->request('put', $api_url . '/admin/customers/'. $tercero->customer_id .'/metafields/'. $metafield['id'] .'.json', array(
-                                        'form_params' => array(
-                                            'metafield' => array(
-                                                'namespace'=>'customers',                                                                                              
-                                                'key'=> 'valor',
-                                                'value'=> '' . ($tercero->total_price_orders == null ) ? 0 : $tercero->total_price_orders . '',
-                                                'value_type'=>'string'
-                                            )
-                                        )
-                                    )
-                                );
-
-                                array_push($results, json_decode($resc->getBody(), true));
-                        }
-
-                    }
-                   
-                } 
                 
+                $res = $client->requestAsync('get', $api_url . '/admin/customers/'. $tercero->customer_id .'/metafields.json', ['delay' => 1, 'timeout' =>  1]);
+                $metafields = json_decode($res->getBody(), true);
+                //return count($metafields['metafields']);
+                if (isset($metafields['metafields']) && count($metafields['metafields']) > 0) {
+                    
+                    array_push($results, $metafields['metafields']);
+                    
+                    //foreach ($metafields['metafields'] as $metafield) {
+                      //  $resd = $client->request('delete', $api_url . '/admin/metafields/'. $metafield['id'] .'.json');
+                       // array_push($results, json_decode($resd->getBody(), true));
+                    //}
+                    var_dump($results);
+                }
+                 
+/*
                 if (count($metafields['metafields']) == 0) {
                     
                     $resd = $client->request('post', $api_url . '/admin/customers/'. $tercero->customer_id .'/metafields.json', array(
@@ -412,7 +372,7 @@ class CustomersController extends Controller
                             )
                         )
                     ));
-
+                  
                     array_push($results, json_decode($resd->getBody(), true));
 
                     $rese = $client->request('post', $api_url . '/admin/customers/'. $tercero->customer_id .'/metafields.json', array(
@@ -425,6 +385,7 @@ class CustomersController extends Controller
                             )
                         )
                     ));
+                  
 
                     array_push($results, json_decode($rese->getBody(), true));
 
@@ -438,15 +399,86 @@ class CustomersController extends Controller
                             )
                         )
                     ));
-
+                   
+                    
                     array_push($results, json_decode($resf->getBody(), true));
                     
-                }  
-                
+                    
+                }
+ * *
+ */
+ /*               
+                if (count($metafields['metafields']) > 0) {
+                    
+                    foreach ($metafields['metafields'] as $metafield) {
+                        
+                        if (isset($metafield['key']) && $metafield['key'] === 'compras') {
+                                $resb = $client->request('put', $api_url . '/admin/customers/'. $tercero->customer_id .'/metafields/'. $metafield['id'] .'.json', array(
+                                        'form_params' => array(
+                                            'metafield' => array(
+                                                'namespace'=>'customers',                                                                                              
+                                                'key'=> 'compras',
+                                                'value'=> ($tercero->numero_ordenes_referidos == null) ? 0 : $tercero->numero_ordenes_referidos,
+                                                'value_type'=>'integer'
+                                            )
+                                        )
+                                    )
+                                );
+                                
+
+                                array_push($results, json_decode($resb->getBody(), true));
+                        }
+                        
+                        if (isset($metafield['key']) && $metafield['key'] === 'referidos') {
+                                $resa = $client->request('put', $api_url . '/admin/customers/'. $tercero->customer_id .'/metafields/'. $metafield['id'] .'.json', array(
+                                        'form_params' => array(
+                                            'metafield' => array(
+                                                'namespace'=>'customers',                                                                                              
+                                                'key'=> 'referidos',
+                                                'value'=> ($tercero->numero_referidos == null) ? 0 : $tercero->numero_referidos,
+                                                'value_type'=>'integer'
+                                            )
+                                        )
+                                    )
+                                );
+                                
+
+                                array_push($results, json_decode($resa->getBody(), true));
+                        }
+
+                        if (isset($metafield['key']) && $metafield['key'] === 'valor') {
+                                $resc = $client->request('put', $api_url . '/admin/customers/'. $tercero->customer_id .'/metafields/'. $metafield['id'] .'.json', array(
+                                        'form_params' => array(
+                                            'metafield' => array(
+                                                'namespace'=>'customers',                                                                                              
+                                                'key'=> 'valor',
+                                                'value'=> '' . ($tercero->total_price_orders == null ) ? 0 : $tercero->total_price_orders . '',
+                                                'value_type'=>'string'
+                                            )
+                                        )
+                                    )
+                                );
+                                
+
+                                array_push($results, json_decode($resc->getBody(), true));
+                        }
+                        
+                        
+                        var_dump($results);
+
+                    }
+                   
+                }
+  * *
+  */ 
             }
+           
             
-            var_dump($results);
+            
+            
         }
+        
+        
         
         //return $results;
         

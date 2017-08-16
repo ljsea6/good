@@ -134,7 +134,7 @@ class GetFathers extends Command
 
                            if ($finder->state) {
 
-                                $result = Order::where('customer_id', $finder->customer_id)->where('network_id', 1)->get();
+                                $result = Order::where('customer_id', $finder->customer_id)->where('network_id', 1)->where('financial_status', 'paid')->get();
 
                                 if (count($result) > 0) {
                                     $i = $i + count($result);
