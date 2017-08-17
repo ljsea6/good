@@ -21,6 +21,46 @@ class ReportesController extends Controller {
             return view('admin.reportes.index');
 	}
         
+        public function code () 
+        {
+            return view('admin.reportes.code');
+        }
+        
+        public function anyCode() 
+        {
+             $add = array();
+             $customers = Customer::all();
+        
+                foreach ($customers as $customer) {
+                    $finder = Customer::find($customer->id);
+                    if (isset($finder['addresses']) && count($finder['addresses']) > 0) {
+                        if (strtolower($customer->last_name) <> strtolower($finder['addresses'][0]['last_name'])) {
+                            array_push($add, $customer);
+                        }
+                    }
+
+                }
+                
+            $send = collect($add);
+            return Datatables::of($send)
+                ->addColumn('id', function ($send) {
+                    return '<div align=left>' . $send['id'] . '</div>';
+                })
+                ->addColumn('name', function ($send) {
+                    return '<div align=left>' . $send['first_name'] . '</div>';
+                })
+                ->addColumn('code', function ($send) {
+                    return '<div align=left>' . $send['last_name'] . '</div>';
+                })
+                ->addColumn('email', function ($send) {
+                    return '<div align=left>' . $send['email'] . '</div>';
+                })
+                ->addColumn('addresses', function ($send) {
+                    return '<div align=left>' . $send['addresses'][0]['last_name'] . '</div>';
+                })
+                ->make(true);
+        }
+
         public function products()
         {
             $products = Product::select('id', 'image')->get();

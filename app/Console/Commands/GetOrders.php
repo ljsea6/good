@@ -91,13 +91,6 @@ class GetOrders extends Command
                             ->where('order_id', $order['id'])
                             ->get();
                     
-                    if(count($response) > 0) {
-                        DB::table('orders')
-                                ->where('network_id', $network_id[0]['id'])
-                                ->where('order_id', $order['id'])
-                                ->update(['financial_status' => $order['financial_status']]);
-                    }
-                    
                     $verified = Customer::where('email', $order['email'])->get();
                     
                     if(count($verified) > 0) {

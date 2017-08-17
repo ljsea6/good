@@ -75,6 +75,15 @@
                             </a>
                         </li>
                     </ul>
+                    <ul>
+                        <li>
+                            <a href="{{ route('admin.reportes.codes') }}" class="text-left">
+                                <i class="fa fa-money">
+                                </i>
+                                Código
+                            </a>
+                        </li>
+                    </ul>
                 </div>
             </li>
             
