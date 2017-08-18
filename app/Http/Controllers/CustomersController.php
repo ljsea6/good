@@ -330,9 +330,7 @@ class CustomersController extends Controller
     
     public function meta () 
     {
-       
         
-       
         $api_url = 'https://c17edef9514920c1d2a6aeaf9066b150:afc86df7e11dcbe0ab414fa158ac1767@mall-hello.myshopify.com';
         $client = new \GuzzleHttp\Client();
         

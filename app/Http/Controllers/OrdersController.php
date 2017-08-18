@@ -319,7 +319,7 @@ class OrdersController extends Controller
     
     public function delete()
     {  
-       $input = file_get_contents('php://input');
+       //$input = file_get_contents('php://input');
        $order = json_decode($input, true);
        if ($order['financial_status'] !== 'paid') {
            Order::where('order_id', (int)$order['id'])
