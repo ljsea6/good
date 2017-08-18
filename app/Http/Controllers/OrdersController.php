@@ -11,6 +11,7 @@ use Carbon\Carbon;
 use App\Product;
 use App\Entities\Tercero;
 use App\Customer;
+use DB;
 
 class OrdersController extends Controller
 {
@@ -18,151 +19,143 @@ class OrdersController extends Controller
   
     public function create()
     {
-       //$input = file_get_contents('php://input');
+       $input = file_get_contents('php://input');
        $order = json_decode($input, true);
-           
            $result = Order::where('order_id', $order['id'])
-                                    ->where('email', $order['email'])
-                                    ->where('network_id', 1)
-                                    ->get();
-           
-           $owner = Customer::where('email', $order['email'])->first();
-           
-           if (count($owner) > 0 && count($result) == 0) {
-               
-                            Order::create([
-                                'billing_address' => $order['billing_address'],
-                                'browser_ip' => $order['browser_ip'],
-                                'buyer_accepts_marketing' => $order['buyer_accepts_marketing'],
-                                'cancel_reason' => $order['cancel_reason'],
-                                'cancelled_at' => Carbon::parse($order['cancelled_at']),
-                                'cart_token' => $order['cart_token'],
-                                'client_details' => $order['client_details'],
-                                'closed_at' => Carbon::parse($order['closed_at']),
-                                'currency' => $order['currency'],
-                                'customer_id' => $order['customer']['id'],
-                                'discount_codes' => $order['discount_codes'],
-                                'email' => strtolower($order['email']),
-                                'financial_status' => $order['financial_status'],
-                                'fulfillments' => $order['fulfillments'],
-                                'fulfillment_status' => $order['fulfillment_status'],
-                                'tags' => $order['tags'],
-                                'gateway' => $order['gateway'],
-                                'landing_site' => $order['landing_site'],
-                                'landing_site_ref' => $order['landing_site_ref'],
-                                'line_items' => $order['line_items'],
-                                'location_id' => $order['location_id'],
-                                'name' => $order['name'],
-                                'network_id' => 1,
-                                'note' => $order['note'],
-                                'note_attributes' => $order['note_attributes'],
-                                'number' => $order['number'],
-                                'order_id' => (int)$order['id'],
-                                'order_number' => $order['order_number'],
-                                'payment_details' => null,
-                                'payment_gateway_names' => $order['payment_gateway_names'],
-                                'phone' => $order['phone'],
-                                'processed_at' => Carbon::parse($order['processed_at']),
-                                'processing_method' => $order['processing_method'],
-                                'referring_site' => $order['referring_site'],
-                                'refunds' => $order['refunds'],
-                                'shipping_address' => (!empty($order['shipping_address'])) ?$order['shipping_address'] : null,
-                                'shipping_lines' => $order['shipping_lines'],
-                                'source_name' => $order['source_name'],
-                                'subtotal_price' => $order['subtotal_price'],
-                                'tax_lines' => $order['tax_lines'],
-                                'taxes_included' => $order['taxes_included'],
-                                'token' => $order['token'],
-                                'total_discounts' => $order['total_discounts'],
-                                'total_line_items_price' => $order['total_line_items_price'],
-                                'total_price' => $order['total_price'],
-                                'total_tax' => $order['total_tax'],
-                                'total_weight' => $order['total_weight'],
-                                'user_id' => $order['user_id'],
-                                'order_status_url' => $order['order_status_url'],
-                                'created_at' => Carbon::parse($order['created_at']),
-                                'updated_at' => Carbon::parse($order['updated_at']),
-                                'test' => $order['test'],
-                                'confirmed' => $order['confirmed'],
-                                'total_price_usd' => $order['total_price_usd'],
-                                'checkout_token' => $order['checkout_token'],
-                                'reference' => $order['reference'],
-                                'source_identifier' => $order['source_identifier'],
-                                'source_url' => $order['source_url'],
-                                'device_id' => $order['device_id'],
-                                'checkout_id' => $order['checkout_id'],
-                                'origin' => 'webhooks'
-                            ]);
-                            
-                            if ($order['financial_status'] == "paid") {
-                                
-                                $product = Product::where('id', $order['line_items'][0]['product_id'])->get();
-
-                                if (count($product) > 0) {
-                                   $find = Product::find($product[0]['id']);
-                                   $find->precio_unidad = $order['line_items'][0]['price'];
-                                   $find->unidades_vendidas = $find->unidades_vendidas + 1;
-                                   $find->save();
-                                }
-                                
-                                $result = Customer::where('email', $order['email'])
-                                        ->where('customer_id', $order['customer']['id'])
-                                        ->get();
-
-                                if (count($result) > 0) {
-
-                                   $tercero = Tercero::where('email', $result[0]['last_name'])->where('state', true)->get();
-
-                                    if (count($tercero) > 0) {
-                                       $find = Tercero::find($tercero[0]['id']);
-                                       $find->total_price_orders + $order['total_price'];
-                                       $find->numero_ordenes_referidos = $find->numero_ordenes_referidos + 1;
-                                       $find->save();
-                                    }
-
-                                    if (count($tercero) == 0) {
-                                       $find = Tercero::find(26);
-                                       $find->numero_ordenes_referidos = $find->numero_ordenes_referidos + 1;
-                                       $find->total_price_orders + $order['total_price'];
-                                       $find->save();
-                                    }
-                                }
-                            }
-
-                            
-                            return response()->json(['status' => 'The resource is created successfully'], 200);
-           }                     
-    }
-    
-    public function update()
-    {  
-       //$input = file_get_contents('php://input');
-       $order = json_decode($input, true);
-      
-            $owner = Customer::where('email', $order['email'])
-                    ->where('customer_id', $order['customer']['id'])
-                    ->first();
-            
-            $result = Order::where('order_id', $order['id'])
                     ->where('email', $order['email'])
                     ->where('network_id', 1)
                     ->first();
-             
            
-            if (count($owner) > 0) {
-                
-                if (count($result) > 0 ) {
-                    
-                    if ($order['financial_status'] == "paid") {
-                        
-                        $findorder = Order::where('order_id', $order['id'])
-                            ->where('email', $order['email'])
-                            ->where('network_id', 1)
-                            ->first();
-                        
-                        
-                        
-                        if($findorder->financial_status <> "paid") {
+           if (count($result) == 0) {
+              $owner = Customer::where('email', $order['email'])->first();
+           
+                if (count($owner) > 0) {
+
+                                 Order::create([
+                                     'billing_address' => $order['billing_address'],
+                                     'browser_ip' => $order['browser_ip'],
+                                     'buyer_accepts_marketing' => $order['buyer_accepts_marketing'],
+                                     'cancel_reason' => $order['cancel_reason'],
+                                     'cancelled_at' => Carbon::parse($order['cancelled_at']),
+                                     'cart_token' => $order['cart_token'],
+                                     'client_details' => $order['client_details'],
+                                     'closed_at' => Carbon::parse($order['closed_at']),
+                                     'currency' => $order['currency'],
+                                     'customer_id' => $order['customer']['id'],
+                                     'discount_codes' => $order['discount_codes'],
+                                     'email' => strtolower($order['email']),
+                                     'financial_status' => $order['financial_status'],
+                                     'fulfillments' => $order['fulfillments'],
+                                     'fulfillment_status' => $order['fulfillment_status'],
+                                     'tags' => $order['tags'],
+                                     'gateway' => $order['gateway'],
+                                     'landing_site' => $order['landing_site'],
+                                     'landing_site_ref' => $order['landing_site_ref'],
+                                     'line_items' => $order['line_items'],
+                                     'location_id' => $order['location_id'],
+                                     'name' => $order['name'],
+                                     'network_id' => 1,
+                                     'note' => $order['note'],
+                                     'note_attributes' => $order['note_attributes'],
+                                     'number' => $order['number'],
+                                     'order_id' => (int)$order['id'],
+                                     'order_number' => $order['order_number'],
+                                     'payment_details' => null,
+                                     'payment_gateway_names' => $order['payment_gateway_names'],
+                                     'phone' => $order['phone'],
+                                     'processed_at' => Carbon::parse($order['processed_at']),
+                                     'processing_method' => $order['processing_method'],
+                                     'referring_site' => $order['referring_site'],
+                                     'refunds' => $order['refunds'],
+                                     'shipping_address' => (!empty($order['shipping_address'])) ?$order['shipping_address'] : null,
+                                     'shipping_lines' => $order['shipping_lines'],
+                                     'source_name' => $order['source_name'],
+                                     'subtotal_price' => $order['subtotal_price'],
+                                     'tax_lines' => $order['tax_lines'],
+                                     'taxes_included' => $order['taxes_included'],
+                                     'token' => $order['token'],
+                                     'total_discounts' => $order['total_discounts'],
+                                     'total_line_items_price' => $order['total_line_items_price'],
+                                     'total_price' => $order['total_price'],
+                                     'total_tax' => $order['total_tax'],
+                                     'total_weight' => $order['total_weight'],
+                                     'user_id' => $order['user_id'],
+                                     'order_status_url' => $order['order_status_url'],
+                                     'created_at' => Carbon::parse($order['created_at']),
+                                     'updated_at' => Carbon::parse($order['updated_at']),
+                                     'test' => $order['test'],
+                                     'confirmed' => $order['confirmed'],
+                                     'total_price_usd' => $order['total_price_usd'],
+                                     'checkout_token' => $order['checkout_token'],
+                                     'reference' => $order['reference'],
+                                     'source_identifier' => $order['source_identifier'],
+                                     'source_url' => $order['source_url'],
+                                     'device_id' => $order['device_id'],
+                                     'checkout_id' => $order['checkout_id'],
+                                     'origin' => 'webhooks'
+                                 ]);
+
+                                 if ($order['financial_status'] == "paid") {
+
+                                     $product = Product::where('id', $order['line_items'][0]['product_id'])->get();
+
+                                     if (count($product) > 0) {
+                                        $find = Product::find($product[0]['id']);
+                                        $find->precio_unidad = $order['line_items'][0]['price'];
+                                        $find->unidades_vendidas = $find->unidades_vendidas + 1;
+                                        $find->save();
+                                     }
+
+                                     $result = Customer::where('email', $order['email'])
+                                             ->where('customer_id', $order['customer']['id'])
+                                             ->first();
+
+                                     if (count($result) > 0) {
+
+                                        $tercero = Tercero::where('email', $result[0]['last_name'])->where('state', true)->first();
+
+                                         if (count($tercero) > 0) {
+                                            $find = Tercero::find($tercero->id); 
+                                            DB::table('terceros')->where('id', $find->id)->update(['total_price_orders' => $find->total_price_orders + $order['total_price']]);
+                                            DB::table('terceros')->where('id', $find->id)->update(['numero_ordenes_referidos' => $find->numero_ordenes_referidos + 1]); 
+                                         }
+
+                                         if (count($tercero) == 0) {
+                                            $find = Tercero::find(26);
+                                            DB::table('terceros')->where('id', 26)->update(['total_price_orders' => $find->total_price_orders + $order['total_price']]);
+                                            DB::table('terceros')->where('id', 26)->update(['numero_ordenes_referidos' => $find->numero_ordenes_referidos + 1]); 
+
+                                         }
+                                     }
+                                 }
+
+                                 return response()->json(['status' => 'The resource is created successfully'], 200);
+                }  
+           } 
+           else {
+               return response()->json(['status' => 'order not processed'], 200); 
+           }
+           
+           
+                              
+    }
+    
+    
+    public function update()
+    {  
+       $input = file_get_contents('php://input');
+       $order = json_decode($input, true);
+       
+       if ($order['financial_status'] == 'paid') {
+           
+           $result = Order::where('order_id', $order['id'])
+                    ->where('email', $order['email'])
+                    ->where('network_id', 1)
+                    ->first();
+           
+           if (count($result) > 0) {
+               
+                        if($result->financial_status != "paid") {
                      
                                            $update = Order::find($result->id);
                                            $update->financial_status = $order['financial_status'];
@@ -178,45 +171,155 @@ class OrdersController extends Controller
 
                                                    $resultaux = Customer::where('email', $order['email'])
                                                         ->where('customer_id', $order['customer']['id'])
-                                                        ->get();
+                                                        ->first();
 
                                                     if (count($resultaux) > 0) {
 
-                                                        $tercero = Tercero::where('email', $resultaux[0]['last_name'])->get();
+                                                        $tercero = Tercero::where('email', $result[0]['last_name'])->where('state', true)->first();
 
-                                                         if (count($tercero) > 0) {
-                                                            $find = Tercero::find($tercero[0]['id']);
-                                                            $find->total_price_orders + $order['total_price'];
-                                                            $find->numero_ordenes_referidos = $find->numero_ordenes_referidos + 1;
-                                                            $find->save();
-                                                         }
+                                                        if (count($tercero) > 0) {
+                                                           $find = Tercero::find($tercero->id); 
+                                                           DB::table('terceros')->where('id', $find->id)->update(['total_price_orders' => $find->total_price_orders + $order['total_price']]);
+                                                           DB::table('terceros')->where('id', $find->id)->update(['numero_ordenes_referidos' => $find->numero_ordenes_referidos + 1]); 
+                                                        }
 
-                                                         if (count($tercero) == 0) {
-                                                            $find = Tercero::find(26);
-                                                            $find->total_price_orders + $order['total_price'];
-                                                            $find->numero_ordenes_referidos = $find->numero_ordenes_referidos + 1;
-                                                            $find->save();
-                                                         }
+                                                        if (count($tercero) == 0) {
+                                                           $find = Tercero::find(26);
+                                                           DB::table('terceros')->where('id', 26)->update(['total_price_orders' => $find->total_price_orders + $order['total_price']]);
+                                                           DB::table('terceros')->where('id', 26)->update(['numero_ordenes_referidos' => $find->numero_ordenes_referidos + 1]); 
+
+                                                        }
                                                     }
                                             }
                         
-                         return response()->json(['status' => 'The resource is created successfully'], 200);
+                            return response()->json(['status' => 'The resource is created successfully'], 200);
+                        } 
+                        
+                        else { 
+                            return response()->json(['status' => 'order not processed'], 200); 
+                            
                         }
-                        
-                        
-                    } 
-                    
-                    if ($result->financial_status == "paid") {
-                        return response()->json(['status' => 'paid'], 200);
-                    }
-               } 
-            }
-          
+               
+           }
+           
+           else {
+               
+                $owner = Customer::where('email', $order['email'])->first();
+           
+                if (count($owner) > 0) {
+
+                                 Order::create([
+                                     'billing_address' => $order['billing_address'],
+                                     'browser_ip' => $order['browser_ip'],
+                                     'buyer_accepts_marketing' => $order['buyer_accepts_marketing'],
+                                     'cancel_reason' => $order['cancel_reason'],
+                                     'cancelled_at' => Carbon::parse($order['cancelled_at']),
+                                     'cart_token' => $order['cart_token'],
+                                     'client_details' => $order['client_details'],
+                                     'closed_at' => Carbon::parse($order['closed_at']),
+                                     'currency' => $order['currency'],
+                                     'customer_id' => $order['customer']['id'],
+                                     'discount_codes' => $order['discount_codes'],
+                                     'email' => strtolower($order['email']),
+                                     'financial_status' => $order['financial_status'],
+                                     'fulfillments' => $order['fulfillments'],
+                                     'fulfillment_status' => $order['fulfillment_status'],
+                                     'tags' => $order['tags'],
+                                     'gateway' => $order['gateway'],
+                                     'landing_site' => $order['landing_site'],
+                                     'landing_site_ref' => $order['landing_site_ref'],
+                                     'line_items' => $order['line_items'],
+                                     'location_id' => $order['location_id'],
+                                     'name' => $order['name'],
+                                     'network_id' => 1,
+                                     'note' => $order['note'],
+                                     'note_attributes' => $order['note_attributes'],
+                                     'number' => $order['number'],
+                                     'order_id' => (int)$order['id'],
+                                     'order_number' => $order['order_number'],
+                                     'payment_details' => null,
+                                     'payment_gateway_names' => $order['payment_gateway_names'],
+                                     'phone' => $order['phone'],
+                                     'processed_at' => Carbon::parse($order['processed_at']),
+                                     'processing_method' => $order['processing_method'],
+                                     'referring_site' => $order['referring_site'],
+                                     'refunds' => $order['refunds'],
+                                     'shipping_address' => (!empty($order['shipping_address'])) ?$order['shipping_address'] : null,
+                                     'shipping_lines' => $order['shipping_lines'],
+                                     'source_name' => $order['source_name'],
+                                     'subtotal_price' => $order['subtotal_price'],
+                                     'tax_lines' => $order['tax_lines'],
+                                     'taxes_included' => $order['taxes_included'],
+                                     'token' => $order['token'],
+                                     'total_discounts' => $order['total_discounts'],
+                                     'total_line_items_price' => $order['total_line_items_price'],
+                                     'total_price' => $order['total_price'],
+                                     'total_tax' => $order['total_tax'],
+                                     'total_weight' => $order['total_weight'],
+                                     'user_id' => $order['user_id'],
+                                     'order_status_url' => $order['order_status_url'],
+                                     'created_at' => Carbon::parse($order['created_at']),
+                                     'updated_at' => Carbon::parse($order['updated_at']),
+                                     'test' => $order['test'],
+                                     'confirmed' => $order['confirmed'],
+                                     'total_price_usd' => $order['total_price_usd'],
+                                     'checkout_token' => $order['checkout_token'],
+                                     'reference' => $order['reference'],
+                                     'source_identifier' => $order['source_identifier'],
+                                     'source_url' => $order['source_url'],
+                                     'device_id' => $order['device_id'],
+                                     'checkout_id' => $order['checkout_id'],
+                                     'origin' => 'webhooks'
+                                 ]);
+
+                                 if ($order['financial_status'] == "paid") {
+
+                                     $product = Product::where('id', $order['line_items'][0]['product_id'])->get();
+
+                                     if (count($product) > 0) {
+                                        $find = Product::find($product[0]['id']);
+                                        $find->precio_unidad = $order['line_items'][0]['price'];
+                                        $find->unidades_vendidas = $find->unidades_vendidas + 1;
+                                        $find->save();
+                                     }
+
+                                     $result = Customer::where('email', $order['email'])
+                                             ->where('customer_id', $order['customer']['id'])
+                                             ->first();
+
+                                     if (count($result) > 0) {
+
+                                        $tercero = Tercero::where('email', $result[0]['last_name'])->where('state', true)->first();
+
+                                         if (count($tercero) > 0) {
+                                            $find = Tercero::find($tercero->id); 
+                                            DB::table('terceros')->where('id', $find->id)->update(['total_price_orders' => $find->total_price_orders + $order['total_price']]);
+                                            DB::table('terceros')->where('id', $find->id)->update(['numero_ordenes_referidos' => $find->numero_ordenes_referidos + 1]); 
+                                         }
+
+                                         if (count($tercero) == 0) {
+                                            $find = Tercero::find(26);
+                                            DB::table('terceros')->where('id', 26)->update(['total_price_orders' => $find->total_price_orders + $order['total_price']]);
+                                            DB::table('terceros')->where('id', 26)->update(['numero_ordenes_referidos' => $find->numero_ordenes_referidos + 1]); 
+
+                                         }
+                                     }
+                                 }
+
+                                 return response()->json(['status' => 'The resource is created successfully'], 200);
+                }  
+           }
+           
+       } else {
+           
+           return response()->json(['status' => 'order not processed'], 200); 
+       }
+    
     }
     
     public function delete()
     {  
-       //$input = file_get_contents('php://input');
+       $input = file_get_contents('php://input');
        $order = json_decode($input, true);
        if ($order['financial_status'] !== 'paid') {
            Order::where('order_id', (int)$order['id'])
@@ -241,20 +344,19 @@ class OrdersController extends Controller
 
                                 if (count($resultaux) > 0) {
 
-                                    $tercero = Tercero::where('email', strtolower($resultaux[0]['last_name']))->get();
+                                    $tercero = Tercero::where('email', $resultaux[0]['last_name'])->where('state', true)->first();
 
-                                     if (count($tercero) > 0) {
-                                        $find = Tercero::find($tercero[0]['id']);
-                                        $find->numero_ordenes_referidos = $find->numero_ordenes_referidos - 1;
-                                        $find->total_price_orders - $order['total_price'];
-                                        $find->save();
-                                     }
-                                     
+                                    if (count($tercero) > 0) {
+                                       $find = Tercero::find($tercero->id); 
+                                       DB::table('terceros')->where('id', $find->id)->update(['total_price_orders' => $find->total_price_orders - $order['total_price']]);
+                                       DB::table('terceros')->where('id', $find->id)->update(['numero_ordenes_referidos' => $find->numero_ordenes_referidos - 1]); 
+                                    }
+
                                     if (count($tercero) == 0) {
                                        $find = Tercero::find(26);
-                                       $find->numero_ordenes_referidos = $find->numero_ordenes_referidos - 1;
-                                       $find->total_price_orders - $order['total_price'];
-                                       $find->save();
+                                       DB::table('terceros')->where('id', 26)->update(['total_price_orders' => $find->total_price_orders - $order['total_price']]);
+                                       DB::table('terceros')->where('id', 26)->update(['numero_ordenes_referidos' => $find->numero_ordenes_referidos - 1]); 
+          
                                     }
                                 }
         
@@ -262,6 +364,5 @@ class OrdersController extends Controller
        }
          
     }
-     
-    
+      
 }

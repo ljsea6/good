@@ -117,8 +117,6 @@ class GetFathers extends Command
                 foreach ($tercerosaux as $tercero) {
                    
                     $find = Tercero::find($tercero->id);
-                   
-                    $i = 0;            
                     
                     $sons = DB::table('terceros_networks')
                                ->select('customer_id')
@@ -128,23 +126,6 @@ class GetFathers extends Command
                     
                     $find->numero_referidos = count($sons);
                     
-                    foreach ($sons as $son) {
-
-                           $finder = Tercero::find($son->customer_id);
-
-                           if ($finder->state) {
-
-                                $result = Order::where('customer_id', $finder->customer_id)->where('network_id', 1)->where('financial_status', 'paid')->get();
-
-                                if (count($result) > 0) {
-                                    $i = $i + count($result);
-                                }
-                           }
-
-                    }
-                    
-                    
-                    $find->numero_ordenes_referidos = $i;
                     $find->save();
                 }
         }

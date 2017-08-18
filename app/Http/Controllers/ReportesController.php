@@ -34,7 +34,7 @@ class ReportesController extends Controller {
                 foreach ($customers as $customer) {
                     $finder = Customer::find($customer->id);
                     if (isset($finder['addresses']) && count($finder['addresses']) > 0) {
-                        if (strtolower($customer->last_name) <> strtolower($finder['addresses'][0]['last_name'])) {
+                        if (strtolower($customer->last_name) != strtolower($finder['addresses'][0]['last_name'])) {
                             array_push($add, $customer);
                         }
                     }

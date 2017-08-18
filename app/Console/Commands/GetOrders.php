@@ -161,7 +161,8 @@ class GetOrders extends Command
                                 'origin' => 'crons'
                             ]);
                             
-                            if ($order['financial_status'] == 'paid') {
+                            if ($order['financial_status'] == "paid") {
+                                
                                 $product = Product::where('id', $order['line_items'][0]['product_id'])->get();
 
                                 if (count($product) > 0) {
@@ -174,26 +175,25 @@ class GetOrders extends Command
                                 $result = Customer::where('email', strtolower($order['email']))
                                         ->where('customer_id', $order['customer']['id'])
                                         ->where('network_id', 1)
-                                        ->get();
+                                        ->first();
 
                                 if (count($result) > 0) {
 
-                                   $tercero = Tercero::where('email', strtolower($result[0]['last_name']))->get();
-
+                                   $tercero = Tercero::where('email', strtolower($result->last_name))->first();
+                                  
                                     if (count($tercero) > 0) {
-                                       $find = Tercero::find($tercero[0]['id']);
-                                       $total = $find->total_price_orders + $order['total_price'];
-                                       $find->numero_ordenes_referidos = $find->numero_ordenes_referidos + 1;
-                                       $find->total_price_orders = (double)$total;
-                                       $find->save();
+                           
+                                       DB::table('terceros')->where('id', $tercero->id)->update(['total_price_orders' => $tercero->total_price_orders + $order['total_price']]);
+                                       DB::table('terceros')->where('id', $tercero->id)->update(['numero_ordenes_referidos' => $tercero->numero_ordenes_referidos + 1]); 
+      
                                     }
 
                                     if (count($tercero) == 0) {
-                                       $find = Tercero::find(26);
-                                       $total = $find->total_price_orders + $order['total_price'];
-                                       $find->numero_ordenes_referidos = $find->numero_ordenes_referidos + 1;
-                                       $find->total_price_orders = (double)$total;
-                                       $find->save();
+                                        $rcn = Tercero::find(26);
+                                       
+                                       DB::table('terceros')->where('id', 26)->update(['total_price_orders' => $rcn->total_price_orders + $order['total_price']]);
+                                       DB::table('terceros')->where('id', 26)->update(['numero_ordenes_referidos' => $rcn->numero_ordenes_referidos + 1]); 
+                                       
                                     }
                                 }
                            }

@@ -330,23 +330,9 @@ class CustomersController extends Controller
     
     public function meta () 
     {
+       
         
-        $add = array();
-        $customers = Customer::all();
-        
-        foreach ($customers as $customer) {
-            $finder = Customer::find($customer->id);
-            if (isset($finder['addresses']) && count($finder['addresses']) > 0) {
-                if (strtolower($customer->last_name) <> strtolower($finder['addresses'][0]['last_name'])) {
-                    array_push($add, $customer);
-                }
-            }
-            
-        }
-        
-        return $add;
-        
-        /*
+       
         $api_url = 'https://c17edef9514920c1d2a6aeaf9066b150:afc86df7e11dcbe0ab414fa158ac1767@mall-hello.myshopify.com';
         $client = new \GuzzleHttp\Client();
         
@@ -378,8 +364,10 @@ class CustomersController extends Controller
                                 array_push($results, json_decode($res->getBody(), true));
                         }
                     } 
+                     * 
+                     */
                     
-
+ 
                       
                     if (isset($metafields['metafields']) && count($metafields['metafields']) == 0) {
                         
@@ -425,10 +413,7 @@ class CustomersController extends Controller
                         array_push($results, json_decode($resf->getBody(), true));
 
                     }
-                     
-                    
-                    
-                     
+                        
                 }
                
             }
@@ -436,8 +421,7 @@ class CustomersController extends Controller
         }
         
         return $results;
-         * 
-                     */
+        
         
     }
     
