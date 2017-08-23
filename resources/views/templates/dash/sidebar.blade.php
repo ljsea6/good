@@ -162,28 +162,28 @@
                             </a>
                         </li>
                         <li>
-                            <a href="#" class="text-left">
+                            <a href="{{ route('admin.proveedores.index') }}" class="text-left">
                                 <i class="fa fa-user">
                                 </i>
                                 Proveedores
                             </a>
                         </li>
                         <li>
-                            <a href="#" class="text-left">
+                            <a href="{{ route('admin.perfiles.index') }}" class="text-left">
                                 <i class="fa fa-unlock">
                                 </i>
                                 Roles
                             </a>
                         </li>
                         <li>
-                        <a href="#" class="text-left">
+                        <a href="{{ route('admin.dominios.index') }}" class="text-left">
                             <i class="fa fa-share-alt">
                             </i>
                             Dominios
                         </a>
                     </li>
                     <li>
-                        <a href="#" class="text-left">
+                        <a href="{{ route('admin.ciudades.index') }}" class="text-left">
                             <i class="fa fa-bank">
                             </i>
                             Ciudades
@@ -204,7 +204,7 @@
                         </a>
                     </li>                   
                     <li>
-                        <a href="#" class="text-left">
+                        <a href="{{ route('admin.oficinas.index') }}" class="text-left">
                             <i class="fa fa-building">
                             </i>
                             Oficinas
@@ -219,7 +219,7 @@
                     </li>
                     
                     <li>
-                        <a href="#" class="text-left">
+                        <a href="{{ route('admin.comisiones.index') }}" class="text-left">
                             <i class="fa fa-money">
                             </i>
                             Comisiones
