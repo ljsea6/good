@@ -18,7 +18,12 @@ class ProductsController extends Controller
      *
      * @return Products
      */
-
+    function verify_webhook($data, $hmac_header)
+    {
+          $calculated_hmac = base64_encode(hash_hmac('sha256', $data, 'afc86df7e11dcbe0ab414fa158ac1767', true));
+          return hash_equals($hmac_header, $calculated_hmac);
+    }
+    
     public function index()
     {
         return view('admin.productos.home');
@@ -60,35 +65,44 @@ class ProductsController extends Controller
     public function create()
     {
         $input = file_get_contents('php://input');
-        $product = json_decode($input, true);
-        $response = Product::find((int)$product['id']);
         
-        if(!$response) {
-                Product::create([
-                    'body_html' => $product['body_html'],
-                    'created_at' => Carbon::parse($product['created_at']),
-                    'handle' => $product['handle'],
-                    'id' => $product['id'],
-                    'image' => $product['image'],
-                    'images' => $product['images'],
-                    'options' => $product['options'],
-                    'product_type' => $product['product_type'],
-                    'published_at' => Carbon::parse($product['published_at']),
-                    'published_scope' => $product['published_scope'],
-                    'tags' => $product['tags'],
-                    'template_suffix' => ($product['template_suffix'] !== null ) ? $product['template_suffix'] : null,
-                    'title' => $product['title'],
-                    'metafields_global_title_tag' => (isset($product['metafields_global_title_tag'])) ? $product['metafields_global_title_tag'] : null,
-                    'metafields_global_description_tag' => (isset($product['metafields_global_description_tag'])) ? $product['metafields_global_description_tag'] : null,
-                    'updated_at' => Carbon::parse($product['updated_at']),
-                    'variants' => $product['variants'],
-                    'vendor' => $product['vendor'],
-                ]);
-                
-                return response()->json(['status' => 'The resource is created successfully'], 200);
-        } else {
-            return response()->json(['status' => 'The resource is not process'], 200);
+        $hmac_header = $_SERVER['HTTP_X_SHOPIFY_HMAC_SHA256'];
+        $verified = $this->verify_webhook(collect($input), $hmac_header);
+        $resultapi = error_log('Webhook verified: '.var_export($verified, true));
+        
+        if ($resultapi == 'true') {
+            $product = json_decode($input, true);
+        
+            $response = Product::find((int)$product['id']);
+
+            if(count($response) == 0) {
+                    Product::create([
+                        'body_html' => $product['body_html'],
+                        'created_at' => Carbon::parse($product['created_at']),
+                        'handle' => $product['handle'],
+                        'id' => $product['id'],
+                        'image' => $product['image'],
+                        'images' => $product['images'],
+                        'options' => $product['options'],
+                        'product_type' => $product['product_type'],
+                        'published_at' => Carbon::parse($product['published_at']),
+                        'published_scope' => $product['published_scope'],
+                        'tags' => $product['tags'],
+                        'template_suffix' => ($product['template_suffix'] !== null ) ? $product['template_suffix'] : null,
+                        'title' => $product['title'],
+                        'metafields_global_title_tag' => (isset($product['metafields_global_title_tag'])) ? $product['metafields_global_title_tag'] : null,
+                        'metafields_global_description_tag' => (isset($product['metafields_global_description_tag'])) ? $product['metafields_global_description_tag'] : null,
+                        'updated_at' => Carbon::parse($product['updated_at']),
+                        'variants' => $product['variants'],
+                        'vendor' => $product['vendor'],
+                    ]);
+
+                    return response()->json(['status' => 'The resource is created successfully'], 200);
+            } else {
+                return response()->json(['status' => 'The resource is not process'], 200);
+            }
         }
+        
     }
 
     /**
