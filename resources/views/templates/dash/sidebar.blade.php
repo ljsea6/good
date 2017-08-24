@@ -197,7 +197,7 @@
                         </a>
                     </li>
                     <li>
-                        <a href="#" class="text-left">
+                        <a href="{{ route('admin.resoluciones.index') }}" class="text-left">
                             <i class="fa fa-sort-numeric-asc">
                             </i>
                             Resoluciones

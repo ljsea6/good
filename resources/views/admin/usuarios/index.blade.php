@@ -53,24 +53,34 @@
                 <table data-order='[[ 0, "asc" ]]' id="tabla_usuarios" class="table table-striped font-12 dataTable no-footer" role="grid" aria-describedby="datatable_info">
                 <thead>
                     <tr>
-                        <th>
+                        <th class="text-center">
                             Avatar
                         </th>
-                        <th>
+                        <th class="text-center">
                             Identificación
                         </th>
-                        <th>
+                        <th class="text-center">
                             Nombres
                         </th>
-                        <th>
+                        <th class="text-center">
                             Apellidos
                         </th>
-                     
-                        <th>
+                        <th class="text-center">
+                            Dirección
+                        </th>
+                        <th class="text-center">
+                            Ciudad
+                        </th>
+                        <th class="text-center">
                             Rol
                         </th>
-                        
-                        <th>
+                        <th class="text-center">
+                            Tipo
+                        </th>
+                        <th class="text-center">
+                            Permisos
+                        </th>
+                        <th class="text-center">
                             Acciones
                         </th>
                     </tr>
@@ -177,9 +187,9 @@
                 { data: 'nombres', name: 'terceros.nombres'},
                 { data: 'apellidos', name: 'terceros.apellidos'},
                 { data: 'direccion', name: 'terceros.direccion'},
-                { data: 'ciudad', name: 'ciudad', orderable: false, searchable: false, className: "centrar" },
+                { data: 'ciudad', name: 'ciudade', orderable: false, searchable: false, className: "centrar" },
                 { data: 'rol', name: 'rol', orderable: false, searchable: false, className: "centrar" },
-                { data: 'empresa', name: 'empresa', orderable: false, searchable: false, className: "centrar" },
+                { data: 'tipo', name: 'tipo', orderable: false, searchable: false, className: "centrar" },
                 { data: 'permisos', name: 'permisos', orderable: false, searchable: false, className: "centrar" },
                 { data: 'action', name: 'editar', orderable: false, searchable: false, className: "centrar"}
             ],

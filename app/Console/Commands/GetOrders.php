@@ -189,7 +189,7 @@ class GetOrders extends Command
                                     }
 
                                     if (count($tercero) == 0) {
-                                        $rcn = Tercero::find(26);
+                                       $rcn = Tercero::find(26);
                                        
                                        DB::table('terceros')->where('id', 26)->update(['total_price_orders' => $rcn->total_price_orders + $order['total_price']]);
                                        DB::table('terceros')->where('id', 26)->update(['numero_ordenes_referidos' => $rcn->numero_ordenes_referidos + 1]); 

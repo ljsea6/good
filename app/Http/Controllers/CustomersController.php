@@ -271,8 +271,12 @@ class CustomersController extends Controller
                     ->first();
                 
                 if (count($find) > 0) {
-
-                    $res = $client->request('get', $api_url . '/admin/customers/'. $tercero->customer_id .'/metafields.json', ['delay' => 1, 'timeout' =>  1]);
+                    
+                    $update = Tercero::find($tercero->id);
+                    $update->ganacias = $update->total_price_orders * 0.05;
+                    $update->save();
+                    
+                    $res = $client->request('get', $api_url . '/admin/customers/'. $update->customer_id .'/metafields.json', ['delay' => 1, 'timeout' =>  1]);
                     $metafields = json_decode($res->getBody(), true);
                     
                     /*
@@ -281,20 +285,20 @@ class CustomersController extends Controller
                        foreach ($metafields['metafields'] as $metafield) {
 
                                $res = $client->request('delete', $api_url . '/admin/metafields/'. $metafield['id'] .'.json');
-                                array_push($results, json_decode($res->getBody(), true));
+                               array_push($results, json_decode($res->getBody(), true));
                         }
                     } 
                      * 
                      */
-                    
+                     
                     if (isset($metafields['metafields']) && count($metafields['metafields']) == 0) {
                         
-                        $resd = $client->request('post', $api_url . '/admin/customers/'. $tercero->customer_id .'/metafields.json', array(
+                        $resd = $client->request('post', $api_url . '/admin/customers/'. $update->customer_id .'/metafields.json', array(
                             'form_params' => array(
                                 'metafield' => array(
                                     'namespace'=>'customers',                                                                                              
                                     'key'=> 'referidos',
-                                    'value'=> ($tercero->numero_referidos == null) ? 0 : $tercero->numero_referidos,
+                                    'value'=> ($update->numero_referidos == null) ? 0 : $update->numero_referidos,
                                     'value_type'=>'integer'
                                 )
                             )
@@ -302,12 +306,12 @@ class CustomersController extends Controller
 
                         array_push($results, json_decode($resd->getBody(), true));
 
-                        $rese = $client->request('post', $api_url . '/admin/customers/'. $tercero->customer_id .'/metafields.json', array(
+                        $rese = $client->request('post', $api_url . '/admin/customers/'. $update->customer_id .'/metafields.json', array(
                             'form_params' => array(
                                 'metafield' => array(
                                     'namespace'=>'customers',                                                                                              
                                     'key'=> 'compras',
-                                    'value'=> ($tercero->numero_ordenes_referidos == null) ? 0 : $tercero->numero_ordenes_referidos,
+                                    'value'=> ($update->numero_ordenes_referidos == null) ? 0 : $update->numero_ordenes_referidos,
                                     'value_type'=>'integer'
                                 )
                             )
@@ -315,19 +319,34 @@ class CustomersController extends Controller
 
                         array_push($results, json_decode($rese->getBody(), true));
 
-                        $resf = $client->request('post', $api_url . '/admin/customers/'. $tercero->customer_id .'/metafields.json', array(
+                        $resf = $client->request('post', $api_url . '/admin/customers/'. $update->customer_id .'/metafields.json', array(
                             'form_params' => array(
                                 'metafield' => array(
                                     'namespace'=>'customers',                                                                                              
                                     'key'=> 'valor',
-                                    'value'=> '' . ($tercero->total_price_orders == null ) ? 0 : number_format($tercero->total_price_orders * 0.05) . '',
+                                    'value'=> '' . ($update->ganacias == null ) ? 0 : number_format($update->ganacias) . '',
                                     'value_type'=>'string'
                                 )
                             )
                         ));
 
                         array_push($results, json_decode($resf->getBody(), true));
-                    }     
+                        
+                        $resf = $client->request('post', $api_url . '/admin/customers/'. $tercero->customer_id .'/metafields.json', array(
+                            'form_params' => array(
+                                'metafield' => array(
+                                    'namespace'=>'customers',                                                                                              
+                                    'key'=> 'redimir',
+                                    'value'=> '' . ($update->redimido == null ) ? 0 : number_format($update->redimido) . '',
+                                    'value_type'=>'string'
+                                )
+                            )
+                        ));
+
+                        array_push($results, json_decode($resf->getBody(), true));
+                    }
+                    
+                         
                 }
             }
         }
@@ -468,11 +487,93 @@ class CustomersController extends Controller
         
         $api_url = 'https://c17edef9514920c1d2a6aeaf9066b150:afc86df7e11dcbe0ab414fa158ac1767@mall-hello.myshopify.com';
         $client = new \GuzzleHttp\Client();
-                                                                    
-        $res = $client->request('get', $api_url . '/admin/gift_cards.json');
         
-        return response()->json(['status' => json_decode($res->getBody(), true)], 200);
+        //$tercero = Tercero::where('email', 'ange.manjarrez.lopez@gmail.com')->first();
+       
+        
+        
+        //if ($tercero->ganacias >= 1000) {
+            
+            
+            $res = $client->request('get', $api_url . '/admin/gift_cards.json');
+            
+            $result = json_decode($res->getBody(), true);
+            
+            return $result;
+            
+            if (count($result['gift_card']) > 0) {
+                
+                $find = Tercero::find($tercero->id);
+                $find->redimido = $find->redimido + $find->ganancias;
+                $find->save();
+                
+                $resa = $client->request('get', $api_url . '/admin/customers/'. $find->customer_id .'/metafields.json');
+                                                $metafields = json_decode($resa->getBody(), true);
+                                                $results = array();
+
+                                                if (count($metafields['metafields']) > 0) {
+
+                                                    foreach ($metafields['metafields'] as $metafield) {
+
+                                                        if ($metafield['key'] === 'referidos') {
+                                                                $resb = $client->request('put', $api_url . '/admin/customers/'. $find->customer_id .'/metafields/'. $metafield['id'] .'.json', array(
+                                                                        'form_params' => array(
+                                                                            'metafield' => array(
+                                                                                'namespace'=>'customers',                                                                                              
+                                                                                'key'=> 'referidos',
+                                                                                'value'=> ($find->numero_referidos  == null || $find->numero_referidos == 0) ? 0 : $find->numero_referidos,
+                                                                                'value_type'=>'integer'
+                                                                            )
+                                                                        )
+                                                                    )
+                                                                );
+
+                                                                array_push($results, json_decode($resb->getBody(), true));
+                                                        }
+
+                                                        if ($metafield['key'] === 'compras') {
+                                                                $resb = $client->request('put', $api_url . '/admin/customers/'. $find->customer_id .'/metafields/'. $metafield['id'] .'.json', array(
+                                                                        'form_params' => array(
+                                                                            'metafield' => array(
+                                                                                'namespace'=>'customers',                                                                                              
+                                                                                'key'=> 'compras',
+                                                                                'value'=> ($find->numero_ordenes_referidos == null || $find->numero_ordenes_referidos == 0) ? 0 : $find->numero_ordenes_referidos,
+                                                                                'value_type'=>'integer'
+                                                                            )
+                                                                        )
+                                                                    )
+                                                                );
+
+                                                                array_push($results, json_decode($resb->getBody(), true));
+                                                        }
+
+                                                        if ($metafield['key'] === 'valor') {
+                                                                $resb = $client->request('put', $api_url . '/admin/customers/'. $find->customer_id .'/metafields/'. $metafield['id'] .'.json', array(
+                                                                        'form_params' => array(
+                                                                            'metafield' => array(
+                                                                                'namespace'=>'customers',                                                                                              
+                                                                                'key'=> 'valor',
+                                                                                'value'=> '' . ($find->total_price_orders == null || $find->total_price_orders == 0) ? 0 : number_format($find->total_price_orders * 0.05) . '',
+                                                                                'value_type'=>'string'
+                                                                            )
+                                                                        )
+                                                                    )
+                                                                );
+
+                                                                array_push($results, json_decode($resb->getBody(), true));
+                                                        }
+
+                                                    }
+                                                }
+                
+            }
+            
+            return response()->json(['status' => json_decode($res->getBody(), true)], 200);
+        //}
+         
                                                                     
+        
+                                                            
     }
     
 }

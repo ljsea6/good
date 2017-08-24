@@ -36,7 +36,12 @@ class UsuariosController extends Controller {
     public function anyData() {
 
 
-        $usuarios = Tercero::select('terceros.id', 'terceros.avatar', 'terceros.identificacion', 'terceros.nombres', 'terceros.apellidos', 'terceros.direccion', 'c.nombre as ciudad', 'terceros.email', 'r.name as rol', 'e.nombres as empresa','i.nombre')->leftjoin('ciudades as c', 'terceros.ciudad_id', '=', 'c.id')->leftjoin('roles as r', 'terceros.rol_id', '=', 'r.id')->leftjoin('terceros as e', 'terceros.padre_id', '=', 'e.id')->leftjoin('tipos as i','i.id','=','e.tipo_id')->orderby('id');
+        $usuarios = Tercero::select('terceros.id', 'terceros.avatar', 'terceros.identificacion', 'terceros.nombres', 'terceros.apellidos', 'terceros.direccion', 'ciudades.nombre as ciudad', 'terceros.email', 'roles.name as rol', 'tipos.nombre as tipo')
+                ->leftjoin('ciudades', 'terceros.ciudad_id', '=', 'ciudades.id')
+                ->leftjoin('roles', 'terceros.rol_id', '=', 'roles.id')
+                ->leftjoin('tipos','tipos.id','=','terceros.tipo_id')
+                ->orderby('terceros.id');
+        
 
         return Datatables::of($usuarios)
        
