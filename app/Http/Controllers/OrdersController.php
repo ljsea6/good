@@ -138,6 +138,8 @@ class OrdersController extends Controller
                                             DB::table('terceros')->where('id', $find->id)->update(['numero_ordenes_referidos' => $find->numero_ordenes_referidos + 1]); 
                                             
                                             $find = Tercero::find($tercero->id);
+                                            $find->ganacias = $find->total_price_orders * 0.05;
+                                            $find->save();
                                             
                                             $findcustomer = Customer::where('customer_id', $find->customer_id)
                                                             ->where('email', $father->email)
@@ -191,7 +193,7 @@ class OrdersController extends Controller
                                                                             'metafield' => array(
                                                                                 'namespace'=>'customers',                                                                                              
                                                                                 'key'=> 'valor',
-                                                                                'value'=> '' . ($find->total_price_orders == null || $find->total_price_orders == 0) ? 0 : number_format($find->total_price_orders * 0.05) . '',
+                                                                                'value'=> '' . ( $find->ganacias == null ||  $find->ganacias == 0) ? 0 : number_format($find->ganacias) . '',
                                                                                 'value_type'=>'string'
                                                                             )
                                                                         )
@@ -207,11 +209,14 @@ class OrdersController extends Controller
                                          }
 
                                          if (count($tercero) == 0) {
+                                             
                                             $find = Tercero::find(26);
                                             DB::table('terceros')->where('id', 26)->update(['total_price_orders' => $find->total_price_orders + $order['total_price']]);
                                             DB::table('terceros')->where('id', 26)->update(['numero_ordenes_referidos' => $find->numero_ordenes_referidos + 1]); 
                                             
                                             $find = Tercero::find(26);
+                                            $find->ganacias = $find->total_price_orders * 0.05;
+                                            $find->save();
                                             
                                              $findcustomer = Customer::where('customer_id', $find->customer_id)
                                                             ->where('email', $father->email)
@@ -265,7 +270,7 @@ class OrdersController extends Controller
                                                                             'metafield' => array(
                                                                                 'namespace'=>'customers',                                                                                              
                                                                                 'key'=> 'valor',
-                                                                                'value'=> '' . ($find->total_price_orders == null || $find->total_price_orders == 0) ? 0 : number_format($find->total_price_orders * 0.05) . '',
+                                                                                'value'=> '' . ($find->ganacias == null || $find->ganacias == 0) ? 0 : number_format($find->ganacias) . '',
                                                                                 'value_type'=>'string'
                                                                             )
                                                                         )
@@ -340,6 +345,8 @@ class OrdersController extends Controller
                                                              DB::table('terceros')->where('id', $find->id)->update(['numero_ordenes_referidos' => $find->numero_ordenes_referidos + 1]); 
 
                                                              $find = Tercero::find($tercero->id); 
+                                                             $find->ganacias = $find->total_price_orders * 0.05;
+                                                             $find->save();
 
                                                              $findcustomer = Customer::where('customer_id', $find->customer_id)
                                                                               ->where('email', $find->email)
@@ -393,7 +400,7 @@ class OrdersController extends Controller
                                                                                               'metafield' => array(
                                                                                                   'namespace'=>'customers',                                                                                              
                                                                                                   'key'=> 'valor',
-                                                                                                  'value'=> '' . ($find->total_price_orders == null || $find->total_price_orders == 0) ? 0 : number_format($find->total_price_orders * 0.05) . '',
+                                                                                                  'value'=> '' . ( $find->ganacias == null || $find->ganacias == 0) ? 0 : number_format($find->ganacias) . '',
                                                                                                   'value_type'=>'string'
                                                                                               )
                                                                                           )
@@ -414,6 +421,8 @@ class OrdersController extends Controller
                                                              DB::table('terceros')->where('id', 26)->update(['numero_ordenes_referidos' => $find->numero_ordenes_referidos + 1]); 
 
                                                              $find = Tercero::find(26);
+                                                             $find->ganacias = $find->total_price_orders * 0.05;
+                                                             $find->save();
 
                                                              $findcustomer = Customer::where('customer_id', $find->customer_id)
                                                                               ->where('email', $find->email)
@@ -467,7 +476,7 @@ class OrdersController extends Controller
                                                                                               'metafield' => array(
                                                                                                   'namespace'=>'customers',                                                                                              
                                                                                                   'key'=> 'valor',
-                                                                                                  'value'=> '' . ($find->total_price_orders == null || $find->total_price_orders == 0) ? 0 : number_format($find->total_price_orders * 0.05) . '',
+                                                                                                  'value'=> '' . ($find->ganacias == null || $find->ganacias  == 0) ? 0 : number_format($find->ganacias ) . '',
                                                                                                   'value_type'=>'string'
                                                                                               )
                                                                                           )
@@ -590,6 +599,9 @@ class OrdersController extends Controller
                                               DB::table('terceros')->where('id', $find->id)->update(['numero_ordenes_referidos' => $find->numero_ordenes_referidos + 1]); 
 
                                               $find = Tercero::find($tercero->id); 
+                                              $find->ganacias = $find->total_price_orders * 0.05;
+                                              $find->save();
+                                              
                                               $findcustomer = Customer::where('customer_id', $find->customer_id)
                                                               ->where('email', $find->email)
                                                               ->first();
@@ -642,7 +654,7 @@ class OrdersController extends Controller
                                                                               'metafield' => array(
                                                                                   'namespace'=>'customers',                                                                                              
                                                                                   'key'=> 'valor',
-                                                                                  'value'=> '' . ($find->total_price_orders == null || $find->total_price_orders == 0) ? 0 : number_format($find->total_price_orders * 0.05) . '',
+                                                                                  'value'=> '' . ($find->ganacias == null || $find->ganacias == 0) ? 0 : number_format($find->ganacias) . '',
                                                                                   'value_type'=>'string'
                                                                               )
                                                                           )
@@ -663,6 +675,9 @@ class OrdersController extends Controller
                                               DB::table('terceros')->where('id', 26)->update(['numero_ordenes_referidos' => $find->numero_ordenes_referidos + 1]); 
 
                                               $find = Tercero::find(26);
+                                              $find->ganacias = $find->total_price_orders * 0.05;
+                                              $find->save();
+                                              
                                               $findcustomer = Customer::where('customer_id', $find->customer_id)
                                                               ->where('email', $find->email)
                                                               ->first();
@@ -715,7 +730,7 @@ class OrdersController extends Controller
                                                                               'metafield' => array(
                                                                                   'namespace'=>'customers',                                                                                              
                                                                                   'key'=> 'valor',
-                                                                                  'value'=> '' . ($find->total_price_orders == null || $find->total_price_orders == 0) ? 0 : number_format($find->total_price_orders * 0.05) . '',
+                                                                                  'value'=> '' . ($find->ganacias == null || $find->ganacias == 0) ? 0 : number_format($find->ganacias) . '',
                                                                                   'value_type'=>'string'
                                                                               )
                                                                           )

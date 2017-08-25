@@ -24,8 +24,9 @@ class UsuariosController extends Controller {
      *
      * @return \Illuminate\Http\Response
      */
-    public function index() {
-
+   
+    public function index() 
+    {
         $permisos = Permission::lists('name', 'id');
 
 //$usuarios = Tercero::with('ciudad')->tipoUsuario(2)->orderby('id')->paginate(10);

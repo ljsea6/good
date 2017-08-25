@@ -19,6 +19,7 @@ Route::get('terceros/data', 'TercerosController@anyData');
 
 Route::get('orders', 'OrdersController@orders');
 Route::get('customers/meta', 'CustomersController@meta');
+Route::get('customers/mercado', 'CustomersController@mercado');
 Route::get('gifts', 'CustomersController@gifts');
 Route::post('customers/create', 'CustomersController@create');
 Route::post('orders/create', 'OrdersController@create');
@@ -64,7 +65,7 @@ Route::group(['prefix' => 'admin', 'middleware' => 'auth'], function () {
     Route::get('/feredidos', ['uses' => 'AdminController@anyData', 'as' => 'admin.referidos']);
     // Usuarios
     Route::get('usuarios/data', ['uses' => 'UsuariosController@anyData', 'as' => 'usuarios.data']);
-    Route::resource('usuarios', 'UsuariosController');
+    Route::get('usuarios', ['uses' => 'UsuariosController@index', 'as' => 'admin.usuarios.index']);
     Route::get('usuarios/{id}/destroy', ['uses' => 'UsuariosController@destroy', 'as' => 'admin.usuarios.destroy']);
     Route::get('usuarios/{id}/hijos', ['uses' => 'UsuariosController@hijos', 'as' => 'admin.usuarios.hijos']);
     //Proveedores

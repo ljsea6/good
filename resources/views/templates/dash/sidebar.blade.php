@@ -147,6 +147,7 @@
                 </a>
                 <div class="sub-menu collapse secondary list-style-circle" id="submenu1">
                     <ul>
+                        <!-- 
                         <li>
                             <a href="{{ route('admin.usuarios.index') }}" class="text-left">
                                 <i class="fa fa-user">
@@ -154,6 +155,7 @@
                                 Usuarios
                             </a>
                         </li>
+                        -->
                         <li>
                             <a href="{{ route('admin.terceros.index') }}" class="text-left">
                                 <i class="fa fa-user">

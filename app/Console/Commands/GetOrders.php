@@ -184,8 +184,11 @@ class GetOrders extends Command
                                     if (count($tercero) > 0) {
                            
                                        DB::table('terceros')->where('id', $tercero->id)->update(['total_price_orders' => $tercero->total_price_orders + $order['total_price']]);
-                                       DB::table('terceros')->where('id', $tercero->id)->update(['numero_ordenes_referidos' => $tercero->numero_ordenes_referidos + 1]); 
-      
+                                       DB::table('terceros')->where('id', $tercero->id)->update(['numero_ordenes_referidos' => $tercero->numero_ordenes_referidos + 1]);
+                                       
+                                       $x = Tercero::find($tercero->id);
+                                       $x->ganacias = $x->total_price_orders * 0.05;
+                                       $x->save();
                                     }
 
                                     if (count($tercero) == 0) {
@@ -194,6 +197,9 @@ class GetOrders extends Command
                                        DB::table('terceros')->where('id', 26)->update(['total_price_orders' => $rcn->total_price_orders + $order['total_price']]);
                                        DB::table('terceros')->where('id', 26)->update(['numero_ordenes_referidos' => $rcn->numero_ordenes_referidos + 1]); 
                                        
+                                       $rcnx = Tercero::find(26);
+                                       $rcnx->ganacias = $rcnx->total_price_orders * 0.05;
+                                       $rcnx->save();
                                     }
                                 }
                            }
