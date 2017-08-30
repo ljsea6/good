@@ -11,10 +11,48 @@ use App\Product;
 use App\Entities\Tercero;
 use App\Customer;
 use DB;
+use App\Logorder;
+use Yajra\Datatables\Datatables;
 
-class OrdersController extends Controller {
+class OrdersController extends Controller
+{
+    public function index()
+    {
+        return view('admin.orders.index');
+    }
 
-    function verify_webhook($data, $hmac_header)
+    public function orders()
+    {
+        $orders = Logorder::all();
+
+        $send = collect($orders);
+
+        return Datatables::of($send )
+            ->addColumn('id', function ($send) {
+                return '<div align=left>' . $send->id . '</div>';
+            })
+            ->addColumn('order_id', function ($send) {
+                return '<div align=left>' . $send->order_id . '</div>';
+            })
+            ->addColumn('checkout_id', function ($send) {
+                return '<div align=left>' . $send->checkout_id. '</div>';
+            })
+            ->addColumn('value', function ($send) {
+                return '<div align=left>' . $send->value . '</div>';
+            })
+            ->addColumn('status_shopify', function ($send) {
+                return '<div align=left>' . $send->status_shopify . '</div>';
+            })
+            ->addColumn('status_mercadopago', function ($send) {
+                return '<div align=left>' . $send->status_mercadopago . '</div>';
+            })
+            ->addColumn('payment_method_id', function ($send) {
+                return '<div align=left>' . $send->payment_method_id . '</div>';
+            })
+            ->make(true);
+    }
+
+    public function verify_webhook($data, $hmac_header)
     {
         $calculated_hmac = base64_encode(hash_hmac('sha256', $data, 'afc86df7e11dcbe0ab414fa158ac1767', true));
         return hash_equals($hmac_header, $calculated_hmac);

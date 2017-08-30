@@ -221,6 +221,10 @@ Route::group(['prefix' => 'admin', 'middleware' => 'auth'], function () {
     Route::get('envios/{id}/detalle/', ['uses' => 'EnviosController@detalle', 'as' => 'admin.envios.detalle']);
     
     //Para los reportes
+    Route::any('reportes/product', ['uses' => 'ProductsController@welcome', 'as' => 'admin.reportes.product']);
+
+    Route::any('reportes/order', ['uses' => 'OrdersController@index', 'as' => 'admin.reportes.order']);
+    Route::any('reportes/orders', ['uses' => 'OrdersController@orders', 'as' => 'admin.reportes.orders']);
     Route::any('reportes/codes', ['uses' => 'ReportesController@code', 'as' => 'admin.reportes.codes']);
     Route::any('reportes/code', ['uses' => 'ReportesController@anyCode', 'as' => 'admin.reportes.code']);
     Route::any('reportes/datos', ['uses' => 'ReportesController@anyData', 'as' => 'admin.reportes.datos']);

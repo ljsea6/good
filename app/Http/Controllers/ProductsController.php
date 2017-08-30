@@ -23,6 +23,11 @@ class ProductsController extends Controller
           $calculated_hmac = base64_encode(hash_hmac('sha256', $data, 'afc86df7e11dcbe0ab414fa158ac1767', true));
           return hash_equals($hmac_header, $calculated_hmac);
     }
+
+    public function welcome()
+    {
+        return view('admin.reportes.products');
+    }
     
     public function index()
     {

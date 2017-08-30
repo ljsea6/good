@@ -84,6 +84,24 @@
                             </a>
                         </li>
                     </ul>
+                    <ul>
+                        <li>
+                            <a href="{{route('admin.reportes.order')}}" class="text-left">
+                                <i class="fa fa-money">
+                                </i>
+                                Estado Ordenes
+                            </a>
+                        </li>
+                    </ul>
+                    <ul>
+                        <li>
+                            <a href="{{route('admin.reportes.product')}}" class="text-left">
+                                <i class="fa fa-money">
+                                </i>
+                                Productos sin foto
+                            </a>
+                        </li>
+                    </ul>
                 </div>
             </li>
             
