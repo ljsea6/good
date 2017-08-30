@@ -15,6 +15,7 @@
                 <div class="panel-body">
 
                     <div id="datatable_wrapper" class="dataTables_wrapper form-inline dt-bootstrap no-footer">
+                        @if (isset($results))
                         <table data-order='[[ 0, "asc" ]]' id="referidos" class="table table-striped font-12 dataTable no-footer" role="grid" aria-describedby="datatable_info">
                             <thead>
                             <tr>
@@ -25,18 +26,27 @@
                             </tr>
                             </thead>
                             <tbody>
-                                @foreach ($results as $result)
-                                    <tr>
-                                        <td class="text-left">{{$result['id']}}</td>
-                                        <td class="text-left">{{$result['nombres']}}</td>
-                                        <td class="text-left">{{$result['email']}}</td>
-                                        <td class="text-left">{{$result['apellidos']}}</td>
-                                    </tr>
-                                @endforeach
+
+                                    @foreach ($results as $result)
+                                        <tr>
+                                            <td class="text-left">{{$result['id']}}</td>
+                                            <td class="text-left">{{$result['nombres']}}</td>
+                                            <td class="text-left">{{$result['email']}}</td>
+                                            <td class="text-left">{{$result['apellidos']}}</td>
+                                        </tr>
+                                    @endforeach
+
+
                             </tbody>
                         </table>
+                        @endif
+                            @if(isset($err))
+                                <br>
+                                {{$err}}
+                                <br><br>
+                            @endif
                         <div class="col-md-12">
-                        <a class="btn btn-danger" href="{{route('admin.search')}}" role="button">Atras</a>
+                            <a class="btn btn-danger" href="{{route('admin.search')}}" role="button">Atras</a>
                         </div>
                     </div>
                 </div>

@@ -175,9 +175,7 @@ class TercerosController extends Controller
 
             }
             
-            
 
-            
             DB::table('terceros_logs')->insert([
                 'tercero_id' => $tercero->id, 
                 'padre_id' => $father,

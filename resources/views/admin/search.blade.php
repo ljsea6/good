@@ -23,7 +23,7 @@
                             <div class="form-group">
                                 <div class="col-sm-offset-3 col-sm-6">
                                     <label for="email">Ingresar correo</label>
-                                    <input id="email" name="email" type="text" class="form-control" required>
+                                    <input id="email" name="email" type="email" class="form-control" required>
                                 </div>
                             </div>
 
@@ -32,7 +32,7 @@
                                     <button class="btn btn-primary text-left" type="submit" >Buscar</button>
                                 </div>
                             </div>
-                            
+
                             
                             @if ($errors->any())
                                 <div class="alert alert-danger fade in col-sm-offset-3 col-sm-6">
@@ -44,8 +44,7 @@
                                     </ul>
                                 </div>
                             @endif
-                            
-                            
+
                         </div>
                     </div>
                 </div>

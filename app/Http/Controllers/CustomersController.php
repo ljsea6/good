@@ -67,6 +67,63 @@ class CustomersController extends Controller {
                 $result = Tercero::where('email', strtolower($event_json['email']))->get();
 
                 if (count($result) === 0) {
+
+                    if ($event_json['email'] == 'soportesoyhello@gmail.com') {
+
+                        $aux = explode('@', strtolower($event_json['email']));
+                        $tercero = new Tercero();
+                        $tercero->nombres = (empty($event_json['first_name']) || $event_json['first_name'] == null || $event_json['first_name'] == '') ? $event_json['email'] : $event_json['first_name'];
+                        $tercero->apellidos = strtolower($event_json['last_name']);
+                        $tercero->email = strtolower('soyhello');
+                        $tercero->usuario = strtolower($event_json['email']);
+                        $tercero->contraseña = bcrypt($aux[0]);
+                        $tercero->tipo_id = 1;
+                        $tercero->customer_id = $event_json['id'];
+                        $tercero->network_id = 1;
+                        $tercero->save();
+
+                        $tercero->networks()->attach(1, ['padre_id' => null]);
+
+                        $hijos = Tercero::where('apellidos', $tercero->email)->get();
+
+                        foreach ($hijos as $hijo) {
+
+                            DB::table('terceros_networks')->where('customer_id', $hijo->id)->update(['padre_id' => $tercero->id]);
+                            $update = Tercero::find(26);
+                            $update->numero_referidos = $update->numero_referidos - 1;
+                            $update->save();
+
+                            $up = Tercero::find($tercero->id);
+                            $up->numero_referidos = $up->numero_referidos + 1;
+                            $up->save();
+
+                            $orders = Order::where('email', $hijo->email)->get();
+
+                            if (count($orders) > 0) {
+                                foreach ($orders as $order) {
+                                    $update = Tercero::find(26);
+                                    $update->numero_ordenes_referidos = $update->numero_ordenes_referidos - 1;
+                                    $update->total_price_orders = $update->total_price_orders - $order->total_price;
+                                    $update->save();
+
+                                    $up = Tercero::find($tercero->id);
+                                    $up->numero_ordenes_referidos = $up->numero_ordenes_referidos + 1;
+                                    $up->total_price_orders = $up->total_price_orders + $order->total_price;
+                                    $up->save();
+                                }
+                            }
+                        }
+
+                        $update = Tercero::find(26);
+                        $update->ganacias = $update->total_price_orders * 0.05;
+                        $update->save();
+
+                        $up = Tercero::find($tercero->id);
+                        $up->ganacias = $up->total_price_orders * 0.05;
+                        $up->save();
+
+                    }
+
                     $aux = explode('@', strtolower($event_json['email']));
                     $tercero = new Tercero();
                     $tercero->nombres = (empty($event_json['first_name']) || $event_json['first_name'] == null || $event_json['first_name'] == '') ? $event_json['email'] : $event_json['first_name'];
@@ -162,12 +219,12 @@ class CustomersController extends Controller {
                         $tercero->networks()->attach(1, ['padre_id' => 26]);
 
                         $father = Tercero::find(26);
-                        $father->numero_referidos = $father->numero_referidos +1;
+                        $father->numero_referidos = $father->numero_referidos + 1;
                         $father->save();
 
                         $findcustomer = Customer::where('customer_id', $father->customer_id)
-                                ->where('email', $father->email)
-                                ->first();
+                            ->where('email', $father->email)
+                            ->first();
 
                         if (count($findcustomer) > 0) {
 
@@ -180,15 +237,15 @@ class CustomersController extends Controller {
 
                                     if ($metafield['key'] === 'referidos') {
                                         $res = $client->request('put', $api_url . '/admin/customers/' . $father->customer_id . '/metafields/' . $metafield['id'] . '.json', array(
-                                            'form_params' => array(
-                                                'metafield' => array(
-                                                    'namespace' => 'customers',
-                                                    'key' => 'referidos',
-                                                    'value' => ($father->numero_referidos == null || $father->numero_referidos == 0) ? 0 : $father->numero_referidos,
-                                                    'value_type' => 'integer'
+                                                'form_params' => array(
+                                                    'metafield' => array(
+                                                        'namespace' => 'customers',
+                                                        'key' => 'referidos',
+                                                        'value' => ($father->numero_referidos == null || $father->numero_referidos == 0) ? 0 : $father->numero_referidos,
+                                                        'value_type' => 'integer'
+                                                    )
                                                 )
                                             )
-                                                )
                                         );
 
                                         array_push($results, json_decode($res->getBody(), true));
@@ -196,15 +253,15 @@ class CustomersController extends Controller {
 
                                     if ($metafield['key'] === 'compras') {
                                         $res = $client->request('put', $api_url . '/admin/customers/' . $father->customer_id . '/metafields/' . $metafield['id'] . '.json', array(
-                                            'form_params' => array(
-                                                'metafield' => array(
-                                                    'namespace' => 'customers',
-                                                    'key' => 'compras',
-                                                    'value' => ($father->numero_ordenes_referidos == null || $father->numero_ordenes_referidos == 0) ? 0 : $father->numero_ordenes_referidos,
-                                                    'value_type' => 'integer'
+                                                'form_params' => array(
+                                                    'metafield' => array(
+                                                        'namespace' => 'customers',
+                                                        'key' => 'compras',
+                                                        'value' => ($father->numero_ordenes_referidos == null || $father->numero_ordenes_referidos == 0) ? 0 : $father->numero_ordenes_referidos,
+                                                        'value_type' => 'integer'
+                                                    )
                                                 )
                                             )
-                                                )
                                         );
 
                                         array_push($results, json_decode($res->getBody(), true));
@@ -212,15 +269,15 @@ class CustomersController extends Controller {
 
                                     if ($metafield['key'] === 'valor') {
                                         $res = $client->request('put', $api_url . '/admin/customers/' . $father->customer_id . '/metafields/' . $metafield['id'] . '.json', array(
-                                            'form_params' => array(
-                                                'metafield' => array(
-                                                    'namespace' => 'customers',
-                                                    'key' => 'valor',
-                                                    'value' => '' . ($father->total_price_orders == null || $father->total_price_orders == 0) ? 0 : number_format($father->total_price_orders * 0.05) . '',
-                                                    'value_type' => 'string'
+                                                'form_params' => array(
+                                                    'metafield' => array(
+                                                        'namespace' => 'customers',
+                                                        'key' => 'valor',
+                                                        'value' => '' . ($father->total_price_orders == null || $father->total_price_orders == 0) ? 0 : number_format($father->total_price_orders * 0.05) . '',
+                                                        'value_type' => 'string'
+                                                    )
                                                 )
                                             )
-                                                )
                                         );
 
                                         array_push($results, json_decode($res->getBody(), true));
@@ -275,7 +332,7 @@ class CustomersController extends Controller {
                                         'metafield' => array(
                                             'namespace' => 'customers',
                                             'key' => 'valor',
-                                            'value' => '' . ($father->ganacias == null ) ? 0 : number_format($father->ganacias) . '',
+                                            'value' => '' . ($father->ganacias == null) ? 0 : number_format($father->ganacias) . '',
                                             'value_type' => 'string'
                                         )
                                     )
@@ -295,7 +352,7 @@ class CustomersController extends Controller {
                                         'metafield' => array(
                                             'namespace' => 'customers',
                                             'key' => 'redimir',
-                                            'value' => '' . ($father->redimido == null ) ? 0 : number_format($father->redimido) . '',
+                                            'value' => '' . ($father->redimido == null) ? 0 : number_format($father->redimido) . '',
                                             'value_type' => 'string'
                                         )
                                     )
@@ -312,11 +369,12 @@ class CustomersController extends Controller {
                             }
                         }
                     }
-                }
 
-                return response()->json(['status' => 'The resource has been created.'], 200);
-            } else {
-                return response()->json(['status' => 'The resource was not created successfully'], 200);
+
+                    return response()->json(['status' => 'The resource has been created.'], 200);
+                } else {
+                    return response()->json(['status' => 'The resource was not created successfully'], 200);
+                }
             }
         }
     }
@@ -341,7 +399,7 @@ class CustomersController extends Controller {
 
                 if (count($find) > 0) {
 
-                    $update = Tercero::find($tercero->id);
+                    $update = Tercero::find(164032);
                     $update->ganacias = $update->total_price_orders * 0.05;
                     $update->save();
 
@@ -519,7 +577,7 @@ class CustomersController extends Controller {
 
                 $result = json_decode($res->getBody(), true);
 
-                if (count($result['gift_card']) > 0) {
+                if (isset($result['gift_card']) && count($result['gift_card']) > 0) {
 
                     $commision = Commision::create([
                                 'tercero_id' => $tercero_update->id,
@@ -533,7 +591,7 @@ class CustomersController extends Controller {
                     ]);
 
                     if ($commision) {
-                        $resa = $client->request('get', $api_url . '/admin/customers/6275318017/metafields.json');
+                        $resa = $client->request('get', $api_url . '/admin/customers/'. $tercero_update->customer_id .'/metafields.json');
                         $metafields = json_decode($resa->getBody(), true);
                         $results = array();
 
@@ -542,7 +600,7 @@ class CustomersController extends Controller {
                             foreach ($metafields['metafields'] as $metafield) {
 
                                 if (isset($metafield['key']) && $metafield['key'] === 'referidos') {
-                                    $resb = $client->request('put', $api_url . '/admin/customers/6275318017/metafields/' . $metafield['id'] . '.json', array(
+                                    $resb = $client->request('put', $api_url . '/admin/customers/'. $tercero_update->customer_id . '/metafields/' . $metafield['id'] . '.json', array(
                                         'form_params' => array(
                                             'metafield' => array(
                                                 'namespace' => 'customers',
@@ -566,7 +624,7 @@ class CustomersController extends Controller {
                                 }
 
                                 if (isset($metafield['key']) && $metafield['key'] === 'compras') {
-                                    $resb = $client->request('put', $api_url . '/admin/customers/6275318017/metafields/' . $metafield['id'] . '.json', array(
+                                    $resb = $client->request('put', $api_url . '/admin/customers/'. $tercero_update->customer_id .'/metafields/' . $metafield['id'] . '.json', array(
                                         'form_params' => array(
                                             'metafield' => array(
                                                 'namespace' => 'customers',
@@ -590,7 +648,7 @@ class CustomersController extends Controller {
                                 }
 
                                 if (isset($metafield['key']) && $metafield['key'] === 'valor') {
-                                    $resb = $client->request('put', $api_url . '/admin/customers/6275318017/metafields/' . $metafield['id'] . '.json', array(
+                                    $resb = $client->request('put', $api_url . '/admin/customers/'. $tercero_update->customer_id .'/metafields/' . $metafield['id'] . '.json', array(
                                         'form_params' => array(
                                             'metafield' => array(
                                                 'namespace' => 'customers',
@@ -615,7 +673,7 @@ class CustomersController extends Controller {
 
                                 if (isset($metafield['key']) && $metafield['key'] === 'redimir') {
 
-                                    $resb = $client->request('put', $api_url . '/admin/customers/6275318017/metafields/' . $metafield['id'] . '.json', array(
+                                    $resb = $client->request('put', $api_url . '/admin/customers/'. $tercero_update->customer_id .'/metafields/' . $metafield['id'] . '.json', array(
                                         'form_params' => array(
                                             'metafield' => array(
                                                 'namespace' => 'customers',
@@ -644,7 +702,7 @@ class CustomersController extends Controller {
                             foreach ($metafields['metafields'] as $metafield) {
 
                                 if (isset($metafield['key']) && $metafield['key'] === 'referidos') {
-                                    $resb = $client->request('put', $api_url . '/admin/customers/6275318017/metafields/' . $metafield['id'] . '.json', array(
+                                    $resb = $client->request('put', $api_url . '/admin/customers/'. $tercero_update->customer_id .'/metafields/' . $metafield['id'] . '.json', array(
                                             'form_params' => array(
                                                 'metafield' => array(
                                                     'namespace' => 'customers',
@@ -668,7 +726,7 @@ class CustomersController extends Controller {
                                 }
 
                                 if (isset($metafield['key']) && $metafield['key'] === 'compras') {
-                                    $resb = $client->request('put', $api_url . '/admin/customers/6275318017/metafields/' . $metafield['id'] . '.json', array(
+                                    $resb = $client->request('put', $api_url . '/admin/customers/'. $tercero_update->customer_id .'/metafields/' . $metafield['id'] . '.json', array(
                                             'form_params' => array(
                                                 'metafield' => array(
                                                     'namespace' => 'customers',
@@ -692,7 +750,7 @@ class CustomersController extends Controller {
                                 }
 
                                 if (isset($metafield['key']) && $metafield['key'] === 'valor') {
-                                    $resb = $client->request('put', $api_url . '/admin/customers/6275318017/metafields/' . $metafield['id'] . '.json', array(
+                                    $resb = $client->request('put', $api_url . '/admin/customers/'. $tercero_update->customer_id .'/metafields/' . $metafield['id'] . '.json', array(
                                             'form_params' => array(
                                                 'metafield' => array(
                                                     'namespace' => 'customers',
@@ -716,7 +774,7 @@ class CustomersController extends Controller {
                                 }
                             }
 
-                            $resg = $client->request('post', $api_url . '/admin/customers/6275318017/metafields.json', array(
+                            $resg = $client->request('post', $api_url . '/admin/customers/'. $tercero_update->customer_id .'/metafields.json', array(
                                 'form_params' => array(
                                     'metafield' => array(
                                         'namespace' => 'customers',
