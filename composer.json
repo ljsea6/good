@@ -16,7 +16,6 @@
         "maatwebsite/excel": "~2.1.0",
         "guzzlehttp/guzzle": "^6.3",
         "mercadopago/sdk": "0.5.2"
-    
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",

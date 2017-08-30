@@ -88,14 +88,10 @@ class GetFathers extends Command
                                             $finder->networks()->attach($network['id'], ['padre_id' => 26]);
                                         }
                                     }
-                                    
-                                    
                                 }     
                             }
-
                         }
                     }
-
                 }
 
                 if($network['name'] == 'to go') {
@@ -106,9 +102,7 @@ class GetFathers extends Command
                         return 'to go tiene.';
                     }
                 }
-                
-                
-                
+
                 $tercerosaux = Tercero::select('id', 'identificacion', 'nombres', 'apellidos', 'email')
                     ->where('state', true)
                     ->orderBy('id')

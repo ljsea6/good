@@ -11,6 +11,12 @@
  */
 //<a href="{{ route('reset') }}">Olvido contraseña?</a>
 
+/**
+ * Rutas del Api
+ */
+
+
+
 //Pdfs
 Route::any('reportes/datos/products', ['uses' => 'ReportesController@products', 'as' => 'admin.reportes.datos.products']);
 

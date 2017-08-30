@@ -145,11 +145,15 @@ return [
         App\Providers\AuthServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
+       
         Barryvdh\Debugbar\ServiceProvider::class,
         Styde\Html\HtmlServiceProvider::class,
         Barryvdh\DomPDF\ServiceProvider::class,
         Bican\Roles\RolesServiceProvider::class,
         //Tzsk\Payu\Provider\PayuServiceProvider::class,
+        
+        
+        
 
     ],
 
@@ -204,6 +208,7 @@ return [
         'PDF'        => Barryvdh\DomPDF\Facade::class,
         'Excel'      => Maatwebsite\Excel\Facades\Excel::class,
         //'Payment' => Tzsk\Payu\Facade\Payment::class,
+        
     ],
 
 ];

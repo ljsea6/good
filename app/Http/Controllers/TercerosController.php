@@ -1,19 +1,22 @@
 <?php
 namespace App\Http\Controllers;
 
-use App\Entities\Network;
+
 use Illuminate\Http\Request;
-use App\Http\Requests;
+
 use App\Http\Controllers\Controller;
 use App\Entities\Tercero;
-use App\Order;
 use Yajra\Datatables\Datatables;
 use DB;
 use Carbon\Carbon;
 
+
 class TercerosController extends Controller
 {
+   
+
     /**
+     * 
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
@@ -26,7 +29,7 @@ class TercerosController extends Controller
     public function anyData()
     {
       
-        $referidos = Tercero::select('id', 'identificacion', 'nombres', 'apellidos', 'email', 'numero_referidos', 'numero_ordenes_referidos', 'total_price_orders')
+        $referidos = Tercero::select('id', 'identificacion', 'nombres', 'apellidos', 'email', 'numero_referidos', 'numero_ordenes_referidos', 'total_price_orders', 'ganacias')
                 ->where('state', true)
                 ->get();
         
@@ -61,6 +64,9 @@ class TercerosController extends Controller
             })
             ->addColumn('total_price_orders', function ($send) {
                 return '<div align=left>' . number_format($send['total_price_orders']) . '</div>';
+            })
+            ->addColumn('ganacias', function ($send) {
+                return '<div align=left>' . number_format($send['ganacias']) . '</div>';
             })
              ->addColumn('edit', function ($send) {
                 return '<div align=center><a href="' . route('admin.terceros.edit', $send['id']) . '"  class="btn btn-warning btn-xs">
