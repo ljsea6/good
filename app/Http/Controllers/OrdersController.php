@@ -14,8 +14,99 @@ use DB;
 use App\Logorder;
 use Yajra\Datatables\Datatables;
 
+
 class OrdersController extends Controller
 {
+    public function home()
+    {
+        return view('admin.orders.home');
+    }
+
+    public function edit($id)
+    {
+        $order = Order::find($id);
+        $product = Product::find($order->line_items[0]['product_id']);
+        return view('admin.orders.edit')->with([
+            'order' => $order,
+            'product' => $product
+        ]);
+    }
+
+    public function up(Request $request, $id)
+    {
+        if (isset($request['tipo']) && isset($request['date']) && !isset($request['code'])) {
+
+            $type = $request['tipo'];
+            $date = $request['date'];
+            $order = Order::find($id);
+            $order->fecha_compra = Carbon::now();
+            $order->save();
+
+            if ($order) {
+                if ($type == 'nacional' && isset($order->line_items[0]['product_id']) && count($order->line_items[0]['product_id']) > 0) {
+                    $product = Product::find($order->line_items[0]['product_id']);
+
+                    if ($product->tipo_producto == null) {
+                        $product->tipo_producto = $type;
+                        $product->save();
+                    }
+                }
+
+                if ($type == 'internacional' && $order->line_items[0]['product_id'] && count($order->line_items[0]['product_id']) > 0) {
+                    $product = Product::find($order->line_items[0]['product_id']);
+
+                    if ($product->tipo_producto == null) {
+                        $product->tipo_producto = $type;
+                        $product->save();
+                    }
+                }
+
+                return redirect()->back()->with(['success' =>'Compra realizada con exito.']);
+            }
+
+        }
+
+        if (!isset($request['tipo']) && !isset($request['date']) && isset($request['code'])) {
+            
+            $code = $request['code'];
+            $order = Order::find($id);
+            $order->codigo_envio = $code;
+            $order->save();
+
+            if ($order) {
+                return redirect()->back()->with(['success' =>'Código agregado con exito.']);
+            }
+        }
+
+
+
+    }
+
+    public function anyData()
+    {
+        $orders = Order::where('financial_status', 'paid')->get();
+
+        $send = collect($orders);
+
+        return Datatables::of($send )
+            ->addColumn('name', function ($send) {
+                return '<div align=left><a href="/admin/orders/'. $send->id .'/edit" style="color: #f60620">' . $send->name . '</a></div>';
+            })
+            ->addColumn('financial_status', function ($send) {
+                return '<div align=left>' . $send->financial_status. '</div>';
+            })
+            ->addColumn('value', function ($send) {
+                return '<div align=left>' . number_format($send->total_price) . '</div>';
+            })
+            ->addColumn('fecha_compra', function ($send) {
+                return '<div align=left>' . $send->fecha_compra . '</div>';
+            })
+            ->addColumn('codigo_envio', function ($send) {
+                return '<div align=left>' . $send->codigo_envio . '</div>';
+            })
+            ->make(true);
+    }
+
     public function index()
     {
         return view('admin.orders.index');

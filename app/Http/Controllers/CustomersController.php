@@ -68,7 +68,7 @@ class CustomersController extends Controller {
 
                 if (count($result) === 0) {
 
-                    if ($event_json['email'] == 'soportesoyhello@gmail.com') {
+                    /*if ($event_json['email'] == 'soportesoyhello@gmail.com') {
 
                         $aux = explode('@', strtolower($event_json['email']));
                         $tercero = new Tercero();
@@ -122,7 +122,7 @@ class CustomersController extends Controller {
                         $up->ganacias = $up->total_price_orders * 0.05;
                         $up->save();
 
-                    }
+                    }*/
 
                     $aux = explode('@', strtolower($event_json['email']));
                     $tercero = new Tercero();
@@ -149,9 +149,7 @@ class CustomersController extends Controller {
                             $father->numero_referidos = $father->numero_referidos +1;
                             $father->save();
 
-                            $findcustomer = Customer::where('customer_id', $father->customer_id)
-                                ->where('email', $father->email)
-                                ->first();
+                            $findcustomer = Customer::where('customer_id', $father->customer_id)->where('network_id', 1)->first();
 
                             if (count($findcustomer) > 0) {
 

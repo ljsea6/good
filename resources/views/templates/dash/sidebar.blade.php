@@ -44,6 +44,13 @@
             </li>
             @permission('configuracion')
             <li class="has-submenu">
+                <a href="{{ route('admin.orders.home') }}" class="text-left">
+                    <i class="fa fa-slack">
+                    </i>
+                    <span class="nav-text">Ordenes</span>
+                </a>
+            </li>
+            <li class="has-submenu">
                 <a href="{{ route('admin.networks.index') }}" class="text-left">
                     <i class="fa fa-share-alt">
                     </i>

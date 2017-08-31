@@ -223,10 +223,19 @@ Route::group(['prefix' => 'admin', 'middleware' => 'auth'], function () {
     //Para los reportes
     Route::any('reportes/product', ['uses' => 'ProductsController@welcome', 'as' => 'admin.reportes.product']);
 
+    // orders
+
+    Route::get('orders', ['uses' => 'OrdersController@home', 'as' => 'admin.orders.home']);
+    Route::post('orders/{id}', ['uses' => 'OrdersController@up', 'as' => 'admin.orders.up']);
+    Route::get('orders/{id}/edit', ['uses' => 'OrdersController@edit', 'as' => 'admin.orders.edit']);
+    Route::any('orders/paid', ['uses' => 'OrdersController@anyData', 'as' => 'admin.orders.paid']);
+
     Route::any('reportes/order', ['uses' => 'OrdersController@index', 'as' => 'admin.reportes.order']);
     Route::any('reportes/orders', ['uses' => 'OrdersController@orders', 'as' => 'admin.reportes.orders']);
+
     Route::any('reportes/codes', ['uses' => 'ReportesController@code', 'as' => 'admin.reportes.codes']);
     Route::any('reportes/code', ['uses' => 'ReportesController@anyCode', 'as' => 'admin.reportes.code']);
+
     Route::any('reportes/datos', ['uses' => 'ReportesController@anyData', 'as' => 'admin.reportes.datos']);
     Route::any('reportes/datos/products', ['uses' => 'ReportesController@products', 'as' => 'admin.reportes.datos.products']);
     Route::any('reportes/descargar', ['uses' => 'ReportesController@descargar', 'as' => 'admin.reportes.descargar']);
