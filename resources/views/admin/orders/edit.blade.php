@@ -80,7 +80,7 @@
                                     <div class='input-group date' id='datetimepicker1'>
                                         <input required id="date" name="date" type='text' class="form-control" />
                                         <span class="input-group-addon">
-                                        <span class="glyphicon glyphicon-calendar"></span>
+                                        <span class="glyphicon glyphicon-calendar">Fecha</span>
                                     </span>
                                     </div>
                                 </div>

@@ -67,7 +67,7 @@ class OrdersController extends Controller
         }
 
         if (!isset($request['tipo']) && !isset($request['date']) && isset($request['code'])) {
-            
+
             $code = $request['code'];
             $order = Order::find($id);
             $order->codigo_envio = $code;
