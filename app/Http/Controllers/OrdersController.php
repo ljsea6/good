@@ -40,6 +40,8 @@ class OrdersController extends Controller
             $date = $request['date'];
             $order = Order::find($id);
             $order->fecha_compra = Carbon::now();
+            $order->estado_orden = 'comprado';
+            $order->bitacora = currentUser();
             $order->save();
 
             if ($order) {
@@ -71,10 +73,28 @@ class OrdersController extends Controller
             $code = $request['code'];
             $order = Order::find($id);
             $order->codigo_envio = $code;
+            $order->fecha_envio_n = Carbon::now();
+            $order->estado_orden = 'envio_nacional';
+            $order->bitacora = currentUser();
             $order->save();
 
             if ($order) {
-                return redirect()->back()->with(['success' =>'Código agregado con exito.']);
+                return redirect()->back()->with(['success' =>'Código Nacional agregado con exito.']);
+            }
+        }
+
+        if (!isset($request['tipo']) && !isset($request['date']) && isset($request['code_internacional'])) {
+
+            $code = $request['code_internacional'];
+            $order = Order::find($id);
+            $order->codigo_envio_internacional = $code;
+            $order->fecha_envio_i = Carbon::now();
+            $order->estado_orden = 'envio_internacional';
+            $order->bitacora = currentUser();
+            $order->save();
+
+            if ($order) {
+                return redirect()->back()->with(['success' =>'Código Internacional agregado con exito.']);
             }
         }
 
@@ -92,17 +112,638 @@ class OrdersController extends Controller
             ->addColumn('name', function ($send) {
                 return '<div align=left><a href="/admin/orders/'. $send->id .'/edit" style="color: #f60620">' . $send->name . '</a></div>';
             })
-            ->addColumn('financial_status', function ($send) {
-                return '<div align=left>' . $send->financial_status. '</div>';
+            ->addColumn('customer', function ($send) {
+
+                $customer = Customer::where('email', $send->email)->first();
+                $orden_sin = 'Orden sin cliente';
+
+                if (count($customer) > 0) {
+                    return '<div align=left>' . $customer->first_name . '</div>';
+                } else {
+                    return '<div align=left>'. $orden_sin .'</div>';
+                }
             })
             ->addColumn('value', function ($send) {
                 return '<div align=left>' . number_format($send->total_price) . '</div>';
             })
+            ->addColumn('order', function ($send) {
+                $result = '';
+                foreach ($send->line_items as $item ){
+
+                    $product = Product::find($item['product_id']);
+
+                    if(count($product['image']) > 0 && count($product['images']) > 0) {
+
+                                $result .= '<div class="container">
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                         <p><strong>' . $item['title'] . '</strong></p>
+                                                    </div>
+                                                    <div class="col-md-12">
+                                                        <!-- Left-aligned media object -->
+                                                        <div class="media">
+                                                            <div class="media-left">
+                                                                <img src="' . $product['image']['src'] . '" class="media-object" style="width:60px">
+                                                            </div>
+                                                            <div class="media-body">
+                                                                <h4 class="media-heading">Precio: ' . number_format($item['price']) . '</h4>
+                                                                <p>Cantidad: ' . $item['quantity'] . '</p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div> <hr>';
+                    }
+                }
+                return '
+                  
+                    <div class="text-left">
+                        <button style="color: #f60620" class="btn-link" data-toggle="modal" data-target="#myModal'. $send->order_number .'">'. $send->order_number .'</button>
+                        <!-- Modal -->
+                        <div id="myModal'. $send->order_number .'" class="modal fade" role="dialog">
+                            <div class="modal-dialog">
+                                <!-- Modal content-->
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                        <h4 class="modal-title" style="color: #f60620">#'. $send->order_number .'</h4>
+                                    </div>
+                                    <div class="modal-body">
+                                           '.$result.'
+                                           <h4 class="media-heading">Total: ' . number_format($send->total_price) . '</h4>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                                           
+                ';
+            })
+            ->addColumn('financial_status', function ($send) {
+                return '<div align=left>' . $send->financial_status. '</div>';
+            })
             ->addColumn('fecha_compra', function ($send) {
-                return '<div align=left>' . $send->fecha_compra . '</div>';
+                return '<div align=left>' . Carbon::parse($send->fecha_compra)->toFormattedDateString() . '</div>';
             })
             ->addColumn('codigo_envio', function ($send) {
                 return '<div align=left>' . $send->codigo_envio . '</div>';
+            })
+            ->addColumn('codigo_envio_internacional', function ($send) {
+                return '<div align=left>' . $send->codigo_envio_internacional . '</div>';
+            })
+            ->addColumn('estado_orden', function ($send) {
+
+                $product = Product::find($send->line_items[0]['product_id']);
+
+                if (!isset($product->tipo_producto) || $product->tipo_producto == null || $product->tipo_producto == '') {
+                    $result = '';
+                    $state = '';
+                    if ($send->estado_orden == "pendiente") {
+                        $state .= 'Pendiente';
+                        $result .= '        <div class="stepwizard">
+                                                <div class="stepwizard-row setup-panel">
+                                                    <div class="stepwizard-step">
+                                                        <a type="button" class="btn btn-primary btn-circle">1</a>
+                                                        <p>Pendiente</p>
+                                                    </div>
+                                                    <div class="stepwizard-step">
+                                                        <a  type="button" class="btn btn-default btn-circle" disabled="disabled">2</a>
+                                                        <p>Comprado</p>
+                                                    </div>
+                                                    <div class="stepwizard-step">
+                                                        <a type="button" class="btn btn-default btn-circle" disabled="disabled">3</a>
+                                                        <p>Envio Nacional</p>
+                                                    </div>
+                                                    <div class="stepwizard-step">
+                                                        <a  type="button" class="btn btn-default btn-circle" disabled="disabled">4</a>
+                                                        <p>Entregado</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                             <div class="container">
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                         <p><strong>Fecha Pendiente: ' . Carbon::parse($send->created_at)->toFormattedDateString() . '</strong></p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            ';
+                    }
+
+
+                    return '
+                        <div align=left>
+                            <button style="color: #f60620" class="btn-link" data-toggle="modal" data-target="#myModal-'. $send->order_number .'">' . $state . '</button>
+                            <!-- Modal -->
+                            <div id="myModal-'. $send->order_number .'" class="modal fade" role="dialog">
+                                <div class="modal-dialog">
+                                    <!-- Modal content-->
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                            <h4 class="modal-title" style="color: #f60620">Orden #'. $send->order_number .'</h4>
+                                        </div>
+                                        <div class="modal-body">
+                                            '.$result.'
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                       ';
+
+                }
+
+                if (isset($product->tipo_producto) && $product->tipo_producto == 'nacional') {
+                    $result = '';
+                    $state = '';
+                    if ($send->estado_orden == "pendiente") {
+                        $state .= 'Pendiente';
+                        $result .= '        <div class="stepwizard">
+                                                <div class="stepwizard-row setup-panel">
+                                                    <div class="stepwizard-step">
+                                                        <a type="button" class="btn btn-primary btn-circle">1</a>
+                                                        <p>Pendiente</p>
+                                                    </div>
+                                                    <div class="stepwizard-step">
+                                                        <a  type="button" class="btn btn-default btn-circle" disabled="disabled">2</a>
+                                                        <p>Comprado</p>
+                                                    </div>
+                                                    <div class="stepwizard-step">
+                                                        <a type="button" class="btn btn-default btn-circle" disabled="disabled">3</a>
+                                                        <p>Envio Nacional</p>
+                                                    </div>
+                                                    <div class="stepwizard-step">
+                                                        <a  type="button" class="btn btn-default btn-circle" disabled="disabled">4</a>
+                                                        <p>Entregado</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="container">
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                         <p><strong>Fecha Pendiente: ' . Carbon::parse($send->created_at)->toFormattedDateString() . '</strong></p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            ';
+                    }
+
+                    if ($send->estado_orden == "comprado") {
+                        $state .= 'Comprado';
+                        $result .= '        <div class="stepwizard">
+                                                <div class="stepwizard-row setup-panel">
+                                                    <div class="stepwizard-step">
+                                                        <a type="button" class="btn btn-default btn-circle" disabled="disabled">1</a>
+                                                        <p>Pendiente</p>
+                                                    </div>
+                                                    <div class="stepwizard-step">
+                                                        <a  type="button" class="btn btn-primary btn-circle">2</a>
+                                                        <p>Comprado</p>
+                                                    </div>
+                                                    <div class="stepwizard-step">
+                                                        <a type="button" class="btn btn-default btn-circle" disabled="disabled">3</a>
+                                                        <p>Envio Nacional</p>
+                                                    </div>
+                                                    <div class="stepwizard-step">
+                                                        <a  type="button" class="btn btn-default btn-circle" disabled="disabled">4</a>
+                                                        <p>Entregado</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="container">
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                         <p><strong>Fecha Pendiente: ' . Carbon::parse($send->created_at)->toFormattedDateString() . '</strong></p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="container">
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                         <p><strong>Fecha Compra: ' . Carbon::parse($send->fecha_compra)->toFormattedDateString() . '</strong></p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            ';
+                    }
+
+                    if ($send->estado_orden == "envio_nacional") {
+                        $state .= 'Nacional';
+                        $result .= '        <div class="stepwizard">
+                                                <div class="stepwizard-row setup-panel">
+                                                    <div class="stepwizard-step">
+                                                        <a type="button" class="btn btn-default btn-circle" disabled="disabled">1</a>
+                                                        <p>Pendiente</p>
+                                                    </div>
+                                                    <div class="stepwizard-step">
+                                                        <a  type="button" class="btn btn-default btn-circle" disabled="disabled">2</a>
+                                                        <p>Comprado</p>
+                                                    </div>
+                                                    <div class="stepwizard-step">
+                                                        <a type="button" class="btn btn-primary btn-circle">3</a>
+                                                        <p>Envio Nacional</p>
+                                                    </div>
+                                                    <div class="stepwizard-step">
+                                                        <a  type="button" class="btn btn-default btn-circle" disabled="disabled">4</a>
+                                                        <p>Entregado</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="container">
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                         <p><strong>Fecha Pendiente: ' . Carbon::parse($send->created_at)->toFormattedDateString() . '</strong></p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="container">
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                         <p><strong>Fecha Compra: ' . Carbon::parse($send->fecha_compra)->toFormattedDateString() . '</strong></p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="container">
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                         <p><strong>Fecha Envio Nacional: ' . Carbon::parse($send->fecha_envio_n)->toFormattedDateString() . '</strong></p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            ';
+                    }
+
+                    if ($send->estado_orden == "entregado") {
+                        $state .= 'Entregado';
+                        $result .= '        <div class="stepwizard">
+                                                <div class="stepwizard-row setup-panel">
+                                                    <div class="stepwizard-step">
+                                                        <a type="button" class="btn btn-default btn-circle" disabled="disabled">1</a>
+                                                        <p>Pendiente</p>
+                                                    </div>
+                                                    <div class="stepwizard-step">
+                                                        <a  type="button" class="btn btn-default btn-circle" disabled="disabled">2</a>
+                                                        <p>Comprado</p>
+                                                    </div>
+                                                    <div class="stepwizard-step">
+                                                        <a type="button" class="btn btn-default btn-circle" disabled="disabled">3</a>
+                                                        <p>Envio Nacional</p>
+                                                    </div>
+                                                    <div class="stepwizard-step">
+                                                        <a  type="button" class="btn btn-primary btn-circle" >4</a>
+                                                        <p>Entregado</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="container">
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                         <p><strong>Fecha Pendiente: ' . Carbon::parse($send->created_at)->toFormattedDateString() . '</strong></p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="container">
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                         <p><strong>Fecha Compra: ' . Carbon::parse($send->fecha_compra)->toFormattedDateString() . '</strong></p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="container">
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                         <p><strong>Fecha Envio Nacional: ' . Carbon::parse($send->fecha_envio_n)->toFormattedDateString() . '</strong></p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="container">
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                         <p><strong>Fecha de Entrega: ' . Carbon::parse($send->fecha_entrega)->toFormattedDateString() . '</strong></p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            ';
+                    }
+
+                    return '
+                        <div align=left>
+                            <button style="color: #f60620" class="btn-link" data-toggle="modal" data-target="#myModal-'. $send->order_number .'">' . $state . '</button>
+                            <!-- Modal -->
+                            <div id="myModal-'. $send->order_number .'" class="modal fade" role="dialog">
+                                <div class="modal-dialog">
+                                    <!-- Modal content-->
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                            <h4 class="modal-title" style="color: #f60620">Orden '.$product->tipo_producto.' #'. $send->order_number .'</h4>
+                                        </div>
+                                        <div class="modal-body">
+                                            '.$result.'
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                       ';
+
+                }
+
+                if (isset($product->tipo_producto) && $product->tipo_producto == 'internacional') {
+
+                    $result = '';
+                    $state = '';
+                    if ($send->estado_orden == "pendiente") {
+                        $state .= 'Pendiente';
+                        $result .= '        <div class="stepwizard">
+                                                <div class="stepwizard-row setup-panel">
+                                                    <div class="stepwizard-step">
+                                                        <a type="button" class="btn btn-primary btn-circle">1</a>
+                                                        <p>Pendiente</p>
+                                                    </div>
+                                                    <div class="stepwizard-step">
+                                                        <a  type="button" class="btn btn-default btn-circle" disabled="disabled">2</a>
+                                                        <p>Comprado</p>
+                                                    </div>
+                                                    <div class="stepwizard-step">
+                                                        <a type="button" class="btn btn-default btn-circle" disabled="disabled">3</a>
+                                                        <p>Envio Internacional</p>
+                                                    </div>
+                                                    <div class="stepwizard-step">
+                                                        <a type="button" class="btn btn-default btn-circle" disabled="disabled">4</a>
+                                                        <p>Envio Nacional</p>
+                                                    </div>
+                                                    
+                                                    <div class="stepwizard-step">
+                                                        <a  type="button" class="btn btn-default btn-circle" disabled="disabled">5</a>
+                                                        <p>Entregado</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="container">
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                         <p><strong>Fecha Pendiente: ' . Carbon::parse($send->created_at)->toFormattedDateString() . '</strong></p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                           
+                                            ';
+                    }
+
+                    if ($send->estado_orden == "comprado") {
+                        $state .= 'Comprado';
+                        $result .= '        <div class="stepwizard">
+                                                <div class="stepwizard-row setup-panel">
+                                                    <div class="stepwizard-step">
+                                                        <a type="button" class="btn btn-default btn-circle" disabled="disabled">1</a>
+                                                        <p>Pendiente</p>
+                                                    </div>
+                                                    <div class="stepwizard-step">
+                                                        <a  type="button" class="btn btn-primary btn-circle">2</a>
+                                                        <p>Comprado</p>
+                                                    </div>
+                                                    <div class="stepwizard-step">
+                                                        <a type="button" class="btn btn-default btn-circle" disabled="disabled">3</a>
+                                                        <p>Envio Internacional</p>
+                                                    </div>
+                                                    <div class="stepwizard-step">
+                                                        <a type="button" class="btn btn-default btn-circle" disabled="disabled">4</a>
+                                                        <p>Envio Nacional</p>
+                                                    </div>
+                                                    
+                                                    <div class="stepwizard-step">
+                                                        <a  type="button" class="btn btn-default btn-circle" disabled="disabled">5</a>
+                                                        <p>Entregado</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="container">
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                         <p><strong>Fecha Pendiente: ' . Carbon::parse($send->created_at)->toFormattedDateString() . '</strong></p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="container">
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                         <p><strong>Fecha Compra: ' . Carbon::parse($send->fecha_compra)->toFormattedDateString() . '</strong></p>
+                                                    </div>
+                                                </div>
+                                            </div>
+ 
+                                            ';
+                    }
+
+                    if ($send->estado_orden == "envio_nacional") {
+                        $state .= 'Nacional';
+                        $result .= '        <div class="stepwizard">
+                                                <div class="stepwizard-row setup-panel">
+                                                    <div class="stepwizard-step">
+                                                        <a type="button" class="btn btn-default btn-circle" disabled="disabled">1</a>
+                                                        <p>Pendiente</p>
+                                                    </div>
+                                                    <div class="stepwizard-step">
+                                                        <a  type="button" class="btn btn-default btn-circle" disabled="disabled">2</a>
+                                                        <p>Comprado</p>
+                                                    </div>
+                                                    <div class="stepwizard-step">
+                                                        <a type="button" class="btn btn-default btn-circle" disabled="disabled">3</a>
+                                                        <p>Envio Internacional</p>
+                                                    </div>
+                                                    <div class="stepwizard-step">
+                                                        <a type="button" class="btn btn-primary btn-circle">4</a>
+                                                        <p>Envio Nacional</p>
+                                                    </div>
+                                                    <div class="stepwizard-step">
+                                                        <a  type="button" class="btn btn-default btn-circle" disabled="disabled">5</a>
+                                                        <p>Entregado</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="container">
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                         <p><strong>Fecha Pendiente: ' . Carbon::parse($send->created_at)->toFormattedDateString() . '</strong></p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="container">
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                         <p><strong>Fecha Compra: ' . Carbon::parse($send->fecha_compra)->toFormattedDateString() . '</strong></p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="container">
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                         <p><strong>Fecha Envio Internacional: ' . Carbon::parse($send->fecha_envio_i)->toFormattedDateString() . '</strong></p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="container">
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                         <p><strong>Fecha Envio Nacional: ' . Carbon::parse($send->fecha_envio_n)->toFormattedDateString() . '</strong></p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            
+                                            ';
+                    }
+
+                    if ($send->estado_orden == "envio_internacional") {
+                        $state .= 'Internacional';
+                        $result .= '        <div class="stepwizard">
+                                                <div class="stepwizard-row setup-panel">
+                                                    <div class="stepwizard-step">
+                                                        <a type="button" class="btn btn-default btn-circle" disabled="disabled">1</a>
+                                                        <p>Pendiente</p>
+                                                    </div>
+                                                    <div class="stepwizard-step">
+                                                        <a  type="button" class="btn btn-default btn-circle" disabled="disabled">2</a>
+                                                        <p>Comprado</p>
+                                                    </div>
+                                                    
+                                                    <div class="stepwizard-step">
+                                                        <a type="button" class="btn btn-primary btn-circle" >3</a>
+                                                        <p>Envio Internacional</p>
+                                                    </div>
+                                                    <div class="stepwizard-step">
+                                                        <a type="button" class="btn btn-default btn-circle" disabled="disabled">4</a>
+                                                        <p>Envio Nacional</p>
+                                                    </div>
+                                                    
+                                                    <div class="stepwizard-step">
+                                                        <a  type="button" class="btn btn-default btn-circle" disabled="disabled">5</a>
+                                                        <p>Entregado</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="container">
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                         <p><strong>Fecha Pendiente: ' . Carbon::parse($send->created_at)->toFormattedDateString() . '</strong></p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="container">
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                         <p><strong>Fecha Compra: ' . Carbon::parse($send->fecha_compra)->toFormattedDateString() . '</strong></p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="container">
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                         <p><strong>Fecha Envio Internacional: ' . Carbon::parse($send->fecha_envio_i)->toFormattedDateString() . '</strong></p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                           
+                                            ';
+                    }
+
+                    if ($send->estado_orden == "entregado") {
+                        $state .= 'Entregado';
+                        $result .= '        <div class="stepwizard">
+                                                <div class="stepwizard-row setup-panel">
+                                                    <div class="stepwizard-step">
+                                                        <a type="button" class="btn btn-default btn-circle" disabled="disabled">1</a>
+                                                        <p>Pendiente</p>
+                                                    </div>
+                                                    <div class="stepwizard-step">
+                                                        <a  type="button" class="btn btn-default btn-circle" disabled="disabled">2</a>
+                                                        <p>Comprado</p>
+                                                    </div>
+                                                    
+                                                    <div class="stepwizard-step">
+                                                        <a type="button" class="btn btn-default btn-circle" disabled="disabled">3</a>
+                                                        <p>Envio Internacional</p>
+                                                    </div>
+                                                    <div class="stepwizard-step">
+                                                        <a type="button" class="btn btn-default btn-circle" disabled="disabled">4</a>
+                                                        <p>Envio Nacional</p>
+                                                    </div>
+                                                    <div class="stepwizard-step">
+                                                        <a  type="button" class="btn btn-primary btn-circle">5</a>
+                                                        <p>Entregado</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="container">
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                         <p><strong>Fecha Compra: ' . Carbon::parse($send->fecha_compra)->toFormattedDateString() . '</strong></p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="container">
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                         <p><strong>Fecha Envio Internacional: ' . Carbon::parse($send->fecha_envio_i)->toFormattedDateString() . '</strong></p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="container">
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                         <p><strong>Fecha Envio Nacional: ' . Carbon::parse($send->fecha_envio_n)->toFormattedDateString() . '</strong></p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="container">
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                         <p><strong>Fecha de Entrega: ' . Carbon::parse($send->fecha_entrega)->toFormattedDateString() . '</strong></p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            ';
+                    }
+
+                    return '
+                        <div align=left>
+                            <button style="color: #f60620" class="btn-link" data-toggle="modal" data-target="#myModal-'. $send->order_number .'">' . $state . '</button>
+                            <!-- Modal -->
+                            <div id="myModal-'. $send->order_number .'" class="modal fade" role="dialog">
+                                <div class="modal-dialog">
+                                    <!-- Modal content-->
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                            <h4 class="modal-title" style="color: #f60620">Orden '.$product->tipo_producto.' #'. $send->order_number .'</h4>
+                                        </div>
+                                        <div class="modal-body">
+                                            '.$result.'
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                       ';
+
+                }
+
             })
             ->make(true);
     }

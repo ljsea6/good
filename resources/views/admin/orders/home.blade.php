@@ -22,10 +22,14 @@
                         <thead>
                         <tr>
                             <th># Orden</th>
+                            <th>Cliente</th>
+                            <th>Precio</th>
+                            <th>Detalle Orden</th>
                             <th>Estado</th>
-                            <th>Valor</th>
                             <th>Fecha Compra</th>
-                            <th>Código Envio</th>
+                            <th>Código Envio Internacional</th>
+                            <th>Código Envio Nacional</th>
+                            <th>Estado Orden</th>
                         </tr>
                         </thead>
                     </table>
@@ -43,15 +47,19 @@
                 responsive: true,
                 processing: true,
                 serverSide: true,
-                deferRender: true,
+                //deferRender: true,
                 pagingType: "full_numbers",
                 ajax: '{{route('admin.orders.paid')}}',
                 columns: [
-                    { data: 'name', name: 'order_id', orderable: true, searchable: true },
-                    { data: 'financial_status', name: 'financial_status', orderable: true, searchable: true },
+                    { data: 'name', name: 'name', orderable: true, searchable: true },
+                    { data: 'customer', name: 'customer', orderable: true, searchable: true },
                     { data: 'value', name: 'value', orderable: true, searchable: true  },
+                    { data: 'order', name: 'order', orderable: true, searchable: true  },
+                    { data: 'financial_status', name: 'financial_status', orderable: true, searchable: true },
                     { data: 'fecha_compra', name: 'fecha_compra', orderable: true, searchable: true },
+                    { data: 'codigo_envio_internacional', name: 'codigo_envio_internacional', orderable: true, searchable: true },
                     { data: 'codigo_envio', name: 'codigo_envio', orderable: true, searchable: true },
+                    { data: 'estado_orden', name: 'estado_orden', orderable: true, searchable: true }
                 ],
                 language: {
                     url: "{{ asset('css/Spanish.json') }}"

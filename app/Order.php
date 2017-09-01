@@ -24,6 +24,7 @@ class Order extends Model
         'shipping_lines' => 'array',
         'tax_lines' => 'array',
         'refunds' => 'array',
+        'bitacora' => 'array'
     ];
 
     protected $guarded = [];
