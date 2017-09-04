@@ -3,6 +3,11 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
+use App\Customer;
+use App\Entities\Tercero;
+
+use DB;
+
 
 class Metafields extends Command
 {
