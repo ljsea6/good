@@ -110,7 +110,7 @@ class OrdersController extends Controller
 
         return Datatables::of($send )
             ->addColumn('name', function ($send) {
-                return '<div align=left><a href="/admin/orders/'. $send->id .'/edit" style="color: #f60620">' . $send->name . '</a></div>';
+                return '<div align=left>' . $send->name . '</div>';
             })
             ->addColumn('customer', function ($send) {
 
@@ -231,6 +231,40 @@ class OrdersController extends Controller
                                                 </div>
                                             </div>
                                             ';
+
+                    }
+
+                    if ($send->estado_orden == "comprado") {
+                        $state .= 'Comprado';
+                        $result .= '        <div class="stepwizard">
+                                                <div class="stepwizard-row setup-panel">
+                                                    <div class="stepwizard-step">
+                                                        <a type="button" class="btn btn-default btn-circle" disabled="disabled">1</a>
+                                                        <p>Pendiente</p>
+                                                    </div>
+                                                    <div class="stepwizard-step">
+                                                        <a  type="button" class="btn btn-primary btn-circle">2</a>
+                                                        <p>Comprado</p>
+                                                    </div>
+                                                    <div class="stepwizard-step">
+                                                        <a type="button" class="btn btn-default btn-circle" disabled="disabled">3</a>
+                                                        <p>Envio Nacional</p>
+                                                    </div>
+                                                    <div class="stepwizard-step">
+                                                        <a  type="button" class="btn btn-default btn-circle" disabled="disabled">4</a>
+                                                        <p>Entregado</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                             <div class="container">
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                         <p><strong>Fecha Pendiente: ' . Carbon::parse($send->created_at)->toFormattedDateString() . '</strong></p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            ';
+
                     }
 
 
@@ -744,6 +778,9 @@ class OrdersController extends Controller
 
                 }
 
+            })
+            ->addColumn('action', function ($send ) {
+                return '<div align=left><a href="/admin/orders/'. $send->id .'/edit"  class="btn btn-danger btn-xs text-center">Comprar</a></div>';
             })
             ->make(true);
     }
@@ -1314,6 +1351,19 @@ class OrdersController extends Controller
         }
         *
          */
+    }
+
+    public function contador()
+    {
+        $orders = Order::where('financial_status', 'paid')->get();
+
+        $cont = 0;
+        foreach ($orders as $order) {
+            if ($order->line_items[0]['product_id'] == 9956592513) {
+                $cont = $cont + 1;
+            }
+        }
+        return $cont;
     }
 
 }

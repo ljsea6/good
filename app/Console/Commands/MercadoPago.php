@@ -1,0 +1,111 @@
+<?php
+
+namespace App\Console\Commands;
+
+use Illuminate\Console\Command;
+
+use App\Order;
+use DB;
+use MP;
+
+use App\Logorder;
+
+class MercadoPago extends Command
+{
+    /**
+     * The name and signature of the console command.
+     *
+     * @var string
+     */
+    protected $signature = 'get:mercadopago';
+
+    /**
+     * The console command description.
+     *
+     * @var string
+     */
+    protected $description = 'Comando para actualizar la informacion de las ordenes de shopify con mercado pago';
+
+    /**
+     * Create a new command instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        parent::__construct();
+    }
+
+    /**
+     * Execute the console command.
+     *
+     * @return mixed
+     */
+    public function handle()
+    {
+        define('CLIENT_ID', "7134341661319721");
+        define('CLIENT_SECRET', "b7cQUIoU5JF4iWVvjM0w1YeX4b7VwLpw");
+
+        $mp = new MP(CLIENT_ID, CLIENT_SECRET);
+
+        define('payments', '/v1/payments/search?external_reference=');
+        define('access', '&access_token=');
+        define('ACCESS_TOKEN', $mp->get_access_token());
+
+        $orders = Order::where('financial_status', 'pending')->get();
+        $contador = 0;
+        $contadora = 0;
+
+        foreach ($orders as $order) {
+
+            $results = Logorder::where('order_id', $order->order_id)->where('checkout_id', $order->checkout_id)->first();
+
+            if (count($results) == 0) {
+
+                $contador ++;
+
+                if ($contador  == 300) {
+                    usleep(500000);
+                    $contador = 0;
+                }
+
+                $result = $mp->get(payments . $order->checkout_id . access . ACCESS_TOKEN);
+
+                if (isset($result['response']['results']) && count($result['response']['results']) > 0) {
+
+                    Logorder::create([
+                        'order_id' => $order->order_id,
+                        'checkout_id' => $order->checkout_id,
+                        'value' => $order->total_price,
+                        'status_shopify' => $order->financial_status,
+                        'status_mercadopago' => $result['response']['results'][0]['status'],
+                        'payment_method_id' => $result['response']['results'][0]['payment_method_id'],
+                        'payment_type_id' => $result['response']['results'][0]['payment_type_id']
+                    ]);
+                }
+            } else {
+
+                $contadora ++;
+
+                if ($contadora  == 300) {
+                    usleep(500000);
+                    $contadora = 0;
+                }
+
+                $result = $mp->get(payments . $order->checkout_id . access . ACCESS_TOKEN);
+
+                if (isset($result['response']['results']) && count($result['response']['results']) > 0) {
+                    $find = Logorder::where('order_id', $order->order_id)->where('checkout_id', $order->checkout_id)->first();
+
+                    $update = Logorder::find($find->id);
+                    $update->status_shopify = $order->financial_status;
+                    $update->status_mercadopago = $result['response']['results'][0]['status'];
+                    $update->save();
+                }
+
+            }
+        }
+
+        $this->info('Las ordenes han sido actualizadas con la informacion de shopify y mercago pago');
+    }
+}

@@ -31,6 +31,7 @@ Route::post('customers/create', 'CustomersController@create');
 Route::post('orders/create', 'OrdersController@create');
 Route::post('orders/update', 'OrdersController@update');
 Route::post('orders/delete', 'OrdersController@delete');
+Route::get('products/product', 'OrdersController@contador');
 Route::post('products/create', 'ProductsController@create');
 
 Route::get('products', 'ProductsController@getProducts')->name('products');

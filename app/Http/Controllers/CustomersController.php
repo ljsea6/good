@@ -397,30 +397,13 @@ class CustomersController extends Controller {
 
                 if (count($find) > 0) {
 
-                    $update = Tercero::find(164032);
+                    $update = Tercero::find($find->id);
                     $update->ganacias = $update->total_price_orders * 0.05;
                     $update->save();
 
                     $res = $client->request('get', $api_url . '/admin/customers/' . $update->customer_id . '/metafields.json', ['delay' => 1, 'timeout' => 1]);
                     $metafields = json_decode($res->getBody(), true);
 
-
-                    /*if (isset($metafields['metafields']) && count($metafields['metafields']) > 0) {
-
-                        foreach ($metafields['metafields'] as $metafield) {
-
-                            $res = $client->request('delete', $api_url . '/admin/metafields/'. $metafield['id'] .'.json');
-                            $headers = $res->getHeaders()['X-Shopify-Shop-Api-Call-Limit'];
-
-                            $x = explode('/', $headers[0]);
-                            $diferencia = $x[1] - $x[0];
-
-                            if ($diferencia < 10) {
-                                usleep(10000000);
-                            }
-                            array_push($results, json_decode($res->getBody(), true));
-                        }
-                    } */
 
                     if (isset($metafields['metafields']) && count($metafields['metafields']) == 0) {
 
@@ -509,6 +492,58 @@ class CustomersController extends Controller {
         }
 
         return $results;
+    }
+
+    public function metadelete()
+    {
+        $api_url = 'https://c17edef9514920c1d2a6aeaf9066b150:afc86df7e11dcbe0ab414fa158ac1767@mall-hello.myshopify.com';
+        $client = new \GuzzleHttp\Client();
+
+        $terceros = Tercero::all();
+        $results = array();
+
+        foreach ($terceros as $tercero) {
+
+            $ganacia = $tercero->total_price_orders * 0.05;
+
+            if ($ganacia >= 1000) {
+
+                $find = Customer::where('customer_id', $tercero->customer_id)
+                    ->where('email', $tercero->email)
+                    ->first();
+
+                if (count($find) > 0) {
+
+                    $update = Tercero::find($find->id);
+
+
+                    $res = $client->request('get', $api_url . '/admin/customers/' . $update->customer_id . '/metafields.json', ['delay' => 1, 'timeout' => 1]);
+                    $metafields = json_decode($res->getBody(), true);
+
+
+                    if (isset($metafields['metafields']) && count($metafields['metafields']) > 0) {
+
+                        foreach ($metafields['metafields'] as $metafield) {
+
+                            $res = $client->request('delete', $api_url . '/admin/metafields/'. $metafield['id'] .'.json');
+                            $headers = $res->getHeaders()['X-Shopify-Shop-Api-Call-Limit'];
+
+                            $x = explode('/', $headers[0]);
+                            $diferencia = $x[1] - $x[0];
+
+                            if ($diferencia < 10) {
+                                usleep(10000000);
+                            }
+                            array_push($results, json_decode($res->getBody(), true));
+                        }
+                    }
+
+                }
+            }
+        }
+
+        return $results;
+
     }
 
     public function gifts()
@@ -816,6 +851,7 @@ class CustomersController extends Controller {
 
         $orders = Order::where('financial_status', 'pending')->get();
         $contador = 0;
+        $contadora = 0;
 
         foreach ($orders as $order) {
 
@@ -844,9 +880,28 @@ class CustomersController extends Controller {
                         'payment_type_id' => $result['response']['results'][0]['payment_type_id']
                     ]);
                 }
+            } else {
+
+                $contadora ++;
+
+                if ($contadora  == 300) {
+                    usleep(500000);
+                    $contadora = 0;
+                }
+
+                $result = $mp->get(payments . $order->checkout_id . access . ACCESS_TOKEN);
+
+                if (isset($result['response']['results']) && count($result['response']['results']) > 0) {
+                    $find = Logorder::where('order_id', $order->order_id)->where('checkout_id', $order->checkout_id)->first();
+
+                    $update = Logorder::find($find->id);
+                    $update->status_shopify = $order->financial_status;
+                    $update->status_mercadopago = $result['response']['results'][0]['status'];
+                    $update->save();
+                }
+
             }
         }
-
 
         return response()->json(['status' => 'finished'], 200);
     }

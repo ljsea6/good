@@ -19,6 +19,8 @@ class Kernel extends ConsoleKernel
         \App\Console\Commands\GetOrders::class,
         \App\Console\Commands\GetCustomers::class,
         \App\Console\Commands\GetFathers::class,
+        \App\Console\Commands\MercadoPago::class,
+        \App\Console\Commands\Metafields::class,
     ];
 
     /**
@@ -46,5 +48,11 @@ class Kernel extends ConsoleKernel
         
         $schedule->command('get:orders')
                  ->twiceDaily(14, 23);
+
+        $schedule->command('get:mercadopago')
+            ->dailyAt('22:30');
+
+        $schedule->command('get:metafields')
+            ->dailyAt('23:30');
     }
 }

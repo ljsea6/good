@@ -30,6 +30,7 @@
                             <th>Código Envio Internacional</th>
                             <th>Código Envio Nacional</th>
                             <th>Estado Orden</th>
+                            <th>Acción</th>
                         </tr>
                         </thead>
                     </table>
@@ -46,7 +47,7 @@
             $('#orders').DataTable({
                 responsive: true,
                 processing: true,
-                serverSide: true,
+                //serverSide: true,
                 //deferRender: true,
                 pagingType: "full_numbers",
                 ajax: '{{route('admin.orders.paid')}}',
@@ -59,7 +60,8 @@
                     { data: 'fecha_compra', name: 'fecha_compra', orderable: true, searchable: true },
                     { data: 'codigo_envio_internacional', name: 'codigo_envio_internacional', orderable: true, searchable: true },
                     { data: 'codigo_envio', name: 'codigo_envio', orderable: true, searchable: true },
-                    { data: 'estado_orden', name: 'estado_orden', orderable: true, searchable: true }
+                    { data: 'estado_orden', name: 'estado_orden', orderable: true, searchable: true },
+                    { data: 'action', name: 'action', orderable: false, searchable: false }
                 ],
                 language: {
                     url: "{{ asset('css/Spanish.json') }}"
