@@ -23,9 +23,14 @@
                         <tr>
                             <th># Orden</th>
                             <th>Cliente</th>
+                            <th>Email</th>
+                            <th>Dirección</th>
+                            <th>Ciudad</th>
+                            <th>País</th>
                             <th>Precio</th>
                             <th>Detalle Orden</th>
                             <th>Estado</th>
+                            <th>Fecha Compra Cliente</th>
                             <th>Fecha Compra</th>
                             <th>Código Envio Internacional</th>
                             <th>Código Envio Nacional</th>
@@ -45,18 +50,27 @@
 
         $(document).ready(function(){
             $('#orders').DataTable({
+                dom: 'Bfrtip',
                 responsive: true,
                 processing: true,
-                //serverSide: true,
+                serverSide: true,
+                buttons: [
+                  'copy', 'csv', 'excel', 'pdf', 'print'
+                ],
                 //deferRender: true,
                 pagingType: "full_numbers",
                 ajax: '{{route('admin.orders.paid')}}',
                 columns: [
                     { data: 'name', name: 'name', orderable: true, searchable: true },
-                    { data: 'customer', name: 'customer', orderable: true, searchable: true },
+                    { data: 'customer', name: 'customer', orderable: false, searchable: true },
+                    { data: 'email', name: 'email', orderable: false, searchable: true },
+                    { data: 'address', name: 'address', orderable: false, searchable: true },
+                    { data: 'city', name: 'city', orderable: true, searchable: true },
+                    { data: 'country', name: 'country', orderable: false, searchable: true },
                     { data: 'value', name: 'value', orderable: true, searchable: true  },
                     { data: 'order', name: 'order', orderable: true, searchable: true  },
                     { data: 'financial_status', name: 'financial_status', orderable: true, searchable: true },
+                    { data: 'fecha_compra_cliente', name: 'fecha_compra_cliente', orderable: true, searchable: true },
                     { data: 'fecha_compra', name: 'fecha_compra', orderable: true, searchable: true },
                     { data: 'codigo_envio_internacional', name: 'codigo_envio_internacional', orderable: true, searchable: true },
                     { data: 'codigo_envio', name: 'codigo_envio', orderable: true, searchable: true },

@@ -123,6 +123,18 @@ class OrdersController extends Controller
                     return '<div align=left>'. $orden_sin .'</div>';
                 }
             })
+            ->addColumn('email', function ($send) {
+                return '<div align=left>'. $send->email .'</div>';
+            })
+            ->addColumn('address', function ($send) {
+                return '<div align=left>'. $send->billing_address['address1'] .'</div>';
+            })
+            ->addColumn('city', function ($send) {
+                return '<div align=left>'. $send->billing_address['city'] .'</div>';
+            })
+            ->addColumn('country', function ($send) {
+                return '<div align=left>'. $send->billing_address['country'] .'</div>';
+            })
             ->addColumn('value', function ($send) {
                 return '<div align=left>' . number_format($send->total_price) . '</div>';
             })
@@ -134,10 +146,11 @@ class OrdersController extends Controller
 
                     if(count($product['image']) > 0 && count($product['images']) > 0) {
 
-                                $result .= '<div class="container">
+
+                            $result .= '<div class="container">
                                                 <div class="row">
                                                     <div class="col-md-12">
-                                                         <p><strong>' . $item['title'] . '</strong></p>
+                                                         <p><strong>Nombre: ' . $item['title'] . '</strong></p>
                                                     </div>
                                                     <div class="col-md-12">
                                                         <!-- Left-aligned media object -->
@@ -146,16 +159,51 @@ class OrdersController extends Controller
                                                                 <img src="' . $product['image']['src'] . '" class="media-object" style="width:60px">
                                                             </div>
                                                             <div class="media-body">
-                                                                <h4 class="media-heading">Precio: ' . number_format($item['price']) . '</h4>
+                                                                <h4 class="media-heading">Precio unidad: ' . number_format($item['price']) . '</h4>
                                                                 <p>Cantidad: ' . $item['quantity'] . '</p>
+                                                                
                                                             </div>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div> <hr>';
+
+
                     }
                 }
-                return '
+
+                if (count($send->shipping_lines) > 0) {
+                    foreach ($send->shipping_lines as $line) {
+                        return '
+                  
+                            <div class="text-left">
+                                <button style="color: #f60620" class="btn-link" data-toggle="modal" data-target="#myModal'. $send->order_number .'">'. $send->order_number .'</button>
+                                <!-- Modal -->
+                                <div id="myModal'. $send->order_number .'" class="modal fade" role="dialog">
+                                    <div class="modal-dialog">
+                                        <!-- Modal content-->
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                                <h4 class="modal-title" style="color: #f60620">#'. $send->order_number .'</h4>
+                                            </div>
+                                            <div class="modal-body">
+                                                   '.$result.'
+                                                   <p>Costo Envio: '.number_format($line['price']) .'</p>
+                                                   <h4 class="media-heading">Total: ' . number_format($send->total_price) . '</h4>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                                                   
+                        ';
+                    }
+                } else {
+                        return '
                   
                     <div class="text-left">
                         <button style="color: #f60620" class="btn-link" data-toggle="modal" data-target="#myModal'. $send->order_number .'">'. $send->order_number .'</button>
@@ -170,6 +218,7 @@ class OrdersController extends Controller
                                     </div>
                                     <div class="modal-body">
                                            '.$result.'
+                                           <p>Costo Envio:  0</p>
                                            <h4 class="media-heading">Total: ' . number_format($send->total_price) . '</h4>
                                     </div>
                                     <div class="modal-footer">
@@ -178,12 +227,16 @@ class OrdersController extends Controller
                                 </div>
                             </div>
                         </div>
-                    </div>
-                                           
+                    </div>                        
                 ';
+
+                }
             })
             ->addColumn('financial_status', function ($send) {
                 return '<div align=left>' . $send->financial_status. '</div>';
+            })
+            ->addColumn('fecha_compra_cliente', function ($send) {
+                return '<div align=left>' . Carbon::parse($send->updated_at)->toFormattedDateString() . '</div>';
             })
             ->addColumn('fecha_compra', function ($send) {
                 return '<div align=left>' . Carbon::parse($send->fecha_compra)->toFormattedDateString() . '</div>';
@@ -1040,6 +1093,7 @@ class OrdersController extends Controller
 
                         $update = Order::find($result->id);
                         $update->financial_status = $order['financial_status'];
+                        $update->updated_at = Carbon::parse($order['updated_at']);
                         $update->save();
 
                         $product = Product::where('id', $order['line_items'][0]['product_id'])->get();
