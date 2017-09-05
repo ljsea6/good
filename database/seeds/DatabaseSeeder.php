@@ -12,7 +12,7 @@ class DatabaseSeeder extends Seeder {
     public function run() {
         Model::unguard();
 
-        $this->call(TipoTableSeeder::class);
+        /*$this->call(TipoTableSeeder::class);
         $this->call(CiudadTableSeeder::class);
         $this->call(CargoTableSeeder::class);
         $this->call(ResolucionTableSeeder::class);
@@ -20,8 +20,8 @@ class DatabaseSeeder extends Seeder {
         $this->call(ZonaTableSeeder::class);
         $this->call(SectorTableSeeder::class);
         $this->call(UserTableSeeder::class);
-        $this->call(EstadoTableSeeder::class);
-
+        $this->call(EstadoTableSeeder::class);*/
+        factory(\App\User::class, 50)->create();
         Model::reguard();
     }
 }

@@ -15,7 +15,9 @@
         "bican/roles": "2.1.*",
         "maatwebsite/excel": "~2.1.0",
         "guzzlehttp/guzzle": "^6.3",
-        "mercadopago/sdk": "0.5.2"
+        "mercadopago/sdk": "0.5.2",
+        "dingo/api": "1.0.*@dev",
+        "lucadegasperi/oauth2-server-laravel": "5.1.*"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",

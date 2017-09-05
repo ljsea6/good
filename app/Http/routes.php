@@ -15,6 +15,18 @@
  * Rutas del Api
  */
 
+$api = app('Dingo\Api\Routing\Router');
+
+$api->version('v1', function ($api) {
+
+    $api->group(['namespace' => 'App\Http\Controllers'], function ($api) {
+        $api->post('oauth/access_token', 'UsersController@authorization');
+        $api->group(['middleware' => 'api.auth'], function ($api) {
+            $api->resource('users', 'UsersController');
+        });
+    });
+
+});
 
 
 //Pdfs
@@ -57,6 +69,11 @@ Route::get('registro/payu', [ 'as' => 'PayuController@paybefore', 'as' =>'admin.
     Route::get('/pay', ['as' => 'pay', 'uses' => 'PaymentController@pay']); # You will need one more.
     Route::get('/payment/status', ['as' => 'payment_status', 'uses' => 'PaymentController@status']); /** * Using Named Routs to demonstrate all the possibilities. */ 
 Route::group(['prefix' => 'admin', 'middleware' => 'auth'], function () {
+
+    /* gifts
+     * */
+    Route::get('/gifts', ['uses' => 'CommissionsController@index', 'as' => 'admin.gifts.home']);
+    Route::any('/gifts/data', ['uses' => 'CommissionsController@anyData', 'as' => 'admin.gifts.data']);
 
     Route::get('/', ['uses' => 'AdminController@index', 'as' => 'admin.index']);
     Route::get('/network', ['uses' => 'AdminController@network', 'as' => 'admin.network']);

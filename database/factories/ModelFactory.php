@@ -11,7 +11,7 @@
 |
  */
 
-$factory->define(App\Entities\Tercero::class, function (Faker\Generator $faker) {
+/*$factory->define(App\Entities\Tercero::class, function (Faker\Generator $faker) {
     return [
         'identificacion' => '123456789',
         'nombres'        => $faker->firstName,
@@ -29,5 +29,14 @@ $factory->define(App\Entities\Tercero::class, function (Faker\Generator $faker) 
         'resolucion_id'  => 1,
         'zona_id'        => 1,
         'sector_id'      => 1,
+    ];
+});*/
+
+$factory->define(App\User::class, function (Faker\Generator $faker) {
+    return [
+        'name' => $faker->name,
+        'email' => $faker->email,
+        'password' => bcrypt('secret'),
+        'remember_token' => str_random(10)
     ];
 });

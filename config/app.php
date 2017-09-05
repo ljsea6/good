@@ -138,6 +138,9 @@ return [
         Illuminate\View\ViewServiceProvider::class,
         Yajra\Datatables\DatatablesServiceProvider::class,
         Maatwebsite\Excel\ExcelServiceProvider::class,
+        Dingo\Api\Provider\LaravelServiceProvider::class,
+        LucaDegasperi\OAuth2Server\Storage\FluentStorageServiceProvider::class,
+        LucaDegasperi\OAuth2Server\OAuth2ServerServiceProvider::class,
         /**
          * Application Service Providers...
          */
@@ -145,6 +148,7 @@ return [
         App\Providers\AuthServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
+        App\Providers\OAuthServiceProvider::class,
        
         Barryvdh\Debugbar\ServiceProvider::class,
         Styde\Html\HtmlServiceProvider::class,
@@ -207,6 +211,7 @@ return [
         'Datatables' => Yajra\Datatables\Datatables::class,
         'PDF'        => Barryvdh\DomPDF\Facade::class,
         'Excel'      => Maatwebsite\Excel\Facades\Excel::class,
+        'Authorizer' => LucaDegasperi\OAuth2Server\Facades\Authorizer::class,
         //'Payment' => Tzsk\Payu\Facade\Payment::class,
         
     ],

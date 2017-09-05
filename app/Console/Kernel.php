@@ -21,6 +21,7 @@ class Kernel extends ConsoleKernel
         \App\Console\Commands\GetFathers::class,
         \App\Console\Commands\MercadoPago::class,
         \App\Console\Commands\Metafields::class,
+        \App\Console\Commands\GiftsCards::class,
     ];
 
     /**
@@ -54,5 +55,8 @@ class Kernel extends ConsoleKernel
 
         $schedule->command('get:metafields')
             ->dailyAt('23:30');
+
+        $schedule->command('get:giftscards')
+            ->monthly();
     }
 }

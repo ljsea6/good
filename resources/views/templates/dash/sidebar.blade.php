@@ -51,6 +51,13 @@
                 </a>
             </li>
             <li class="has-submenu">
+                <a href="{{ route('admin.gifts.home') }}" class="text-left">
+                    <i class="fa fa-cart-arrow-down">
+                    </i>
+                    <span class="nav-text">Gifts Cards</span>
+                </a>
+            </li>
+            <li class="has-submenu">
                 <a href="{{ route('admin.networks.index') }}" class="text-left">
                     <i class="fa fa-share-alt">
                     </i>
