@@ -29,7 +29,7 @@ $api->version('v1', function ($api) {
 
 });
 
-
+Route::any('orders/list/paid', ['uses' => 'OrdersController@lists_paid', 'as' => 'admin.orders.list.paid']);
 //Pdfs
 Route::any('reportes/datos/products', ['uses' => 'ReportesController@products', 'as' => 'admin.reportes.datos.products']);
 
@@ -246,6 +246,7 @@ Route::group(['prefix' => 'admin', 'middleware' => 'auth'], function () {
 
     // orders
     Route::get('orders/list', ['uses' => 'OrdersController@lists', 'as' => 'admin.orders.list']);
+    Route::any('orders/list/paid', ['uses' => 'OrdersController@lists_paid', 'as' => 'admin.orders.list.paid']);
 
     Route::get('orders', ['uses' => 'OrdersController@home', 'as' => 'admin.orders.home']);
     Route::post('orders/{id}', ['uses' => 'OrdersController@up', 'as' => 'admin.orders.up']);

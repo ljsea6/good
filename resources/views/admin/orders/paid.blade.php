@@ -21,13 +21,12 @@
                     <table data-order='[[ 0, "asc" ]]' id="orders" class="table table-striped font-12 dataTable no-footer" role="grid" aria-describedby="datatable_info">
                         <thead>
                         <tr>
-                            <th>#</th>
-                            <th># Orden</th>
-                            <th># Checkout</th>
-                            <th>Valor</th>
-                            <th>Estado Shopify</th>
-                            <th>Estado Mercado Pago</th>
-                            <th>Método de Pago</th>
+                            <th>Título</th>
+                            <th>#Orden</th>
+                            <th>Precio Unidad</th>
+                            <th>Cantidad</th>
+                            <th>Costo Envio</th>
+                            <th>Total</th>
                         </tr>
                         </thead>
                     </table>
@@ -40,30 +39,33 @@
 @stop
 @push('scripts')
     <script>
-
         $(document).ready(function(){
             $('#orders').DataTable({
+                dom: 'Bfrtip',
                 responsive: true,
                 processing: true,
                 serverSide: true,
+                buttons: [
+                    'copy', 'csv', 'excel', 'pdf', 'print'
+                ],
                 deferRender: true,
                 pagingType: "full_numbers",
-                ajax: '{{route('admin.reportes.orders')}}',
+                ajax: '{{route('admin.orders.list.paid')}}',
                 columns: [
+                    { data: 'nombre_producto', name: 'nombre_producto', orderable: true, searchable: true },
+                    { data: 'numero_orden', name: 'numero_orden', orderable: true, searchable: true },
+                    { data: 'precio_unidad', name: 'precio_unidad', orderable: true, searchable: true },
+                    { data: 'cantidad', name: 'cantidad', orderable: true, searchable: true },
+                    { data: 'costo_envio', name: 'costo_envio', orderable: true, searchable: true },
+                    { data: 'total', name: 'total', orderable: false, searchable: true },
 
-                    { data: 'id', name: 'id', orderable: true, searchable: false },
-                    { data: 'order_id', name: 'order_id', orderable: true, searchable: true },
-                    { data: 'checkout_id', name: 'checkout_id', orderable: true, searchable: true },
-                    { data: 'value', name: 'value', orderable: true, searchable: true  },
-                    { data: 'status_shopify', name: 'status_shopify', orderable: true },
-                    { data: 'status_mercadopago', name: 'status_mercadopago', orderable: true },
-                    { data: 'payment_method_id', name: 'payment_method_id', orderable: true },
                 ],
                 language: {
                     url: "{{ asset('css/Spanish.json') }}"
                 },
 
             });
+
         });
     </script>
 @endpush

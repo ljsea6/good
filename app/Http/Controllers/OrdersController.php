@@ -22,6 +22,62 @@ class OrdersController extends Controller
         return view('admin.orders.paid');
     }
 
+    public function lists_paid()
+    {
+        $orders = Order::where('financial_status', 'paid')->get();
+        $result = array();
+        foreach ($orders as $order) {
+
+            foreach ($order->line_items as $item) {
+
+                if (isset($order->shipping_lines[0]['price'])){
+                    $data = [
+                        'nombre_producto' => $item['name'],
+                        'numero_orden' => $order->name,
+                        'precio_unidad' => number_format($item['price']),
+                        'cantidad' => number_format($item['quantity']),
+                        'costo_envio' => number_format($order->shipping_lines[0]['price']),
+                        'total' => number_format($order->total_price)
+                    ];
+                } else {
+                    $data = [
+                        'nombre_producto' => $item['name'],
+                        'numero_orden' => $order->name,
+                        'precio_unidad' => number_format($item['price']),
+                        'cantidad' => number_format($item['quantity']),
+                        'costo_envio' => number_format(0),
+                        'total' => number_format($order->total_price)
+                    ];
+                }
+                
+                array_push($result, $data);
+            }
+        }
+
+        $send = collect($result);
+
+        return Datatables::of($send)
+            ->addColumn('nombre_producto', function ($send) {
+                return '<div align=left>' . $send['nombre_producto'] . '</div>';
+            })
+            ->addColumn('numero_orden', function ($send) {
+                return '<div align=left>' . $send['numero_orden'] . '</div>';
+            })
+            ->addColumn('precio_unidad', function ($send) {
+                return '<div align=left>' . $send['precio_unidad'] . '</div>';
+            })
+            ->addColumn('cantidad', function ($send) {
+                return '<div align=left>' . $send['cantidad'] . '</div>';
+            })
+            ->addColumn('costo_envio', function ($send) {
+                return '<div align=left>' . $send['costo_envio'] . '</div>';
+            })
+            ->addColumn('total', function ($send) {
+                return '<div align=left>' . $send['total'] . '</div>';
+            })
+            ->make(true);
+    }
+
     public function home()
     {
         return view('admin.orders.home');
