@@ -24,6 +24,7 @@
                         <tr>
                             <th>#</th>
                             <th>Tercero</th>
+                            <th>Código</th>
                             <th>Gift Card</th>
                             <th>Ordenes</th>
                             <th>Precio</th>
@@ -50,6 +51,7 @@
                 columns: [
                     { data: 'id', name: 'id', orderable: true, searchable: true },
                     { data: 'customer', name: 'customer', orderable: true, searchable: true },
+                    { data: 'code', name: 'code', orderable: true, searchable: true },
                     { data: 'gift', name: 'gift', orderable: true, searchable: true },
                     { data: 'order', name: 'order', orderable: true, searchable: true  },
                     { data: 'value', name: 'value', orderable: true, searchable: true  },

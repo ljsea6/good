@@ -37,6 +37,7 @@ Route::get('terceros/data', 'TercerosController@anyData');
 
 Route::get('orders', 'OrdersController@orders');
 Route::get('customers/meta', 'CustomersController@meta');
+Route::get('customers/metadelete', 'CustomersController@metadelete');
 Route::get('customers/mercado', 'CustomersController@mercado');
 Route::get('gifts', 'CustomersController@gifts');
 Route::post('customers/create', 'CustomersController@create');

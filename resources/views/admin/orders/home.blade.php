@@ -43,7 +43,6 @@
             </div>
         </div>
     </div>
-
 @stop
 @push('scripts')
     <script>
@@ -57,7 +56,7 @@
                 buttons: [
                   'copy', 'csv', 'excel', 'pdf', 'print'
                 ],
-                //deferRender: true,
+                deferRender: true,
                 pagingType: "full_numbers",
                 ajax: '{{route('admin.orders.paid')}}',
                 columns: [
