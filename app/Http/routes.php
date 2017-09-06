@@ -245,6 +245,7 @@ Route::group(['prefix' => 'admin', 'middleware' => 'auth'], function () {
     Route::any('reportes/product', ['uses' => 'ProductsController@welcome', 'as' => 'admin.reportes.product']);
 
     // orders
+    Route::get('orders/list', ['uses' => 'OrdersController@lists', 'as' => 'admin.orders.list']);
 
     Route::get('orders', ['uses' => 'OrdersController@home', 'as' => 'admin.orders.home']);
     Route::post('orders/{id}', ['uses' => 'OrdersController@up', 'as' => 'admin.orders.up']);
@@ -262,6 +263,7 @@ Route::group(['prefix' => 'admin', 'middleware' => 'auth'], function () {
     Route::any('reportes/datos/products', ['uses' => 'ReportesController@products', 'as' => 'admin.reportes.datos.products']);
     Route::any('reportes/descargar', ['uses' => 'ReportesController@descargar', 'as' => 'admin.reportes.descargar']);
     Route::resource('reportes', 'ReportesController', ['only' => ['index']]);
+
     //Manifiestos
     Route::get('manifiestos/datos/{id}/', ['uses' => 'ManifiestosController@datos', 'as' => 'admin.manifiestos.datos']);
     Route::any('manifiestos/descargar', ['uses' => 'ManifiestosController@descargar', 'as' => 'admin.manifiestos.descargar']);

@@ -67,12 +67,32 @@
             </li>
 
             <li class="has-submenu">
+                <a href="#contabilidad" data-toggle="collapse" aria-expanded="false" class="text-left">
+                    <i class="fa fa-pie-chart">
+                    </i>
+                    <span class="nav-text">Contabilidad</span>
+                </a>
+                <div class="sub-menu collapse secondary list-style-circle" id="contabilidad">
+                    <ul>
+                        <li>
+                            <a href="{{ route('admin.orders.list') }}" class="text-left">
+                                <i class="fa fa-chevron-right">
+                                </i>
+                                <span class="nav-text">Ordenes Pagas</span>
+                            </a>
+                        </li>
+
+                    </ul>
+                </div>
+            </li>
+
+            {{--<li class="has-submenu">
                 <a href="{{ route('admin.reglas.index') }}" class="text-left">
                     <i class="fa fa-gavel">
                     </i>
                     <span class="nav-text">Reglas</span>
                 </a>
-            </li>
+            </li>--}}
             <li class="has-submenu">
                 <a href="#reportes" data-toggle="collapse" aria-expanded="false" class="text-left">
                     <i class="fa fa-bar-chart">

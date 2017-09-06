@@ -17,6 +17,11 @@ use Yajra\Datatables\Datatables;
 
 class OrdersController extends Controller
 {
+    public function lists()
+    {
+        return view('admin.orders.paid');
+    }
+
     public function home()
     {
         return view('admin.orders.home');
@@ -147,7 +152,7 @@ class OrdersController extends Controller
                     if(count($product['image']) > 0 && count($product['images']) > 0) {
 
 
-                            $result .= '<div class="container">
+                            $result .= '<div class="container" style="width: 100%">
                                                 <div class="row">
                                                     <div class="col-md-12">
                                                          <p><strong>Nombre: ' . $item['title'] . '</strong></p>
@@ -217,6 +222,7 @@ class OrdersController extends Controller
                                         <h4 class="modal-title" style="color: #f60620">#'. $send->order_number .'</h4>
                                     </div>
                                     <div class="modal-body">
+                                       
                                            '.$result.'
                                            <p>Costo Envio:  0</p>
                                            <h4 class="media-heading">Total: ' . number_format($send->total_price) . '</h4>
@@ -268,10 +274,14 @@ class OrdersController extends Controller
                                                     </div>
                                                     <div class="stepwizard-step">
                                                         <a type="button" class="btn btn-default btn-circle" disabled="disabled">3</a>
+                                                        <p>Envio Internacional</p>
+                                                    </div>
+                                                    <div class="stepwizard-step">
+                                                        <a type="button" class="btn btn-default btn-circle" disabled="disabled">4</a>
                                                         <p>Envio Nacional</p>
                                                     </div>
                                                     <div class="stepwizard-step">
-                                                        <a  type="button" class="btn btn-default btn-circle" disabled="disabled">4</a>
+                                                        <a  type="button" class="btn btn-default btn-circle" disabled="disabled">5</a>
                                                         <p>Entregado</p>
                                                     </div>
                                                 </div>
@@ -860,7 +870,7 @@ class OrdersController extends Controller
                 return '<div align=left>' . $send->checkout_id. '</div>';
             })
             ->addColumn('value', function ($send) {
-                return '<div align=left>' . $send->value . '</div>';
+                return '<div align=left>' . number_format($send->value) . '</div>';
             })
             ->addColumn('status_shopify', function ($send) {
                 return '<div align=left>' . $send->status_shopify . '</div>';
@@ -1444,5 +1454,6 @@ class OrdersController extends Controller
         }
         return $cont;
     }
+
 
 }

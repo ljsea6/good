@@ -28,6 +28,7 @@ class ReportesController extends Controller {
 
     public function anyCode()
     {
+        ini_set('memory_limit','1000M');
         $add = array();
         $customers = Customer::all();
 

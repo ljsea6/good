@@ -35,11 +35,11 @@
             buttons: [
                     'copy', 'csv', 'excel', 'pdf', 'print'
                 ],
-          aLengthMenu: [
-              [25, 50, 100, 200, -1],
-              [25, 50, 100, 200, "All"]
-          ],
-          iDisplayLength: -1,
+          //aLengthMenu: [
+              //[25, 50, 100, 200, -1],
+            //  [25, 50, 100, 200, "All"]
+          //],
+          //iDisplayLength: -1,
                responsive: true,
                processing: true,
                serverSide: true,
