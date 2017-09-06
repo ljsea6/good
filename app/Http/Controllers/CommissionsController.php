@@ -26,6 +26,10 @@ class CommissionsController extends Controller
                 $tercero = Tercero::find($send->tercero_id);
                 return '<div align=left>' . $tercero->nombres . '</div>';
             })
+            ->addColumn('code', function ($send) {
+                $tercero = Tercero::find($send->tercero_id);
+                return '<div align=left>' . $tercero->email . '</div>';
+            })
             ->addColumn('gift', function ($send) {
 
                 if (count($send->gift_card['form_params']['gift_card']) > 0) {

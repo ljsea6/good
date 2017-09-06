@@ -127,21 +127,39 @@ class GetCustomers extends Command
 
                 foreach ($customersresults as $customer) {
 
-                    $result = Tercero::where('email', $customer['email'])->get();
-                    
-                    if(count($result) === 0) {
-                        $aux = explode('@', strtolower($customer['email']));
-                        $tercero = new Tercero();
-                        $tercero->nombres = (empty($customer['first_name']) || $customer['first_name'] == null || $customer['first_name'] == '') ? $customer['email'] : $customer['first_name'];
-                        $tercero->apellidos = strtolower($customer['last_name']);
-                        $tercero->email = strtolower($customer['email']);
-                        $tercero->usuario = strtolower($customer['email']);
-                        $tercero->contraseña = bcrypt($aux[0]);
-                        $tercero->tipo_id = 1;
-                        $tercero->customer_id = $customer['customer_id'];
-                        $tercero->network_id = $customer['network_id'];
-                        $tercero->save();
-                    }
+                        $result = Tercero::where('email', $customer['email'])->get();
+
+                        if(count($result) === 0) {
+
+                            if ($customer['email'] == 'soportesoyhello@gmail.com') {
+
+                                $aux = explode('@', strtolower($customer['email']));
+                                $tercero = new Tercero();
+                                $tercero->nombres = (empty($customer['first_name']) || $customer['first_name'] == null || $customer['first_name'] == '') ? $customer['email'] : $customer['first_name'];
+                                $tercero->apellidos = strtolower($customer['last_name']);
+                                $tercero->email = strtolower('soyhello');
+                                $tercero->usuario = strtolower($customer['email']);
+                                $tercero->contraseña = bcrypt('soyhello.2017');
+                                $tercero->tipo_id = 1;
+                                $tercero->customer_id = $customer['customer_id'];
+                                $tercero->network_id = $customer['network_id'];
+                                $tercero->save();
+                                $tercero->networks()->attach(1, ['padre_id' => null]);
+
+                            } else {
+                                $aux = explode('@', strtolower($customer['email']));
+                                $tercero = new Tercero();
+                                $tercero->nombres = (empty($customer['first_name']) || $customer['first_name'] == null || $customer['first_name'] == '') ? $customer['email'] : $customer['first_name'];
+                                $tercero->apellidos = strtolower($customer['last_name']);
+                                $tercero->email = strtolower($customer['email']);
+                                $tercero->usuario = strtolower($customer['email']);
+                                $tercero->contraseña = bcrypt($aux[0]);
+                                $tercero->tipo_id = 1;
+                                $tercero->customer_id = $customer['customer_id'];
+                                $tercero->network_id = $customer['network_id'];
+                                $tercero->save();
+                            }
+                        }
                 }
             
         }

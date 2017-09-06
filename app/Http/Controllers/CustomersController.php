@@ -516,27 +516,32 @@ class CustomersController extends Controller {
 
                     $update = Tercero::find($find->id);
 
-
-                    $res = $client->request('get', $api_url . '/admin/customers/' . $update->customer_id . '/metafields.json', ['delay' => 1, 'timeout' => 1]);
-                    $metafields = json_decode($res->getBody(), true);
+                    if (count($update) > 0) {
 
 
-                    if (isset($metafields['metafields']) && count($metafields['metafields']) > 0) {
+                        $res = $client->request('get', $api_url . '/admin/customers/' . $update->customer_id . '/metafields.json', ['delay' => 1, 'timeout' => 1]);
+                        $metafields = json_decode($res->getBody(), true);
 
-                        foreach ($metafields['metafields'] as $metafield) {
 
-                            $res = $client->request('delete', $api_url . '/admin/metafields/'. $metafield['id'] .'.json');
-                            $headers = $res->getHeaders()['X-Shopify-Shop-Api-Call-Limit'];
+                        if (isset($metafields['metafields']) && count($metafields['metafields']) > 0) {
 
-                            $x = explode('/', $headers[0]);
-                            $diferencia = $x[1] - $x[0];
+                            foreach ($metafields['metafields'] as $metafield) {
 
-                            if ($diferencia < 10) {
-                                usleep(10000000);
+                                $res = $client->request('delete', $api_url . '/admin/metafields/'. $metafield['id'] .'.json');
+                                $headers = $res->getHeaders()['X-Shopify-Shop-Api-Call-Limit'];
+
+                                $x = explode('/', $headers[0]);
+                                $diferencia = $x[1] - $x[0];
+
+                                if ($diferencia < 10) {
+                                    usleep(10000000);
+                                }
+                                array_push($results, json_decode($res->getBody(), true));
                             }
-                            array_push($results, json_decode($res->getBody(), true));
                         }
                     }
+
+
 
                 }
             }
