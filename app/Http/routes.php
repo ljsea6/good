@@ -21,6 +21,7 @@ $api->version('v1', function ($api) {
 
     $api->group(['namespace' => 'App\Http\Controllers'], function ($api) {
         $api->post('oauth/access_token', 'UsersController@authorization');
+
         $api->group(['middleware' => 'api.auth'], function ($api) {
             $api->resource('users', 'UsersController');
         });

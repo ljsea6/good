@@ -42,6 +42,7 @@ class UsersController extends Controller
      */
     public function index()
     {
+
         $users = User::paginate(25);
 
         return $this->response->paginator($users, new UserTransformer);

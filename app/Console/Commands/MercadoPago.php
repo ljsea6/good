@@ -2,11 +2,13 @@
 
 namespace App\Console\Commands;
 
+use Doctrine\Common\Persistence\Mapping\MappingException;
 use Illuminate\Console\Command;
 
 use App\Order;
 use DB;
 use MP;
+use MercadoPagoException;
 
 use App\Logorder;
 
@@ -36,6 +38,23 @@ class MercadoPago extends Command
         parent::__construct();
     }
 
+    private function parseException($message)
+    {
+        $error = new \stdClass();
+        $error->code = 0;
+        $error->detail = '';
+        $posA = strpos($message, '-');
+        $posB = strpos($message, ':');
+        if($posA && $posB) {
+            $posA+=2;
+            $length = $posB - $posA;
+            // get code
+            $error->code = substr($message, $posA, $length);
+            // get message
+            $error->detail = substr($message, $posB+2);
+        }
+        return $error;
+    }
     /**
      * Execute the console command.
      *
@@ -58,18 +77,28 @@ class MercadoPago extends Command
 
         foreach ($orders as $order) {
 
+            $result = array();
+
             $results = Logorder::where('order_id', $order->order_id)->where('checkout_id', $order->checkout_id)->first();
+
 
             if (count($results) == 0) {
 
                 $contador ++;
 
                 if ($contador  == 300) {
-                    usleep(500000);
+                    usleep(1000000);
                     $contador = 0;
                 }
 
-                $result = $mp->get(payments . $order->checkout_id . access . ACCESS_TOKEN);
+                try {
+                    $result = $mp->get(payments . $order->checkout_id . access . ACCESS_TOKEN);
+                } catch (MercadoPagoException $e) {
+                    $paymentError = new \stdClass();
+                    $paymentError->parsed = $this->parseException($e->getMessage());
+                    $paymentError->data = $e->getMessage();
+                    $paymentError->code = $e->getCode();
+                }
 
                 if (isset($result['response']['results']) && count($result['response']['results']) > 0) {
 
@@ -88,7 +117,7 @@ class MercadoPago extends Command
                 $contadora ++;
 
                 if ($contadora  == 300) {
-                    usleep(500000);
+                    usleep(1000000);
                     $contadora = 0;
                 }
 

@@ -11,6 +11,8 @@ use DB;
 use MP;
 use App\Commision;
 use App\Logorder;
+use App\Product;
+use App\Entities\Network;
 
 class CustomersController extends Controller {
 
@@ -548,6 +550,8 @@ class CustomersController extends Controller {
         }
 
         return $results;
+
+
 
     }
 

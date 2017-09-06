@@ -67,7 +67,6 @@ class Metafields extends Command
                     $res = $client->request('get', $api_url . '/admin/customers/' . $update->customer_id . '/metafields.json', ['delay' => 1, 'timeout' => 1]);
                     $metafields = json_decode($res->getBody(), true);
 
-
                     if (isset($metafields['metafields']) && count($metafields['metafields']) == 0) {
 
                         $resd = $client->request('post', $api_url . '/admin/customers/' . $update->customer_id . '/metafields.json', array(
