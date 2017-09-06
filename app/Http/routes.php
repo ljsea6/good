@@ -76,6 +76,7 @@ Route::group(['prefix' => 'admin', 'middleware' => 'auth'], function () {
     Route::get('/gifts', ['uses' => 'CommissionsController@index', 'as' => 'admin.gifts.home']);
     Route::any('/gifts/data', ['uses' => 'CommissionsController@anyData', 'as' => 'admin.gifts.data']);
 
+
     Route::get('/', ['uses' => 'AdminController@index', 'as' => 'admin.index']);
     Route::get('/network', ['uses' => 'AdminController@network', 'as' => 'admin.network']);
     Route::get('/search', ['uses' => 'AdminController@search', 'as' => 'admin.search']);
@@ -251,6 +252,7 @@ Route::group(['prefix' => 'admin', 'middleware' => 'auth'], function () {
 
     Route::any('reportes/order', ['uses' => 'OrdersController@index', 'as' => 'admin.reportes.order']);
     Route::any('reportes/orders', ['uses' => 'OrdersController@orders', 'as' => 'admin.reportes.orders']);
+    Route::any('reportes/orders/status', ['uses' => 'OrdersController@status_orders', 'as' => 'admin.reportes.orders.status']);
 
     Route::any('reportes/codes', ['uses' => 'ReportesController@code', 'as' => 'admin.reportes.codes']);
     Route::any('reportes/code', ['uses' => 'ReportesController@anyCode', 'as' => 'admin.reportes.code']);

@@ -17,123 +17,119 @@ use Yajra\Datatables\Datatables;
 class ReportesController extends Controller {
     
 	public function index() 
-        {
+    {
             return view('admin.reportes.index');
 	}
-        
-        public function code () 
-        {
-            return view('admin.reportes.code');
-        }
-        
-        public function anyCode() 
-        {
-             $add = array();
-             $customers = Customer::all();
-        
-                foreach ($customers as $customer) {
-                    $finder = Customer::find($customer->id);
-                    if (isset($finder['addresses']) && count($finder['addresses']) > 0) {
-                        if (strtolower($customer->last_name) != strtolower($finder['addresses'][0]['last_name'])) {
-                            array_push($add, $customer);
-                        }
-                    }
 
+    public function code ()
+    {
+        return view('admin.reportes.code');
+    }
+
+    public function anyCode()
+    {
+        $add = array();
+        $customers = Customer::all();
+
+        foreach ($customers as $customer) {
+            $finder = Customer::find($customer->id);
+            if (isset($finder['addresses']) && count($finder['addresses']) > 0) {
+                if (strtolower($customer->last_name) != strtolower($finder['addresses'][0]['last_name'])) {
+                    array_push($add, $customer);
                 }
-                
-            $send = collect($add);
-            return Datatables::of($send)
-                ->addColumn('id', function ($send) {
-                    return '<div align=left>' . $send['id'] . '</div>';
-                })
-                ->addColumn('name', function ($send) {
-                    return '<div align=left>' . $send['first_name'] . '</div>';
-                })
-                ->addColumn('code', function ($send) {
-                    return '<div align=left>' . $send['last_name'] . '</div>';
-                })
-                ->addColumn('email', function ($send) {
-                    return '<div align=left>' . $send['email'] . '</div>';
-                })
-                ->addColumn('addresses', function ($send) {
-                    return '<div align=left>' . $send['addresses'][0]['last_name'] . '</div>';
-                })
-                ->make(true);
+            }
         }
 
-        public function products()
-        {
-            $products = Product::select('id', 'image')->get();
-            
-            
-            $totals = array();
-            foreach ($products as $product) {
-                if (count($product['image']['src']) === 0) {
-                    $finder = Product::find($product['id']);
-                    array_push($totals, $finder);
-                } 
-            }
-           
-            $send = collect($totals);
-            return Datatables::of($send)
-                ->addColumn('id', function ($send) {
-                    return '<div align=left>' . $send['id'] . '</div>';
-                })
-                ->addColumn('title', function ($send) {
-                    return '<div align=left>' . $send['title'] . ' </div>';
-                })
-                
-                ->make(true);
-        }
-        
-        public function anyData()
-        {
-             
-           $referidos  = DB::table('terceros')
-                            ->where('numero_referidos', '>', 0)
-                            ->where('numero_ordenes_referidos', '>', 0)
-                            ->where('total_price_orders', '>', 0)
-                            ->select('id', 'nombres', 'email', 'total_price_orders')
-                            ->get();
+        $send = collect($add);
+        return Datatables::of($send)
+            ->addColumn('id', function ($send) {
+                return '<div align=left>' . $send['id'] . '</div>';
+            })
+            ->addColumn('name', function ($send) {
+                return '<div align=left>' . $send['first_name'] . '</div>';
+            })
+            ->addColumn('code', function ($send) {
+                return '<div align=left>' . $send['last_name'] . '</div>';
+            })
+            ->addColumn('email', function ($send) {
+                return '<div align=left>' . $send['email'] . '</div>';
+            })
+            ->addColumn('addresses', function ($send) {
+                return '<div align=left>' . $send['addresses'][0]['last_name'] . '</div>';
+            })
+            ->make(true);
+    }
 
-            $report = array();
-            
-            foreach ($referidos as $referido) {
-                
-               
-                $aux = [
-                    'id' => $referido->id,
-                    'name' => $referido->nombres,
-                    'email' => $referido->email,
-                    'total' => $referido->total_price_orders,
-                    'ganancia' => $referido->total_price_orders * 0.05
-                ];
-               
-                array_push($report, $aux);
+    public function products()
+    {
+        $products = Product::select('id', 'image')->get();
+
+        $totals = array();
+        foreach ($products as $product) {
+            if (count($product['image']['src']) === 0) {
+                $finder = Product::find($product['id']);
+                array_push($totals, $finder);
             }
-            
-            $send = collect($report);
-            return Datatables::of($send)
-                ->addColumn('id', function ($send) {
-                    return '<div align=left> '. $send['id'] .'</div>';
-                })
-                ->addColumn('nombres', function ($send) {
-                    return '<div align=left>' . $send['name'] . '</div>';
-                })
-                ->addColumn('email', function ($send) {
-                    return '<div align=left>' . $send['email'] . '</div>';
-                })
-                ->addColumn('total', function ($send) {
-                    return '<div align=left>' . number_format($send['total']) . '</div>';
-                })
-                
-                ->addColumn('ganancia', function ($send) {
-                    return '<div align=left>' . number_format($send['ganancia']) . '</div>';
-                })
-                ->make(true);
         }
-        
-        
+
+        $send = collect($totals);
+        return Datatables::of($send)
+            ->addColumn('id', function ($send) {
+                return '<div align=left>' . $send['id'] . '</div>';
+            })
+            ->addColumn('title', function ($send) {
+                return '<div align=left>' . $send['title'] . ' </div>';
+            })
+            ->make(true);
+    }
+
+    public function anyData()
+    {
+
+        $referidos  = DB::table('terceros')
+            ->where('numero_referidos', '>', 0)
+            ->where('numero_ordenes_referidos', '>', 0)
+            ->where('total_price_orders', '>', 0)
+            ->select('id', 'nombres', 'email', 'total_price_orders')
+            ->get();
+
+        $report = array();
+
+        foreach ($referidos as $referido) {
+
+
+            $aux = [
+                'id' => $referido->id,
+                'name' => $referido->nombres,
+                'email' => $referido->email,
+                'total' => $referido->total_price_orders,
+                'ganancia' => $referido->total_price_orders * 0.05
+            ];
+
+            array_push($report, $aux);
+        }
+
+        $send = collect($report);
+        return Datatables::of($send)
+            ->addColumn('id', function ($send) {
+                return '<div align=left> '. $send['id'] .'</div>';
+            })
+            ->addColumn('nombres', function ($send) {
+                return '<div align=left>' . $send['name'] . '</div>';
+            })
+            ->addColumn('email', function ($send) {
+                return '<div align=left>' . $send['email'] . '</div>';
+            })
+            ->addColumn('total', function ($send) {
+                return '<div align=left>' . number_format($send['total']) . '</div>';
+            })
+
+            ->addColumn('ganancia', function ($send) {
+                return '<div align=left>' . number_format($send['ganancia']) . '</div>';
+            })
+            ->make(true);
+    }
+
 	public function datos(Request $req) {
             $entregas = Estado::select('id','nombre','alias')->where('padre_id','2')->get();
             $devoluciones = Estado::select('id','nombre','alias')->where('padre_id','3')->get();    
@@ -177,7 +173,7 @@ class ReportesController extends Controller {
             return view('admin.reportes.resultados',compact('resumenes','entregas','devoluciones','req'));
           }
 
-  public function descargar(Request $req) {
+    public function descargar(Request $req) {
 
     ini_set('memory_limit', '-1');
     ini_set('max_execution_time', 300);
