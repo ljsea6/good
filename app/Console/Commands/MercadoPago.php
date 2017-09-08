@@ -73,14 +73,13 @@ class MercadoPago extends Command
 
         $orders = Order::where('financial_status', 'pending')->get();
         $contador = 0;
-        $contadora = 0;
+
 
         foreach ($orders as $order) {
 
             $result = array();
 
             $results = Logorder::where('order_id', $order->order_id)->where('checkout_id', $order->checkout_id)->first();
-
 
             if (count($results) == 0) {
 
@@ -109,29 +108,36 @@ class MercadoPago extends Command
                         'status_shopify' => $order->financial_status,
                         'status_mercadopago' => $result['response']['results'][0]['status'],
                         'payment_method_id' => $result['response']['results'][0]['payment_method_id'],
-                        'payment_type_id' => $result['response']['results'][0]['payment_type_id']
+                        'payment_type_id' => $result['response']['results'][0]['payment_type_id'],
+                        'name' => $order->name
                     ]);
                 }
-            } else {
+            }
 
-                $contadora ++;
+            if (count($results) > 0) {
+                $contador ++;
 
-                if ($contadora  == 300) {
+                if ($contador  == 300) {
                     usleep(1000000);
-                    $contadora = 0;
+                    $contador = 0;
                 }
 
-                $result = $mp->get(payments . $order->checkout_id . access . ACCESS_TOKEN);
+                try {
+                    $result = $mp->get(payments . $order->checkout_id . access . ACCESS_TOKEN);
+                } catch (MercadoPagoException $e) {
+                    $paymentError = new \stdClass();
+                    $paymentError->parsed = $this->parseException($e->getMessage());
+                    $paymentError->data = $e->getMessage();
+                    $paymentError->code = $e->getCode();
+                }
 
                 if (isset($result['response']['results']) && count($result['response']['results']) > 0) {
-                    $find = Logorder::where('order_id', $order->order_id)->where('checkout_id', $order->checkout_id)->first();
 
-                    $update = Logorder::find($find->id);
-                    $update->status_shopify = $order->financial_status;
-                    $update->status_mercadopago = $result['response']['results'][0]['status'];
-                    $update->save();
+                    $log_update = Logorder::find($results->id);
+                    $log_update->status_mercadopago = $result['response']['results'][0]['status'];
+                    $log_update->status_shopify = $order->financial_status;
+                    $log_update->save();
                 }
-
             }
         }
 

@@ -45,7 +45,7 @@
                 dom: 'Bfrtip',
                 responsive: true,
                 processing: true,
-                serverSide: true,
+                serverSide: false,
                 buttons: [
                     'copy', 'csv', 'excel', 'pdf', 'print'
                 ],

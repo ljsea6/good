@@ -32,6 +32,15 @@ class ReportesController extends Controller {
         $add = array();
         $customers = Customer::all();
 
+        $terceros = Tercero::where('email', 'bonitosmsjs')
+            ->orWhere('email', 'diversionpura')
+            ->orWhere('email', 'futbolfinal')
+            ->orWhere('email', 'compraya')
+            ->orWhere('email', 'solofutbol')
+            ->orWhere('email', 'fergicienta')
+            ->orWhere('email', 'ladivacol')
+            ->get();
+
         foreach ($customers as $customer) {
             $finder = Customer::find($customer->id);
             if (isset($finder['addresses']) && count($finder['addresses']) > 0) {
@@ -41,22 +50,46 @@ class ReportesController extends Controller {
             }
         }
 
-        $send = collect($add);
+        $send = collect($terceros);
         return Datatables::of($send)
             ->addColumn('id', function ($send) {
                 return '<div align=left>' . $send['id'] . '</div>';
             })
             ->addColumn('name', function ($send) {
-                return '<div align=left>' . $send['first_name'] . '</div>';
+                return '<div align=left>' . $send['nombres'] . '</div>';
+            })
+            ->addColumn('last_name', function ($send) {
+                return '<div align=left>' . $send['apellidos'] . '</div>';
             })
             ->addColumn('code', function ($send) {
-                return '<div align=left>' . $send['last_name'] . '</div>';
-            })
-            ->addColumn('email', function ($send) {
                 return '<div align=left>' . $send['email'] . '</div>';
             })
-            ->addColumn('addresses', function ($send) {
-                return '<div align=left>' . $send['addresses'][0]['last_name'] . '</div>';
+            ->addColumn('numero_referido', function ($send) {
+                return '<div align=left>' . $send['numero_referidos'] . '</div>';
+            })
+            ->addColumn('numero_ordenes_referidos', function ($send) {
+                if ($send['numero_ordenes_referidos']  == null) {
+                    return '<div align=left>0</div>';
+                } else {
+                    return '<div align=left>' . $send['numero_ordenes_referidos'] . '</div>';
+                }
+
+            })
+            ->addColumn('total_price_orders', function ($send) {
+                if ($send['total_price_orders'] ==  null) {
+                    return '<div align=left>0</div>';
+                } else {
+                    return '<div align=left>' . $send['total_price_orders'] . '</div>';
+                }
+
+            })
+            ->addColumn('ganacias', function ($send) {
+                if ($send['ganacias'] == null) {
+                    return '<div align=left>0</div>';
+                } else {
+                    return '<div align=left>' . $send['ganacias'] . '</div>';
+                }
+
             })
             ->make(true);
     }
