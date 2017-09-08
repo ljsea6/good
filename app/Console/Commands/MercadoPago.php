@@ -69,7 +69,7 @@ class MercadoPago extends Command
 
         define('payments', '/v1/payments/search?external_reference=');
         define('access', '&access_token=');
-        define('ACCESS_TOKEN', $mp->get_access_token());
+        $ACCESS_TOKEN = $mp->get_access_token();
 
         $orders = Order::where('financial_status', 'pending')->get();
         $contador = 0;
@@ -92,7 +92,7 @@ class MercadoPago extends Command
                 }
 
                 try {
-                    $result = $mp->get(payments . $order->checkout_id . access . ACCESS_TOKEN);
+                    $result = $mp->get(payments . $order->checkout_id . access .  $ACCESS_TOKEN);
                 } catch (MercadoPagoException $e) {
                     $paymentError = new \stdClass();
                     $paymentError->parsed = $this->parseException($e->getMessage());
