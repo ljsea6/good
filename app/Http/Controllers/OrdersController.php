@@ -37,6 +37,7 @@ class OrdersController extends Controller
                         'precio_unidad' => number_format($item['price']),
                         'cantidad' => number_format($item['quantity']),
                         'costo_envio' => number_format($order->shipping_lines[0]['price']),
+                        'fecha_compra_cliente' => $order->created_at,
                         'total' => number_format($order->total_price)
                     ];
                 } else {
@@ -46,6 +47,7 @@ class OrdersController extends Controller
                         'precio_unidad' => number_format($item['price']),
                         'cantidad' => number_format($item['quantity']),
                         'costo_envio' => number_format(0),
+                        'fecha_compra_cliente' => $order->created_at,
                         'total' => number_format($order->total_price)
                     ];
                 }
@@ -71,6 +73,9 @@ class OrdersController extends Controller
             })
             ->addColumn('costo_envio', function ($send) {
                 return '<div align=left>' . $send['costo_envio'] . '</div>';
+            })
+            ->addColumn('fecha_compra_cliente', function ($send) {
+                return '<div align=left>' . Carbon::parse($send['fecha_compra_cliente'])->toFormattedDateString() . '</div>';
             })
             ->addColumn('total', function ($send) {
                 return '<div align=left>' . $send['total'] . '</div>';

@@ -26,6 +26,7 @@
                             <th>Precio Unidad</th>
                             <th>Cantidad</th>
                             <th>Costo Envio</th>
+                            <th>Fecha Compra</th>
                             <th>Total</th>
                         </tr>
                         </thead>
@@ -57,6 +58,7 @@
                     { data: 'precio_unidad', name: 'precio_unidad', orderable: true, searchable: true },
                     { data: 'cantidad', name: 'cantidad', orderable: true, searchable: true },
                     { data: 'costo_envio', name: 'costo_envio', orderable: true, searchable: true },
+                    { data: 'fecha_compra_cliente', name: 'fecha_compra_cliente', orderable: true, searchable: true},
                     { data: 'total', name: 'total', orderable: false, searchable: true },
 
                 ],

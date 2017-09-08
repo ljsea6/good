@@ -16,13 +16,13 @@
                     <span class="nav-text">Buscar Referidos</span>
                 </a>
             </li>
-            <li class="has-submenu">
+            {{--<li class="has-submenu">
                 <a href="{{ route('admin.network') }}" class="animsition-link text-left">
                     <i class="fa fa-sitemap">
                     </i>
                     <span class="nav-text">Referidos</span>
                 </a>
-            </li>
+            </li>--}}
             <li class="has-submenu">
                 <a href="#send" data-toggle="collapse" aria-expanded="false" class="text-left">
                     <i class="fa fa-folder-open">
@@ -43,28 +43,9 @@
                 </div>
             </li>
             @permission('configuracion')
-            <li class="has-submenu">
-                <a href="{{ route('admin.orders.home') }}" class="text-left">
-                    <i class="fa fa-slack">
-                    </i>
-                    <span class="nav-text">Ordenes</span>
-                </a>
-            </li>
-            <li class="has-submenu">
-                <a href="{{ route('admin.gifts.home') }}" class="text-left">
-                    <i class="fa fa-cart-arrow-down">
-                    </i>
-                    <span class="nav-text">Gifts Cards</span>
-                </a>
-            </li>
-            <li class="has-submenu">
-                <a href="{{ route('admin.networks.index') }}" class="text-left">
-                    <i class="fa fa-share-alt">
-                    </i>
-                    <span class="nav-text">Redes</span>
-                </a>
-                
-            </li>
+
+
+
 
             <li class="has-submenu">
                 <a href="#contabilidad" data-toggle="collapse" aria-expanded="false" class="text-left">
@@ -85,7 +66,25 @@
                     </ul>
                 </div>
             </li>
+            <li class="has-submenu">
+                <a href="#logistica" data-toggle="collapse" aria-expanded="false" class="text-left">
+                    <i class="fa fa-skyatlas">
+                    </i>
+                    <span class="nav-text">Logistica</span>
+                </a>
+                <div class="sub-menu collapse secondary list-style-circle" id="logistica">
+                    <ul>
+                        <li>
+                            <a href="{{ route('admin.orders.home') }}" class="text-left">
+                                <i class="fa fa-slack">
+                                </i>
+                                <span class="nav-text">Ordenes</span>
+                            </a>
+                        </li>
 
+                    </ul>
+                </div>
+            </li>
             {{--<li class="has-submenu">
                 <a href="{{ route('admin.reglas.index') }}" class="text-left">
                     <i class="fa fa-gavel">
@@ -97,10 +96,43 @@
                 <a href="#reportes" data-toggle="collapse" aria-expanded="false" class="text-left">
                     <i class="fa fa-bar-chart">
                     </i>
-                    <span class="nav-text">Reportes</span>
+                    <span class="nav-text">Informers</span>
                 </a>
                 <div class="sub-menu collapse secondary list-style-circle" id="reportes">
                     <ul>
+                        <li>
+                            <a href="{{ route('admin.gifts.home') }}" class="text-left">
+                                <i class="fa fa-money">
+                                </i>
+                                <span class="nav-text">Bonos Digitales</span>
+                            </a>
+                        </li>
+
+
+                        <li>
+                            <a href="{{ route('admin.reportes.codes') }}" class="text-left">
+                                <i class="fa fa-money">
+                                </i>
+                                Código
+                            </a>
+                        </li>
+
+                        <li>
+                            <a href="{{route('admin.reportes.order')}}" class="text-left">
+                                <i class="fa fa-money">
+                                </i>
+                                Estado Ordenes
+                            </a>
+                        </li>
+
+                        <li>
+                            <a href="{{route('admin.reportes.product')}}" class="text-left">
+                                <i class="fa fa-money">
+                                </i>
+                                Productos sin foto
+                            </a>
+                        </li>
+
                         <li>
                             <a href="{{ route('admin.reportes.index') }}" class="text-left">
                                 <i class="fa fa-money">
@@ -109,37 +141,11 @@
                             </a>
                         </li>
                     </ul>
-                    <ul>
-                        <li>
-                            <a href="{{ route('admin.reportes.codes') }}" class="text-left">
-                                <i class="fa fa-money">
-                                </i>
-                                Código
-                            </a>
-                        </li>
-                    </ul>
-                    <ul>
-                        <li>
-                            <a href="{{route('admin.reportes.order')}}" class="text-left">
-                                <i class="fa fa-money">
-                                </i>
-                                Estado Ordenes
-                            </a>
-                        </li>
-                    </ul>
-                    <ul>
-                        <li>
-                            <a href="{{route('admin.reportes.product')}}" class="text-left">
-                                <i class="fa fa-money">
-                                </i>
-                                Productos sin foto
-                            </a>
-                        </li>
-                    </ul>
                 </div>
             </li>
             
             @endpermission('configuracion')
+
             @permission('configuracion')
             <!-- <li class="has-submenu">
                 <a href="#submenu5" data-toggle="collapse" aria-expanded="false" class="text-left">
@@ -208,77 +214,92 @@
                             </a>
                         </li>
                         -->
-                        <li>
-                            <a href="{{ route('admin.terceros.index') }}" class="text-left">
-                                <i class="fa fa-user">
-                                </i>
-                                Terceros
-                            </a>
-                        </li>
-                        <li>
-                            <a href="{{ route('admin.proveedores.index') }}" class="text-left">
-                                <i class="fa fa-user">
-                                </i>
-                                Proveedores
-                            </a>
-                        </li>
-                        <li>
-                            <a href="{{ route('admin.perfiles.index') }}" class="text-left">
-                                <i class="fa fa-unlock">
-                                </i>
-                                Roles
-                            </a>
-                        </li>
-                        <li>
-                        <a href="{{ route('admin.dominios.index') }}" class="text-left">
-                            <i class="fa fa-share-alt">
-                            </i>
-                            Dominios
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ route('admin.ciudades.index') }}" class="text-left">
-                            <i class="fa fa-bank">
-                            </i>
-                            Ciudades
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{route('admin.products.index')}}" class="text-left">
-                            <i class="fa  fa-list">
-                            </i>
-                            Productos
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ route('admin.resoluciones.index') }}" class="text-left">
-                            <i class="fa fa-sort-numeric-asc">
-                            </i>
-                            Resoluciones
-                        </a>
-                    </li>                   
-                    <li>
-                        <a href="{{ route('admin.oficinas.index') }}" class="text-left">
-                            <i class="fa fa-building">
-                            </i>
-                            Oficinas
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#" class="text-left">
-                            <i class="fa fa-building">
-                            </i>
-                            Centros de negocio
-                        </a>
-                    </li>
-                    
-                    <li>
-                        <a href="{{ route('admin.comisiones.index') }}" class="text-left">
-                            <i class="fa fa-money">
-                            </i>
-                            Comisiones
-                        </a>
-                    </li>
+                            {{--<li>
+                                <a href="#" class="text-left">
+                                    <i class="fa fa-building">
+                                    </i>
+                                    Centros de negocio
+                                </a>
+                            </li>--}}
+                            <li>
+                                <a href="{{ route('admin.ciudades.index') }}" class="text-left">
+                                    <i class="fa fa-bank">
+                                    </i>
+                                    Ciudades
+                                </a>
+                            </li>
+
+                            {{--<li>
+                                <a href="{{ route('admin.comisiones.index') }}" class="text-left">
+                                    <i class="fa fa-money">
+                                    </i>
+                                    Comisiones
+                                </a>
+                            </li>--}}
+                            <li>
+                                <a href="{{ route('admin.dominios.index') }}" class="text-left">
+                                    <i class="fa fa-share-alt">
+                                    </i>
+                                    Dominios
+                                </a>
+                            </li>
+
+
+
+                            <li>
+                                <a href="{{ route('admin.oficinas.index') }}" class="text-left">
+                                    <i class="fa fa-building">
+                                    </i>
+                                    Oficinas
+                                </a>
+                            </li>
+
+
+                            <li>
+                                <a href="{{route('admin.products.index')}}" class="text-left">
+                                    <i class="fa  fa-list">
+                                    </i>
+                                    Productos
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{{ route('admin.proveedores.index') }}" class="text-left">
+                                    <i class="fa fa-user">
+                                    </i>
+                                    Proveedores
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{{ route('admin.networks.index') }}" class="text-left">
+                                    <i class="fa fa-share-alt">
+                                    </i>
+                                    <span class="nav-text">Redes</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{{ route('admin.resoluciones.index') }}" class="text-left">
+                                    <i class="fa fa-sort-numeric-asc">
+                                    </i>
+                                    Resoluciones
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{{ route('admin.perfiles.index') }}" class="text-left">
+                                    <i class="fa fa-unlock">
+                                    </i>
+                                    Roles
+                                </a>
+                            </li>
+
+                            <li>
+                                <a href="{{ route('admin.terceros.index') }}" class="text-left">
+                                    <i class="fa fa-user">
+                                    </i>
+                                    Terceros
+                                </a>
+                            </li>
+
+
                     </ul>
                 </div>
             </li>

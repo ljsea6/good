@@ -123,7 +123,7 @@ Route::group(['prefix' => 'admin', 'middleware' => 'auth'], function () {
     Route::get('comisiones', ['uses' => 'ComisionesController@index', 'as' => 'admin.comisiones.index']);
     Route::get('comisiones/data', ['uses' => 'ComisionesController@anyData', 'as' => 'comisiones.data']);
     Route::get('comisiones/create', ['uses' => 'ComisionesController@create', 'as' => 'admin.comisiones.create']);
-    Route::resource('comisiones', 'comisionesController');
+    Route::resource('comisiones', 'ComisionesController');
     //Route::get('proveedores/update', ['uses' => 'ProveedoresController@update', 'as' => 'admin.Proveedores.update']);
     Route::resource('proveedores', 'ProveedoresController');
     Route::get('Proveedores/{id}/destroy', ['uses' => 'UsuariosController@destroy', 'as' => 'admin.usuarios.destroy']);
