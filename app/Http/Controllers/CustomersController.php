@@ -510,9 +510,7 @@ class CustomersController extends Controller {
 
             if ($ganacia >= 1000) {
 
-                $find = Customer::where('customer_id', $tercero->customer_id)
-                    ->where('email', $tercero->email)
-                    ->first();
+                $find = Customer::where('customer_id', $tercero->customer_id)->first();
 
                 if (count($find) > 0) {
 
@@ -521,7 +519,7 @@ class CustomersController extends Controller {
                     if (count($update) > 0) {
 
 
-                        $res = $client->request('get', $api_url . '/admin/customers/' . $update->customer_id . '/metafields.json', ['delay' => 1, 'timeout' => 1]);
+                        $res = $client->request('get', $api_url . '/admin/customers/' . $update->customer_id . '/metafields.json');
                         $metafields = json_decode($res->getBody(), true);
 
 
