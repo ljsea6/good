@@ -64,13 +64,11 @@ class GetOrders extends Command
                 $entera = $entera + 1;
             }
 
-
             for ($i = 1; $i <= $entera; $i++) {
                 $res = $client->request('GET', $api_url . '/admin/orders.json?limit=250&&status=any&&page=' . $i);
                 $results = json_decode($res->getBody(), true);
                 array_push($totalOrders, $results);
             }
-
 
             $resultsOrders = array();
 
@@ -81,8 +79,6 @@ class GetOrders extends Command
 
             }
 
-
-
             $network_id = Network::select('id')->where('name', 'shopify')->get();
 
             foreach ($resultsOrders as $order) {
@@ -91,10 +87,6 @@ class GetOrders extends Command
                     ->where('name', $order['name'])
                     ->where('order_id', $order['id'])
                     ->get();
-
-                //$verified = Customer::where('email', $order['email'])->get();
-
-                //if(count($verified) > 0) {
 
                 if(count($response) == 0) {
 
@@ -193,6 +185,12 @@ class GetOrders extends Command
 
                                     $res = $client->request('get', $api_url . '/admin/customers/' . $find->customer_id . '/metafields.json');
                                     $metafields = json_decode($res->getBody(), true);
+                                    $headers = $res->getHeaders()['X-Shopify-Shop-Api-Call-Limit'];
+                                    $x = explode('/', $headers[0]);
+                                    $diferencia = $x[1] - $x[0];
+                                    if ($diferencia < 10) {
+                                        usleep(10000000);
+                                    }
                                     $results = array();
 
                                     if (count($metafields['metafields']) > 0) {
@@ -211,6 +209,12 @@ class GetOrders extends Command
                                                         )
                                                     )
                                                 );
+                                                $headers = $res->getHeaders()['X-Shopify-Shop-Api-Call-Limit'];
+                                                $x = explode('/', $headers[0]);
+                                                $diferencia = $x[1] - $x[0];
+                                                if ($diferencia < 10) {
+                                                    usleep(10000000);
+                                                }
 
                                                 array_push($results, json_decode($res->getBody(), true));
                                             }
@@ -227,6 +231,12 @@ class GetOrders extends Command
                                                         )
                                                     )
                                                 );
+                                                $headers = $res->getHeaders()['X-Shopify-Shop-Api-Call-Limit'];
+                                                $x = explode('/', $headers[0]);
+                                                $diferencia = $x[1] - $x[0];
+                                                if ($diferencia < 10) {
+                                                    usleep(10000000);
+                                                }
 
                                                 array_push($results, json_decode($res->getBody(), true));
                                             }
@@ -243,6 +253,12 @@ class GetOrders extends Command
                                                         )
                                                     )
                                                 );
+                                                $headers = $res->getHeaders()['X-Shopify-Shop-Api-Call-Limit'];
+                                                $x = explode('/', $headers[0]);
+                                                $diferencia = $x[1] - $x[0];
+                                                if ($diferencia < 10) {
+                                                    usleep(10000000);
+                                                }
 
                                                 array_push($results, json_decode($res->getBody(), true));
                                             }
@@ -252,9 +268,7 @@ class GetOrders extends Command
                             }
                         }
                     }
-
                 }
-                //}
             }
         }
 

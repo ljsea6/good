@@ -60,12 +60,18 @@ class Metafields extends Command
 
                 if (count($find) > 0) {
 
-                    $update = Tercero::find($find->id);
+                    $update = Tercero::find($tercero->id);
                     $update->ganacias = $update->total_price_orders * 0.05;
                     $update->save();
 
                     $res = $client->request('get', $api_url . '/admin/customers/' . $update->customer_id . '/metafields.json', ['delay' => 1, 'timeout' => 1]);
                     $metafields = json_decode($res->getBody(), true);
+                    $headers = $res->getHeaders()['X-Shopify-Shop-Api-Call-Limit'];
+                    $x = explode('/', $headers[0]);
+                    $diferencia = $x[1] - $x[0];
+                    if ($diferencia < 10) {
+                        usleep(10000000);
+                    }
 
                     if (isset($metafields['metafields']) && count($metafields['metafields']) == 0) {
 
@@ -148,6 +154,78 @@ class Metafields extends Command
                         }
 
                         array_push($results, json_decode($resg->getBody(), true));
+                    }
+
+                    if (isset($metafields['metafields']) && count($metafields['metafields']) > 0) {
+
+                        foreach ($metafields['metafields'] as $metafield) {
+
+                            if ($metafield['key'] === 'referidos') {
+                                $res = $client->request('put', $api_url . '/admin/customers/' . $update->customer_id . '/metafields/' . $metafield['id'] . '.json', array(
+                                        'form_params' => array(
+                                            'metafield' => array(
+                                                'namespace' => 'customers',
+                                                'key' => 'referidos',
+                                                'value' => ($update->numero_referidos == null || $update->numero_referidos == 0) ? 0 : $update->numero_referidos,
+                                                'value_type' => 'integer'
+                                            )
+                                        )
+                                    )
+                                );
+                                $headers = $res->getHeaders()['X-Shopify-Shop-Api-Call-Limit'];
+                                $x = explode('/', $headers[0]);
+                                $diferencia = $x[1] - $x[0];
+                                if ($diferencia < 10) {
+                                    usleep(10000000);
+                                }
+
+                                array_push($results, json_decode($res->getBody(), true));
+                            }
+
+                            if ($metafield['key'] === 'compras') {
+                                $res = $client->request('put', $api_url . '/admin/customers/' . $update->customer_id . '/metafields/' . $metafield['id'] . '.json', array(
+                                        'form_params' => array(
+                                            'metafield' => array(
+                                                'namespace' => 'customers',
+                                                'key' => 'compras',
+                                                'value' => ($update->numero_ordenes_referidos == null || $update->numero_ordenes_referidos == 0) ? 0 : $update->numero_ordenes_referidos,
+                                                'value_type' => 'integer'
+                                            )
+                                        )
+                                    )
+                                );
+                                $headers = $res->getHeaders()['X-Shopify-Shop-Api-Call-Limit'];
+                                $x = explode('/', $headers[0]);
+                                $diferencia = $x[1] - $x[0];
+                                if ($diferencia < 10) {
+                                    usleep(10000000);
+                                }
+
+                                array_push($results, json_decode($res->getBody(), true));
+                            }
+
+                            if ($metafield['key'] === 'valor') {
+                                $res = $client->request('put', $api_url . '/admin/customers/' . $update->customer_id . '/metafields/' . $metafield['id'] . '.json', array(
+                                        'form_params' => array(
+                                            'metafield' => array(
+                                                'namespace' => 'customers',
+                                                'key' => 'valor',
+                                                'value' => '' . ( $update->ganacias == null || $update->ganacias == 0) ? 0 : number_format($update->ganacias) . '',
+                                                'value_type' => 'string'
+                                            )
+                                        )
+                                    )
+                                );
+                                $headers = $res->getHeaders()['X-Shopify-Shop-Api-Call-Limit'];
+                                $x = explode('/', $headers[0]);
+                                $diferencia = $x[1] - $x[0];
+                                if ($diferencia < 10) {
+                                    usleep(10000000);
+                                }
+
+                                array_push($results, json_decode($res->getBody(), true));
+                            }
+                        }
                     }
                 }
             }
