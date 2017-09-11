@@ -1,16 +1,15 @@
 <?php
 namespace App\Entities;
 
-use Bican\Roles\Contracts\HasRoleAndPermission as HasRoleAndPermissionContract;
 use Bican\Roles\Traits\HasRoleAndPermission;
+use Bican\Roles\Contracts\HasRoleAndPermission as HasRoleAndPermissionContract;
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Auth\Passwords\CanResetPassword;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use App\Order;
-use App\Entities\Network;
+
 
 
 class Tercero extends Model implements AuthenticatableContract, CanResetPasswordContract, HasRoleAndPermissionContract {
