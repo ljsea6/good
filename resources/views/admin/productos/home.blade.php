@@ -43,17 +43,17 @@
           //iDisplayLength: -1,
                responsive: true,
                processing: true,
-               serverSide: true,
+               serverSide: false,
                deferRender: true,
                pagingType: "full_numbers",
                ajax: '{{route('admin.products.data')}}',
                columns: [
                     { data: 'id', name: 'id', orderable: true, searchable: false },
                     { data: 'title', name: 'title', orderable: true, searchable: true },
-                    { data: 'precio_unidad', name: 'precio_unidad', orderable: true, searchable: true  },
+                    { data: 'precio_unidad', name: 'precio_unidad', orderable: true, searchable: true},
                     { data: 'unidades_vendidas', name: 'unidades_vendidas', orderable: true },
-                    { data: 'tipo_producto', name: 'tipo_producto', orderable: true },
-                    { data: 'porcentaje', name: 'porcentaje', orderable: true },
+                    { data: 'tipo_producto', name: 'tipo_producto', orderable: true, searchable: true},
+                    { data: 'porcentaje', name: 'porcentaje', orderable: true }
                 ],
                 language: {
                     url: "{{ asset('css/Spanish.json') }}"

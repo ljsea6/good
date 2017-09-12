@@ -36,11 +36,10 @@ class ProductsController extends Controller
     
     public function anyData()
     {
-        $products = Product::select('id', 'title', 'precio_unidad', 'unidades_vendidas', 'porcentaje')
+        $products = Product::select('id', 'title', 'precio_unidad', 'unidades_vendidas', 'porcentaje', 'tipo_producto', 'variants')
                 ->where('unidades_vendidas', '>', 0)
                 ->get();
 
-        
         $send = collect($products);
 
         return Datatables::of($send)
@@ -52,7 +51,7 @@ class ProductsController extends Controller
                 return '<div align=left>' . $send['title'] . '</div>';
             })
             ->addColumn('precio_unidad', function ($send) {
-                return '<div align=left>' . number_format($send['precio_unidad']) . '</div>';
+                return '<div align=left>' . number_format($send['variants'][0]['price']) . '</div>';
             })
             ->addColumn('unidades_vendidas', function ($send) {
                 return '<div align=left>' . $send['unidades_vendidas'] . '</div>';
