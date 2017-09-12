@@ -247,6 +247,7 @@ Route::group(['prefix' => 'admin', 'middleware' => 'auth'], function () {
     // orders
     Route::get('orders/list', ['uses' => 'OrdersController@lists', 'as' => 'admin.orders.list']);
     Route::any('orders/list/paid', ['uses' => 'OrdersController@lists_paid', 'as' => 'admin.orders.list.paid']);
+    Route::any('orders/list/pending', ['uses' => 'OrdersController@lists_pending', 'as' => 'admin.orders.list.pending']);
 
     Route::get('orders', ['uses' => 'OrdersController@home', 'as' => 'admin.orders.home']);
     Route::post('orders/{id}', ['uses' => 'OrdersController@up', 'as' => 'admin.orders.up']);

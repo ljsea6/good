@@ -50,7 +50,7 @@ class OrdersController extends Controller
         ini_set('memory_limit','1000M');
         ini_set('xdebug.max_nesting_level', 120);
         ini_set('max_execution_time', 3000);
-        $orders = Order::where('financial_status', 'paid')->get();
+       /* $orders = Order::where('financial_status', 'paid')->get();
         $products = Product::all();
         $contador = 0;
         $cont = 0;
@@ -78,7 +78,7 @@ class OrdersController extends Controller
             $cont = 0;
         }
 
-        return 'echo';
+        return 'echo';*/
 
 
 
@@ -289,7 +289,7 @@ class OrdersController extends Controller
             }
         }*/
 
-        /*$orders = Order::where('financial_status', 'paid')->get();
+        $orders = Order::where('financial_status', 'paid')->get();
         $result = array();
         foreach ($orders as $order) {
 
@@ -345,7 +345,309 @@ class OrdersController extends Controller
             ->addColumn('total', function ($send) {
                 return '<div align=left>' . $send['total'] . '</div>';
             })
-            ->make(true);*/
+            ->make(true);
+    }
+    public function lists_pending()
+    {
+        ini_set('memory_limit','1000M');
+        ini_set('xdebug.max_nesting_level', 120);
+        ini_set('max_execution_time', 3000);
+        /* $orders = Order::where('financial_status', 'paid')->get();
+         $products = Product::all();
+         $contador = 0;
+         $cont = 0;
+         foreach ($products as $product) {
+             $contador++;
+             foreach ($orders as $order) {
+                 if (isset($order->line_items) && count($order->line_items) > 0) {
+
+                     foreach ($order->line_items as $item) {
+                         if ($item['product_id'] == $product->id) {
+                             $cont = $cont + $item['quantity'];
+                         }
+                     }
+                 }
+
+             }
+             if ($contador == 200) {
+                 usleep(1000000);
+                 $contador = 0;
+             }
+
+             $update = Product::find($product->id);
+             $update->unidades_vendidas = $cont;
+             $update->save();
+             $cont = 0;
+         }
+
+         return 'echo';*/
+
+
+
+        /*$totalProducts = array();
+
+        $api_url = 'https://c17edef9514920c1d2a6aeaf9066b150:afc86df7e11dcbe0ab414fa158ac1767@mall-hello.myshopify.com';
+        $client = new \GuzzleHttp\Client();
+        $res = $client->request('GET', $api_url . '/admin/collects/count.json?collection_id=338404417');
+        $headers = $res->getHeaders()['X-Shopify-Shop-Api-Call-Limit'];
+        $x = explode('/', $headers[0]);
+        $diferencia = $x[1] - $x[0];
+        if ($diferencia < 10) {
+            usleep(10000000);
+        }
+        $countProcucts = json_decode($res->getBody(), true);
+
+        $pagesNumber = $countProcucts['count']/250;
+        $number = explode( '.', $pagesNumber);
+        $entera = (int)$number[0];
+        $decimal = (int)$number[1];
+
+
+        if($decimal !== 0) {
+            $entera = $entera + 1;
+        }
+
+        for ($i = 1; $i <= $entera; $i++) {
+            $res = $client->request('GET', $api_url . '/admin/collects.json?collection_id=338404417&fields=product_id&limit=250&&page=' . $i);
+            $results = json_decode($res->getBody(), true);
+            $headers = $res->getHeaders()['X-Shopify-Shop-Api-Call-Limit'];
+            $x = explode('/', $headers[0]);
+            $diferencia = $x[1] - $x[0];
+            if ($diferencia < 10) {
+                usleep(10000000);
+            }
+            foreach ($results['collects'] as $p) {
+                array_push($totalProducts, $p);
+            }
+        }
+
+        $results = array();
+
+        foreach ($totalProducts as $item) {
+            array_push($results, $item['product_id']);
+        }*/
+
+
+        /*$orders = Order::all();
+        $i = 0;
+        $n = 0;
+        foreach ($orders as $order) {
+            $i = 0;
+            $n = 0;
+
+            if (isset($order->line_items) && count($order->line_items) > 0) {
+                foreach ($order->line_items as $item) {
+
+
+                    $product = Product::find($item['product_id']);
+
+                    if (strtolower($item['vendor'])  == 'nacional' || strtolower($item['vendor'])  == 'a - nacional') {
+                        $n++;
+
+                        if (count($product) > 0) {
+                            $product->tipo_producto = 'nacional';
+                            $product->save();
+                        }
+                    }
+                    if (strtolower($item['vendor'])  != 'nacional' && strtolower($item['vendor'])  != 'a - nacional') {
+                        $i++;
+
+                        if (count($product) > 0) {
+                            $product->tipo_producto = 'internacional';
+                            $product->save();
+                        }
+                    }
+                }
+            }
+
+            if ($i > 0 && $n > 0) {
+                $update = Order::find($order->id);
+                $update->tipo_orden = 'nacional/internacional';
+                $update->save();
+                $i = 0;
+                $n = 0;
+            }
+            if ($i > 0 && $n == 0) {
+                $update = Order::find($order->id);
+                $update->tipo_orden = 'internacional';
+                $update->save();
+                $i = 0;
+                $n = 0;
+            }
+            if ($i == 0 && $n > 0) {
+                $update = Order::find($order->id);
+                $update->tipo_orden = 'nacional';
+                $update->save();
+                $i = 0;
+                $n = 0;
+            }
+        }
+
+        return 'echo';*/
+
+
+
+        /* $user = Tercero::find(22);
+         $role = Role::find(0);
+
+
+         $user->attachPermission(21);*/
+
+        /*define('CLIENT_ID', "7134341661319721");
+        define('CLIENT_SECRET', "b7cQUIoU5JF4iWVvjM0w1YeX4b7VwLpw");
+
+        $mp = new MP(CLIENT_ID, CLIENT_SECRET);
+
+        define('payments', '/v1/payments/search?external_reference=');
+        define('access', '&access_token=');
+        define('ACCESS_TOKEN', $mp->get_access_token());
+
+        $orders = Order::where('financial_status', 'pending')->get();
+        $contador = 0;
+
+
+        foreach ($orders as $order) {
+
+            $result = array();
+
+            $results = Logorder::where('order_id', $order->order_id)->where('checkout_id', $order->checkout_id)->first();
+
+            if (count($results) == 0) {
+
+                $contador ++;
+
+                if ($contador  == 300) {
+                    usleep(1000000);
+                    $contador = 0;
+                }
+
+                try {
+                    $result = $mp->get(payments . $order->checkout_id . access . ACCESS_TOKEN);
+                } catch (MercadoPagoException $e) {
+                    $paymentError = new \stdClass();
+                    $paymentError->parsed = $this->parseException($e->getMessage());
+                    $paymentError->data = $e->getMessage();
+                    $paymentError->code = $e->getCode();
+                }
+
+                if (isset($result['response']['results']) && count($result['response']['results']) > 0) {
+
+                    if ($result['response']['results'][0]['payment_method_id'] == 'efecty') {
+
+                        $days = Carbon::parse($result['response']['results'][0]['date_created'])->diffInDays();
+
+                        if ($days > 2) {
+
+                            Logorder::create([
+                                'order_id' => $order->order_id,
+                                'checkout_id' => $order->checkout_id,
+                                'value' => $order->total_price,
+                                'status_shopify' => $order->financial_status,
+                                'status_mercadopago' => $result['response']['results'][0]['status'],
+                                'payment_method_id' => $result['response']['results'][0]['payment_method_id'],
+                                'payment_type_id' => $result['response']['results'][0]['payment_type_id'],
+                                'name' => $order->name
+                            ]);
+                        }
+                    } else {
+                        Logorder::create([
+                            'order_id' => $order->order_id,
+                            'checkout_id' => $order->checkout_id,
+                            'value' => $order->total_price,
+                            'status_shopify' => $order->financial_status,
+                            'status_mercadopago' => $result['response']['results'][0]['status'],
+                            'payment_method_id' => $result['response']['results'][0]['payment_method_id'],
+                            'payment_type_id' => $result['response']['results'][0]['payment_type_id'],
+                            'name' => $order->name
+                        ]);
+                    }
+                }
+            }
+
+            if (count($results) > 0) {
+                $contador ++;
+
+                if ($contador  == 300) {
+                    usleep(1000000);
+                    $contador = 0;
+                }
+
+                try {
+                    $result = $mp->get(payments . $order->checkout_id . access . ACCESS_TOKEN);
+                } catch (MercadoPagoException $e) {
+                    $paymentError = new \stdClass();
+                    $paymentError->parsed = $this->parseException($e->getMessage());
+                    $paymentError->data = $e->getMessage();
+                    $paymentError->code = $e->getCode();
+                }
+
+                if (isset($result['response']['results']) && count($result['response']['results']) > 0) {
+
+                    $log_update = Logorder::find($results->id);
+                    $log_update->status_mercadopago = $result['response']['results'][0]['status'];
+                    $log_update->status_shopify = $order->financial_status;
+                    $log_update->save();
+                }
+            }
+        }*/
+
+        $orders = Order::where('financial_status', 'pending')->get();
+        $result = array();
+        foreach ($orders as $order) {
+
+            foreach ($order->line_items as $item) {
+
+                if (isset($order->shipping_lines[0]['price'])){
+                    $data = [
+                        'nombre_producto' => $item['name'],
+                        'numero_orden' => $order->name,
+                        'precio_unidad' => number_format($item['price']),
+                        'cantidad' => number_format($item['quantity']),
+                        'costo_envio' => number_format($order->shipping_lines[0]['price']),
+                        'fecha_compra_cliente' => $order->created_at,
+                        'total' => number_format($order->total_price)
+                    ];
+                } else {
+                    $data = [
+                        'nombre_producto' => $item['name'],
+                        'numero_orden' => $order->name,
+                        'precio_unidad' => number_format($item['price']),
+                        'cantidad' => number_format($item['quantity']),
+                        'costo_envio' => number_format(0),
+                        'fecha_compra_cliente' => $order->created_at,
+                        'total' => number_format($order->total_price)
+                    ];
+                }
+
+                array_push($result, $data);
+            }
+        }
+
+        $send = collect($result);
+
+        return Datatables::of($send)
+            ->addColumn('nombre_producto', function ($send) {
+                return '<div align=left>' . $send['nombre_producto'] . '</div>';
+            })
+            ->addColumn('numero_orden', function ($send) {
+                return '<div align=left>' . $send['numero_orden'] . '</div>';
+            })
+            ->addColumn('precio_unidad', function ($send) {
+                return '<div align=left>' . $send['precio_unidad'] . '</div>';
+            })
+            ->addColumn('cantidad', function ($send) {
+                return '<div align=left>' . $send['cantidad'] . '</div>';
+            })
+            ->addColumn('costo_envio', function ($send) {
+                return '<div align=left>' . $send['costo_envio'] . '</div>';
+            })
+            ->addColumn('fecha_compra_cliente', function ($send) {
+                return '<div align=left>' . Carbon::parse($send['fecha_compra_cliente'])->toFormattedDateString() . '</div>';
+            })
+            ->addColumn('total', function ($send) {
+                return '<div align=left>' . $send['total'] . '</div>';
+            })
+            ->make(true);
     }
 
     public function home()
