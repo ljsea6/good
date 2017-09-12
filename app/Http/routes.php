@@ -92,9 +92,9 @@ Route::group(['prefix' => 'admin', 'middleware' => 'auth'], function () {
     Route::get('/feredidos', ['uses' => 'AdminController@anyData', 'as' => 'admin.referidos']);
     // Usuarios
     Route::get('usuarios/data', ['uses' => 'UsuariosController@anyData', 'as' => 'usuarios.data']);
-    Route::get('usuarios', ['uses' => 'UsuariosController@index', 'as' => 'admin.usuarios.index']);
-    Route::get('usuarios/{id}/destroy', ['uses' => 'UsuariosController@destroy', 'as' => 'admin.usuarios.destroy']);
+    Route::resource('usuarios', 'UsuariosController');
     Route::get('usuarios/{id}/hijos', ['uses' => 'UsuariosController@hijos', 'as' => 'admin.usuarios.hijos']);
+
     //Proveedores
     Route::get('proveedores', ['uses' => 'AdminController@indexprovedores', 'as' => 'admin.proveedores.index']);
     Route::get('proveedores/data', ['uses' => 'ProveedoresController@anyData', 'as' => 'Proveedores.data']);

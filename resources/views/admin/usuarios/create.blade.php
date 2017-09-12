@@ -136,7 +136,7 @@
     $('#ciudad_id').select2({
                 language: "es",
                 placeholder: "Seleccionar ciudad...",
-                allowClear: true
+                allowClear: false
     });
     function readURL(input) {
         if (input.files && input.files[0]) {

@@ -89,6 +89,49 @@ class GetOrders extends Command
                     ->get();
 
                 if(count($response) == 0) {
+                    $tipo_orden = '';
+                    $i = 0;
+                    $n = 0;
+
+                    if (isset($order['line_items']) && count($order['line_items']) > 0) {
+                        foreach ($order['line_items'] as $item) {
+
+                            $product = Product::find($item['product_id']);
+
+                            if (strtolower($item['vendor'])  == 'nacional' || strtolower($item['vendor'])  == 'a - nacional') {
+                                $n++;
+
+                                if (count($product) > 0) {
+                                    $product->tipo_producto = 'nacional';
+                                    $product->save();
+                                }
+                            }
+                            if (strtolower($item['vendor'])  != 'nacional' && strtolower($item['vendor'])  != 'a - nacional') {
+                                $i++;
+
+                                if (count($product) > 0) {
+                                    $product->tipo_producto = 'internacional';
+                                    $product->save();
+                                }
+                            }
+                        }
+                    }
+
+                    if ($i > 0 && $n > 0) {
+                        $tipo_orden .= 'nacional/internacional';
+                        $i = 0;
+                        $n = 0;
+                    }
+                    if ($i > 0 && $n == 0) {
+                        $tipo_orden .= 'internacional';
+                        $i = 0;
+                        $n = 0;
+                    }
+                    if ($i == 0 && $n > 0) {
+                        $tipo_orden .= 'nacional';
+                        $i = 0;
+                        $n = 0;
+                    }
 
                     Order::create([
                         'billing_address' => $order['billing_address'],
@@ -151,19 +194,26 @@ class GetOrders extends Command
                         'source_url' => $order['source_url'],
                         'device_id' => $order['device_id'],
                         'checkout_id' => $order['checkout_id'],
-                        'origin' => 'crons'
+                        'origin' => 'crons',
+                        'tipo_orden' => $tipo_orden
                     ]);
+                    $tipo_orden = '';
 
                     if ($order['financial_status'] == "paid") {
 
-                        $product = Product::where('id', $order['line_items'][0]['product_id'])->get();
+                        if (isset($order['line_items']) && count($order['line_items']) > 0) {
+                            foreach ($order['line_items'] as $item) {
+                                $product = Product::find($item['product_id']);
 
-                        if (count($product) > 0) {
-                            $find = Product::find($product[0]['id']);
-                            $find->precio_unidad = $order['line_items'][0]['price'];
-                            $find->unidades_vendidas = $find->unidades_vendidas + 1;
-                            $find->save();
+                                if (count($product) > 0) {
+                                    $product->precio_unidad = $item['price'];
+                                    $product->unidades_vendidas = $product->unidades_vendidas + $item['quantity'];
+                                    $product->save();
+                                }
+
+                            }
                         }
+
 
                         $tercero = Tercero::with('networks')->where('email', $order['email'])->first();
 

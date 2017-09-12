@@ -17,6 +17,7 @@
                             <th>Título</th>
                             <th>Precio Unidad</th>
                             <th>Unidades Vendidas</th>
+                            <th>Tipo Producto</th>
                             <th>Porcentaje</th>
                         </tr>
                         </thead>
@@ -51,6 +52,7 @@
                     { data: 'title', name: 'title', orderable: true, searchable: true },
                     { data: 'precio_unidad', name: 'precio_unidad', orderable: true, searchable: true  },
                     { data: 'unidades_vendidas', name: 'unidades_vendidas', orderable: true },
+                    { data: 'tipo_producto', name: 'tipo_producto', orderable: true },
                     { data: 'porcentaje', name: 'porcentaje', orderable: true },
                 ],
                 language: {

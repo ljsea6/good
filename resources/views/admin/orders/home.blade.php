@@ -27,6 +27,7 @@
                             <th>Dirección</th>
                             <th>Ciudad</th>
                             <th>País</th>
+                            <th>Télefono</th>
                             <th>Precio</th>
                             <th>Detalle Orden</th>
                             <th>Estado</th>
@@ -66,6 +67,7 @@
                     { data: 'address', name: 'address', orderable: false, searchable: true },
                     { data: 'city', name: 'city', orderable: true, searchable: true },
                     { data: 'country', name: 'country', orderable: false, searchable: true },
+                    { data: 'phone', name: 'phone', orderable: false, searchable: true },
                     { data: 'value', name: 'value', orderable: true, searchable: true  },
                     { data: 'order', name: 'order', orderable: true, searchable: true  },
                     { data: 'financial_status', name: 'financial_status', orderable: true, searchable: true },
