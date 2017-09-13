@@ -139,6 +139,8 @@ class MercadoPago extends Command
                     $log_update->save();
                 }
             }
+
+            $result = array();
         }
 
         $this->info('Las ordenes han sido actualizadas con la informacion de shopify y mercago pago');

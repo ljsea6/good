@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Entities\Tercero_network;
 use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
@@ -22,9 +23,14 @@ use Bican\Roles\Models\Permission;
 
 class OrdersController extends Controller
 {
-    public function lists()
+    public function listpaid()
     {
         return view('admin.orders.paid');
+    }
+
+    public function listpending()
+    {
+        return view('admin.orders.pending');
     }
 
     private function parseException($message)
@@ -45,249 +51,11 @@ class OrdersController extends Controller
         return $error;
     }
 
-    public function lists_paid()
+    public function paid()
     {
         ini_set('memory_limit','1000M');
         ini_set('xdebug.max_nesting_level', 120);
         ini_set('max_execution_time', 3000);
-       /* $orders = Order::where('financial_status', 'paid')->get();
-        $products = Product::all();
-        $contador = 0;
-        $cont = 0;
-        foreach ($products as $product) {
-            $contador++;
-            foreach ($orders as $order) {
-                if (isset($order->line_items) && count($order->line_items) > 0) {
-
-                    foreach ($order->line_items as $item) {
-                        if ($item['product_id'] == $product->id) {
-                            $cont = $cont + $item['quantity'];
-                        }
-                    }
-                }
-
-            }
-            if ($contador == 200) {
-                usleep(1000000);
-                $contador = 0;
-            }
-
-            $update = Product::find($product->id);
-            $update->unidades_vendidas = $cont;
-            $update->save();
-            $cont = 0;
-        }
-
-        return 'echo';*/
-
-
-
-        /*$totalProducts = array();
-
-        $api_url = 'https://c17edef9514920c1d2a6aeaf9066b150:afc86df7e11dcbe0ab414fa158ac1767@mall-hello.myshopify.com';
-        $client = new \GuzzleHttp\Client();
-        $res = $client->request('GET', $api_url . '/admin/collects/count.json?collection_id=338404417');
-        $headers = $res->getHeaders()['X-Shopify-Shop-Api-Call-Limit'];
-        $x = explode('/', $headers[0]);
-        $diferencia = $x[1] - $x[0];
-        if ($diferencia < 10) {
-            usleep(10000000);
-        }
-        $countProcucts = json_decode($res->getBody(), true);
-
-        $pagesNumber = $countProcucts['count']/250;
-        $number = explode( '.', $pagesNumber);
-        $entera = (int)$number[0];
-        $decimal = (int)$number[1];
-
-
-        if($decimal !== 0) {
-            $entera = $entera + 1;
-        }
-
-        for ($i = 1; $i <= $entera; $i++) {
-            $res = $client->request('GET', $api_url . '/admin/collects.json?collection_id=338404417&fields=product_id&limit=250&&page=' . $i);
-            $results = json_decode($res->getBody(), true);
-            $headers = $res->getHeaders()['X-Shopify-Shop-Api-Call-Limit'];
-            $x = explode('/', $headers[0]);
-            $diferencia = $x[1] - $x[0];
-            if ($diferencia < 10) {
-                usleep(10000000);
-            }
-            foreach ($results['collects'] as $p) {
-                array_push($totalProducts, $p);
-            }
-        }
-
-        $results = array();
-
-        foreach ($totalProducts as $item) {
-            array_push($results, $item['product_id']);
-        }*/
-
-
-        /*$orders = Order::all();
-        $i = 0;
-        $n = 0;
-        foreach ($orders as $order) {
-            $i = 0;
-            $n = 0;
-
-            if (isset($order->line_items) && count($order->line_items) > 0) {
-                foreach ($order->line_items as $item) {
-
-
-                    $product = Product::find($item['product_id']);
-
-                    if (strtolower($item['vendor'])  == 'nacional' || strtolower($item['vendor'])  == 'a - nacional') {
-                        $n++;
-
-                        if (count($product) > 0) {
-                            $product->tipo_producto = 'nacional';
-                            $product->save();
-                        }
-                    }
-                    if (strtolower($item['vendor'])  != 'nacional' && strtolower($item['vendor'])  != 'a - nacional') {
-                        $i++;
-
-                        if (count($product) > 0) {
-                            $product->tipo_producto = 'internacional';
-                            $product->save();
-                        }
-                    }
-                }
-            }
-
-            if ($i > 0 && $n > 0) {
-                $update = Order::find($order->id);
-                $update->tipo_orden = 'nacional/internacional';
-                $update->save();
-                $i = 0;
-                $n = 0;
-            }
-            if ($i > 0 && $n == 0) {
-                $update = Order::find($order->id);
-                $update->tipo_orden = 'internacional';
-                $update->save();
-                $i = 0;
-                $n = 0;
-            }
-            if ($i == 0 && $n > 0) {
-                $update = Order::find($order->id);
-                $update->tipo_orden = 'nacional';
-                $update->save();
-                $i = 0;
-                $n = 0;
-            }
-        }
-
-        return 'echo';*/
-
-
-
-       /* $user = Tercero::find(22);
-        $role = Role::find(0);
-
-
-        $user->attachPermission(21);*/
-
-        /*define('CLIENT_ID', "7134341661319721");
-        define('CLIENT_SECRET', "b7cQUIoU5JF4iWVvjM0w1YeX4b7VwLpw");
-
-        $mp = new MP(CLIENT_ID, CLIENT_SECRET);
-
-        define('payments', '/v1/payments/search?external_reference=');
-        define('access', '&access_token=');
-        define('ACCESS_TOKEN', $mp->get_access_token());
-
-        $orders = Order::where('financial_status', 'pending')->get();
-        $contador = 0;
-
-
-        foreach ($orders as $order) {
-
-            $result = array();
-
-            $results = Logorder::where('order_id', $order->order_id)->where('checkout_id', $order->checkout_id)->first();
-
-            if (count($results) == 0) {
-
-                $contador ++;
-
-                if ($contador  == 300) {
-                    usleep(1000000);
-                    $contador = 0;
-                }
-
-                try {
-                    $result = $mp->get(payments . $order->checkout_id . access . ACCESS_TOKEN);
-                } catch (MercadoPagoException $e) {
-                    $paymentError = new \stdClass();
-                    $paymentError->parsed = $this->parseException($e->getMessage());
-                    $paymentError->data = $e->getMessage();
-                    $paymentError->code = $e->getCode();
-                }
-
-                if (isset($result['response']['results']) && count($result['response']['results']) > 0) {
-
-                    if ($result['response']['results'][0]['payment_method_id'] == 'efecty') {
-
-                        $days = Carbon::parse($result['response']['results'][0]['date_created'])->diffInDays();
-
-                        if ($days > 2) {
-
-                            Logorder::create([
-                                'order_id' => $order->order_id,
-                                'checkout_id' => $order->checkout_id,
-                                'value' => $order->total_price,
-                                'status_shopify' => $order->financial_status,
-                                'status_mercadopago' => $result['response']['results'][0]['status'],
-                                'payment_method_id' => $result['response']['results'][0]['payment_method_id'],
-                                'payment_type_id' => $result['response']['results'][0]['payment_type_id'],
-                                'name' => $order->name
-                            ]);
-                        }
-                    } else {
-                        Logorder::create([
-                            'order_id' => $order->order_id,
-                            'checkout_id' => $order->checkout_id,
-                            'value' => $order->total_price,
-                            'status_shopify' => $order->financial_status,
-                            'status_mercadopago' => $result['response']['results'][0]['status'],
-                            'payment_method_id' => $result['response']['results'][0]['payment_method_id'],
-                            'payment_type_id' => $result['response']['results'][0]['payment_type_id'],
-                            'name' => $order->name
-                        ]);
-                    }
-                }
-            }
-
-            if (count($results) > 0) {
-                $contador ++;
-
-                if ($contador  == 300) {
-                    usleep(1000000);
-                    $contador = 0;
-                }
-
-                try {
-                    $result = $mp->get(payments . $order->checkout_id . access . ACCESS_TOKEN);
-                } catch (MercadoPagoException $e) {
-                    $paymentError = new \stdClass();
-                    $paymentError->parsed = $this->parseException($e->getMessage());
-                    $paymentError->data = $e->getMessage();
-                    $paymentError->code = $e->getCode();
-                }
-
-                if (isset($result['response']['results']) && count($result['response']['results']) > 0) {
-
-                    $log_update = Logorder::find($results->id);
-                    $log_update->status_mercadopago = $result['response']['results'][0]['status'];
-                    $log_update->status_shopify = $order->financial_status;
-                    $log_update->save();
-                }
-            }
-        }*/
 
         $orders = Order::where('financial_status', 'paid')->get();
         $result = array();
@@ -347,250 +115,12 @@ class OrdersController extends Controller
             })
             ->make(true);
     }
-    public function lists_pending()
+
+    public function pending()
     {
         ini_set('memory_limit','1000M');
         ini_set('xdebug.max_nesting_level', 120);
         ini_set('max_execution_time', 3000);
-        /* $orders = Order::where('financial_status', 'paid')->get();
-         $products = Product::all();
-         $contador = 0;
-         $cont = 0;
-         foreach ($products as $product) {
-             $contador++;
-             foreach ($orders as $order) {
-                 if (isset($order->line_items) && count($order->line_items) > 0) {
-
-                     foreach ($order->line_items as $item) {
-                         if ($item['product_id'] == $product->id) {
-                             $cont = $cont + $item['quantity'];
-                         }
-                     }
-                 }
-
-             }
-             if ($contador == 200) {
-                 usleep(1000000);
-                 $contador = 0;
-             }
-
-             $update = Product::find($product->id);
-             $update->unidades_vendidas = $cont;
-             $update->save();
-             $cont = 0;
-         }
-
-         return 'echo';*/
-
-
-
-        /*$totalProducts = array();
-
-        $api_url = 'https://c17edef9514920c1d2a6aeaf9066b150:afc86df7e11dcbe0ab414fa158ac1767@mall-hello.myshopify.com';
-        $client = new \GuzzleHttp\Client();
-        $res = $client->request('GET', $api_url . '/admin/collects/count.json?collection_id=338404417');
-        $headers = $res->getHeaders()['X-Shopify-Shop-Api-Call-Limit'];
-        $x = explode('/', $headers[0]);
-        $diferencia = $x[1] - $x[0];
-        if ($diferencia < 10) {
-            usleep(10000000);
-        }
-        $countProcucts = json_decode($res->getBody(), true);
-
-        $pagesNumber = $countProcucts['count']/250;
-        $number = explode( '.', $pagesNumber);
-        $entera = (int)$number[0];
-        $decimal = (int)$number[1];
-
-
-        if($decimal !== 0) {
-            $entera = $entera + 1;
-        }
-
-        for ($i = 1; $i <= $entera; $i++) {
-            $res = $client->request('GET', $api_url . '/admin/collects.json?collection_id=338404417&fields=product_id&limit=250&&page=' . $i);
-            $results = json_decode($res->getBody(), true);
-            $headers = $res->getHeaders()['X-Shopify-Shop-Api-Call-Limit'];
-            $x = explode('/', $headers[0]);
-            $diferencia = $x[1] - $x[0];
-            if ($diferencia < 10) {
-                usleep(10000000);
-            }
-            foreach ($results['collects'] as $p) {
-                array_push($totalProducts, $p);
-            }
-        }
-
-        $results = array();
-
-        foreach ($totalProducts as $item) {
-            array_push($results, $item['product_id']);
-        }*/
-
-
-        /*$orders = Order::all();
-        $i = 0;
-        $n = 0;
-        foreach ($orders as $order) {
-            $i = 0;
-            $n = 0;
-
-            if (isset($order->line_items) && count($order->line_items) > 0) {
-                foreach ($order->line_items as $item) {
-
-
-                    $product = Product::find($item['product_id']);
-
-                    if (strtolower($item['vendor'])  == 'nacional' || strtolower($item['vendor'])  == 'a - nacional') {
-                        $n++;
-
-                        if (count($product) > 0) {
-                            $product->tipo_producto = 'nacional';
-                            $product->save();
-                        }
-                    }
-                    if (strtolower($item['vendor'])  != 'nacional' && strtolower($item['vendor'])  != 'a - nacional') {
-                        $i++;
-
-                        if (count($product) > 0) {
-                            $product->tipo_producto = 'internacional';
-                            $product->save();
-                        }
-                    }
-                }
-            }
-
-            if ($i > 0 && $n > 0) {
-                $update = Order::find($order->id);
-                $update->tipo_orden = 'nacional/internacional';
-                $update->save();
-                $i = 0;
-                $n = 0;
-            }
-            if ($i > 0 && $n == 0) {
-                $update = Order::find($order->id);
-                $update->tipo_orden = 'internacional';
-                $update->save();
-                $i = 0;
-                $n = 0;
-            }
-            if ($i == 0 && $n > 0) {
-                $update = Order::find($order->id);
-                $update->tipo_orden = 'nacional';
-                $update->save();
-                $i = 0;
-                $n = 0;
-            }
-        }
-
-        return 'echo';*/
-
-
-
-        /* $user = Tercero::find(22);
-         $role = Role::find(0);
-
-
-         $user->attachPermission(21);*/
-
-        /*define('CLIENT_ID', "7134341661319721");
-        define('CLIENT_SECRET', "b7cQUIoU5JF4iWVvjM0w1YeX4b7VwLpw");
-
-        $mp = new MP(CLIENT_ID, CLIENT_SECRET);
-
-        define('payments', '/v1/payments/search?external_reference=');
-        define('access', '&access_token=');
-        define('ACCESS_TOKEN', $mp->get_access_token());
-
-        $orders = Order::where('financial_status', 'pending')->get();
-        $contador = 0;
-
-
-        foreach ($orders as $order) {
-
-            $result = array();
-
-            $results = Logorder::where('order_id', $order->order_id)->where('checkout_id', $order->checkout_id)->first();
-
-            if (count($results) == 0) {
-
-                $contador ++;
-
-                if ($contador  == 300) {
-                    usleep(1000000);
-                    $contador = 0;
-                }
-
-                try {
-                    $result = $mp->get(payments . $order->checkout_id . access . ACCESS_TOKEN);
-                } catch (MercadoPagoException $e) {
-                    $paymentError = new \stdClass();
-                    $paymentError->parsed = $this->parseException($e->getMessage());
-                    $paymentError->data = $e->getMessage();
-                    $paymentError->code = $e->getCode();
-                }
-
-                if (isset($result['response']['results']) && count($result['response']['results']) > 0) {
-
-                    if ($result['response']['results'][0]['payment_method_id'] == 'efecty') {
-
-                        $days = Carbon::parse($result['response']['results'][0]['date_created'])->diffInDays();
-
-                        if ($days > 2) {
-
-                            Logorder::create([
-                                'order_id' => $order->order_id,
-                                'checkout_id' => $order->checkout_id,
-                                'value' => $order->total_price,
-                                'status_shopify' => $order->financial_status,
-                                'status_mercadopago' => $result['response']['results'][0]['status'],
-                                'payment_method_id' => $result['response']['results'][0]['payment_method_id'],
-                                'payment_type_id' => $result['response']['results'][0]['payment_type_id'],
-                                'name' => $order->name
-                            ]);
-                        }
-                    } else {
-                        Logorder::create([
-                            'order_id' => $order->order_id,
-                            'checkout_id' => $order->checkout_id,
-                            'value' => $order->total_price,
-                            'status_shopify' => $order->financial_status,
-                            'status_mercadopago' => $result['response']['results'][0]['status'],
-                            'payment_method_id' => $result['response']['results'][0]['payment_method_id'],
-                            'payment_type_id' => $result['response']['results'][0]['payment_type_id'],
-                            'name' => $order->name
-                        ]);
-                    }
-                }
-            }
-
-            if (count($results) > 0) {
-                $contador ++;
-
-                if ($contador  == 300) {
-                    usleep(1000000);
-                    $contador = 0;
-                }
-
-                try {
-                    $result = $mp->get(payments . $order->checkout_id . access . ACCESS_TOKEN);
-                } catch (MercadoPagoException $e) {
-                    $paymentError = new \stdClass();
-                    $paymentError->parsed = $this->parseException($e->getMessage());
-                    $paymentError->data = $e->getMessage();
-                    $paymentError->code = $e->getCode();
-                }
-
-                if (isset($result['response']['results']) && count($result['response']['results']) > 0) {
-
-                    $log_update = Logorder::find($results->id);
-                    $log_update->status_mercadopago = $result['response']['results'][0]['status'];
-                    $log_update->status_shopify = $order->financial_status;
-                    $log_update->save();
-                }
-            }
-        }*/
-
         $orders = Order::where('financial_status', 'pending')->get();
         $result = array();
         foreach ($orders as $order) {
@@ -759,13 +289,7 @@ class OrdersController extends Controller
                 return '<div align=left>'. $send->email .'</div>';
             })
             ->addColumn('address', function ($send) {
-                return '<div align=left>'. $send->billing_address['address1'] .'</div>';
-            })
-            ->addColumn('city', function ($send) {
-                return '<div align=left>'. $send->billing_address['city'] .'</div>';
-            })
-            ->addColumn('country', function ($send) {
-                return '<div align=left>'. $send->billing_address['country'] .'</div>';
+                return '<div align=left>'. $send->billing_address['address1'] . ', ' . $send->billing_address['city'] . ', ' .$send->billing_address['country'] . '</div>';
             })
             ->addColumn('phone', function ($send) {
                 $phone = str_replace(' ', '', $send->billing_address['phone']);
@@ -813,7 +337,7 @@ class OrdersController extends Controller
                         return '
                   
                             <div class="text-left">
-                                <button style="color: #f60620" class="btn-link" data-toggle="modal" data-target="#myModal'. $send->order_number .'">'. $send->order_number .'</button>
+                                <button style="color: #f60620" class="btn-link" data-toggle="modal" data-target="#myModal'. $send->order_number .'">#'. $send->order_number .'</button>
                                 <!-- Modal -->
                                 <div id="myModal'. $send->order_number .'" class="modal fade" role="dialog">
                                     <div class="modal-dialog">
@@ -826,7 +350,7 @@ class OrdersController extends Controller
                                             <div class="modal-body">
                                                    '.$result.'
                                                    <p>Costo Envio: '.number_format($line['price']) .'</p>
-                                                   <h4 class="media-heading">Total: ' . number_format($send->total_price) . '</h4>
+                                                   <h4 class="media-heading">Precio Total: ' . number_format($send->total_price) . '</h4>
                                             </div>
                                             <div class="modal-footer">
                                                 <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
@@ -842,7 +366,7 @@ class OrdersController extends Controller
                         return '
                   
                     <div class="text-left">
-                        <button style="color: #f60620" class="btn-link" data-toggle="modal" data-target="#myModal'. $send->order_number .'">'. $send->order_number .'</button>
+                        <button style="color: #f60620" class="btn-link" data-toggle="modal" data-target="#myModal'. $send->order_number .'">#'. $send->order_number .'</button>
                         <!-- Modal -->
                         <div id="myModal'. $send->order_number .'" class="modal fade" role="dialog">
                             <div class="modal-dialog">
@@ -856,7 +380,7 @@ class OrdersController extends Controller
                                        
                                            '.$result.'
                                            <p>Costo Envio:  0</p>
-                                           <h4 class="media-heading">Total: ' . number_format($send->total_price) . '</h4>
+                                           <h4 class="media-heading">Precio Total: ' . number_format($send->total_price) . '</h4>
                                     </div>
                                     <div class="modal-footer">
                                         <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
@@ -1809,16 +1333,19 @@ class OrdersController extends Controller
 
                     if ($result->financial_status != "paid") {
 
-
-
                         $update = Order::find($result->id);
                         $update->financial_status = $order['financial_status'];
                         $update->updated_at = Carbon::parse($order['updated_at']);
                         $update->save();
 
-                        $log = Logorder::where('name', $order['name'])
-                            ->where('checkout_id', $order['checkout_id'])
+                        $log = Logorder::where('name', $update->name)
+                            ->where('checkout_id', $update->checkout_id)
+                            ->where('order_id', $update->order_id)
                             ->first();
+                        DB::table('logsorders')
+                            ->where('name', '=', $update->name)
+                            ->where('checkout_id', '=', $update->checkout_id)
+                            ->where('order_id', '=', $update->order_id)->delete();
 
                         if (count($log) > 0) {
                             $log_delete = Logorder::find($log->id);
@@ -2132,12 +1659,63 @@ class OrdersController extends Controller
                             }
                         }
 
+                        $orders_paid = $orders = Logorder::where('status_shopify', 'pending')->where('status_mercadopago', 'approved')->get();
+
+                        foreach ($orders_paid as $paid) {
+
+                            $order_result = Order::where('order_id', $paid->order_id)->where('checkout_id', $paid->checkout_id)->first();
+
+                            if (count($order_result) > 0 ) {
+
+                                if ($order_result->financial_status == 'paid') {
+
+                                    $delete = Logorder::where('order_id', $paid->order_id)->where('checkout_id', $paid->checkout_id)->first();
+
+                                    if (count($delete) > 0) {
+                                        Logorder::find($delete->id)->delete();
+
+                                        DB::table('logsorders')
+                                            ->where('id', $delete->id)
+                                            ->where('name', '=', $delete->name)
+                                            ->where('checkout_id', '=', $delete->checkout_id)
+                                            ->where('order_id', '=', $delete->order_id)->delete();
+                                    }
+                                }
+                            }
+                        }
+
                         return response()->json(['status' => 'The resource is created successfully'], 200);
                     }
                 }
             } else {
+                $orders_paid = $orders = Logorder::where('status_shopify', 'pending')->where('status_mercadopago', 'approved')->get();
+
+                foreach ($orders_paid as $paid) {
+
+                    $order_result = Order::where('order_id', $paid->order_id)->where('checkout_id', $paid->checkout_id)->first();
+
+                    if (count($order_result) > 0 ) {
+
+                        if ($order_result->financial_status == 'paid') {
+
+                            $delete = Logorder::where('order_id', $paid->order_id)->where('checkout_id', $paid->checkout_id)->first();
+
+                            if (count($delete) > 0) {
+                                Logorder::find($delete->id)->delete();
+
+                                DB::table('logsorders')
+                                    ->where('id', $delete->id)
+                                    ->where('name', '=', $delete->name)
+                                    ->where('checkout_id', '=', $delete->checkout_id)
+                                    ->where('order_id', '=', $delete->order_id)->delete();
+                            }
+                        }
+                    }
+                }
                 return response()->json(['status' => 'order not processed'], 200);
             }
+
+
         }
     }
 
@@ -2191,21 +1769,256 @@ class OrdersController extends Controller
 
     public function contador()
     {
-        $orders = Order::where('financial_status', 'paid')->get();
+        /*$user = Tercero::find(174802);
+        $contabilidadRole = Role::find(19);
 
+        //$user->attachRole($contabilidadRole);
+        if ($user->is('contabilidad|servicio.al.cliente'))
+            return response()->json('Es contador');
+        else
+            return response()->json('No es contador');*/
+
+
+
+
+        /* $orders = Order::where('financial_status', 'paid')->get();
+        $products = Product::all();
+        $contador = 0;
         $cont = 0;
-        foreach ($orders as $order) {
-            if (isset($order->line_items) && count($order->line_items) > 0) {
+        foreach ($products as $product) {
+            $contador++;
+            foreach ($orders as $order) {
+                if (isset($order->line_items) && count($order->line_items) > 0) {
 
+                    foreach ($order->line_items as $item) {
+                        if ($item['product_id'] == $product->id) {
+                            $cont = $cont + $item['quantity'];
+                        }
+                    }
+                }
+
+            }
+            if ($contador == 200) {
+                usleep(1000000);
+                $contador = 0;
+            }
+
+            $update = Product::find($product->id);
+            $update->unidades_vendidas = $cont;
+            $update->save();
+            $cont = 0;
+        }
+
+        return 'echo';*/
+
+
+
+        /*$totalProducts = array();
+
+        $api_url = 'https://c17edef9514920c1d2a6aeaf9066b150:afc86df7e11dcbe0ab414fa158ac1767@mall-hello.myshopify.com';
+        $client = new \GuzzleHttp\Client();
+        $res = $client->request('GET', $api_url . '/admin/collects/count.json?collection_id=338404417');
+        $headers = $res->getHeaders()['X-Shopify-Shop-Api-Call-Limit'];
+        $x = explode('/', $headers[0]);
+        $diferencia = $x[1] - $x[0];
+        if ($diferencia < 10) {
+            usleep(10000000);
+        }
+        $countProcucts = json_decode($res->getBody(), true);
+
+        $pagesNumber = $countProcucts['count']/250;
+        $number = explode( '.', $pagesNumber);
+        $entera = (int)$number[0];
+        $decimal = (int)$number[1];
+
+
+        if($decimal !== 0) {
+            $entera = $entera + 1;
+        }
+
+        for ($i = 1; $i <= $entera; $i++) {
+            $res = $client->request('GET', $api_url . '/admin/collects.json?collection_id=338404417&fields=product_id&limit=250&&page=' . $i);
+            $results = json_decode($res->getBody(), true);
+            $headers = $res->getHeaders()['X-Shopify-Shop-Api-Call-Limit'];
+            $x = explode('/', $headers[0]);
+            $diferencia = $x[1] - $x[0];
+            if ($diferencia < 10) {
+                usleep(10000000);
+            }
+            foreach ($results['collects'] as $p) {
+                array_push($totalProducts, $p);
+            }
+        }
+
+        $results = array();
+
+        foreach ($totalProducts as $item) {
+            array_push($results, $item['product_id']);
+        }*/
+
+
+        /*$orders = Order::all();
+        $i = 0;
+        $n = 0;
+        foreach ($orders as $order) {
+            $i = 0;
+            $n = 0;
+
+            if (isset($order->line_items) && count($order->line_items) > 0) {
                 foreach ($order->line_items as $item) {
-                    if ($item['product_id'] == 9956592513) {
-                        $cont = $cont + 1;
+
+
+                    $product = Product::find($item['product_id']);
+
+                    if (strtolower($item['vendor'])  == 'nacional' || strtolower($item['vendor'])  == 'a - nacional') {
+                        $n++;
+
+                        if (count($product) > 0) {
+                            $product->tipo_producto = 'nacional';
+                            $product->save();
+                        }
+                    }
+                    if (strtolower($item['vendor'])  != 'nacional' && strtolower($item['vendor'])  != 'a - nacional') {
+                        $i++;
+
+                        if (count($product) > 0) {
+                            $product->tipo_producto = 'internacional';
+                            $product->save();
+                        }
                     }
                 }
             }
 
+            if ($i > 0 && $n > 0) {
+                $update = Order::find($order->id);
+                $update->tipo_orden = 'nacional/internacional';
+                $update->save();
+                $i = 0;
+                $n = 0;
+            }
+            if ($i > 0 && $n == 0) {
+                $update = Order::find($order->id);
+                $update->tipo_orden = 'internacional';
+                $update->save();
+                $i = 0;
+                $n = 0;
+            }
+            if ($i == 0 && $n > 0) {
+                $update = Order::find($order->id);
+                $update->tipo_orden = 'nacional';
+                $update->save();
+                $i = 0;
+                $n = 0;
+            }
         }
-        return $cont;
+
+        return 'echo';*/
+
+
+
+        /* $user = Tercero::find(22);
+         $role = Role::find(0);
+
+
+         $user->attachPermission(21);*/
+
+        /*define('CLIENT_ID', "7134341661319721");
+        define('CLIENT_SECRET', "b7cQUIoU5JF4iWVvjM0w1YeX4b7VwLpw");
+
+        $mp = new MP(CLIENT_ID, CLIENT_SECRET);
+
+        define('payments', '/v1/payments/search?external_reference=');
+        define('access', '&access_token=');
+        define('ACCESS_TOKEN', $mp->get_access_token());
+
+        $orders = Order::where('financial_status', 'pending')->get();
+        $contador = 0;
+
+
+        foreach ($orders as $order) {
+
+            $result = array();
+
+            $results = Logorder::where('order_id', $order->order_id)->where('checkout_id', $order->checkout_id)->first();
+
+            if (count($results) == 0) {
+
+                $contador ++;
+
+                if ($contador  == 300) {
+                    usleep(1000000);
+                    $contador = 0;
+                }
+
+                try {
+                    $result = $mp->get(payments . $order->checkout_id . access . ACCESS_TOKEN);
+                } catch (MercadoPagoException $e) {
+                    $paymentError = new \stdClass();
+                    $paymentError->parsed = $this->parseException($e->getMessage());
+                    $paymentError->data = $e->getMessage();
+                    $paymentError->code = $e->getCode();
+                }
+
+                if (isset($result['response']['results']) && count($result['response']['results']) > 0) {
+
+                    if ($result['response']['results'][0]['payment_method_id'] == 'efecty') {
+
+                        $days = Carbon::parse($result['response']['results'][0]['date_created'])->diffInDays();
+
+                        if ($days > 2) {
+
+                            Logorder::create([
+                                'order_id' => $order->order_id,
+                                'checkout_id' => $order->checkout_id,
+                                'value' => $order->total_price,
+                                'status_shopify' => $order->financial_status,
+                                'status_mercadopago' => $result['response']['results'][0]['status'],
+                                'payment_method_id' => $result['response']['results'][0]['payment_method_id'],
+                                'payment_type_id' => $result['response']['results'][0]['payment_type_id'],
+                                'name' => $order->name
+                            ]);
+                        }
+                    } else {
+                        Logorder::create([
+                            'order_id' => $order->order_id,
+                            'checkout_id' => $order->checkout_id,
+                            'value' => $order->total_price,
+                            'status_shopify' => $order->financial_status,
+                            'status_mercadopago' => $result['response']['results'][0]['status'],
+                            'payment_method_id' => $result['response']['results'][0]['payment_method_id'],
+                            'payment_type_id' => $result['response']['results'][0]['payment_type_id'],
+                            'name' => $order->name
+                        ]);
+                    }
+                }
+            }
+
+            if (count($results) > 0) {
+                $contador ++;
+
+                if ($contador  == 300) {
+                    usleep(1000000);
+                    $contador = 0;
+                }
+
+                try {
+                    $result = $mp->get(payments . $order->checkout_id . access . ACCESS_TOKEN);
+                } catch (MercadoPagoException $e) {
+                    $paymentError = new \stdClass();
+                    $paymentError->parsed = $this->parseException($e->getMessage());
+                    $paymentError->data = $e->getMessage();
+                    $paymentError->code = $e->getCode();
+                }
+
+                if (isset($result['response']['results']) && count($result['response']['results']) > 0) {
+
+                    $log_update = Logorder::find($results->id);
+                    $log_update->status_mercadopago = $result['response']['results'][0]['status'];
+                    $log_update->status_shopify = $order->financial_status;
+                    $log_update->save();
+                }
+            }
+        }*/
     }
 
 }

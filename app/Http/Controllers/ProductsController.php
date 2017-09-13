@@ -84,6 +84,12 @@ class ProductsController extends Controller
             $response = Product::find((int)$product['id']);
 
             if(count($response) == 0) {
+                $tipo_producto = '';
+                if (strtolower($product['vendor']) == 'nacional'  || strtolower($product['vendor']) == 'a-nacional') {
+                    $tipo_producto .= 'nacional';
+                } else {
+                    $tipo_producto .= 'internacional';
+                }
                     Product::create([
                         'body_html' => $product['body_html'],
                         'created_at' => Carbon::parse($product['created_at']),
@@ -103,7 +109,9 @@ class ProductsController extends Controller
                         'updated_at' => Carbon::parse($product['updated_at']),
                         'variants' => $product['variants'],
                         'vendor' => $product['vendor'],
+                        'tipo_producto' => $tipo_producto
                     ]);
+                $tipo_producto = '';
 
                     return response()->json(['status' => 'The resource is created successfully'], 200);
             } else {

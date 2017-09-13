@@ -11,10 +11,61 @@ use Dingo\Api\Routing\Helpers;
 use App\Transformers\UserTransformer;
 use Authorizer;
 use Auth;
+use Illuminate\Foundation\Auth\AuthenticatesAndRegistersUsers;
+use Illuminate\Foundation\Auth\ThrottlesLogins;
+use GuzzleHttp\Client;
+use App\Entities\Tercero;
 
 class UsersController extends Controller
 {
-    use Helpers;
+    use Helpers, AuthenticatesAndRegistersUsers, ThrottlesLogins;
+
+    protected $username = 'usuario';
+
+    public function access(Request $request)
+    {
+        $client = new Client();
+        $res = $client->request('post', 'http://localhost/api/oauth/access_token', [
+            'json' => [
+                "grant_type" => "password",
+                "client_id" => $request['client_id'],
+                "client_secret" => $request['client_secret'],
+                "username" => $request['username'],
+                "password" => $request['password']
+            ]
+        ]);
+
+        $code = $res->getStatusCode();
+        $results = json_decode($res->getBody(), true);
+
+        if ($code == 200) {
+
+            $access_token = $results['access_token'];
+            $token_type = $results['token_type'];
+            $expires_in = $results['expires_in'];
+
+
+            $request = $client->request('get', 'http://localhost/api/oauth/access/login', [
+                'headers' => [
+                    "Authorization" => $token_type . " " . $access_token,
+                ]
+            ]);
+
+            $code_final = $request->getStatusCode();
+
+            if ($code_final == 200) {
+                $final = json_decode($request->getBody(), true);
+
+                return 'sirve';
+            }
+        }
+
+    }
+
+    public function login()
+    {
+        return view('api.index');
+    }
 
     public function verify($username, $password)
     {

@@ -129,21 +129,19 @@ class UsuariosController extends Controller {
             $usuario->padre_id = $request->cliente;
         }
 
-        DB::table('terceros_networks')->insert([
-            'customer_id' => $usuario->id,
-            'network_id' => $request->id_red,
-            'padre_id' => $query->id
-        ]);
-
-        $padre = Tercero::find($query->id);
-        $padre->numero_referidos = $padre->numero_referidos + 1;
-        $padre->save();
-
         $usuario->rol_id = $request->rol_id;
         $usuario->usuario_id = currentUser()->id;
 
+        $padre = Tercero::find($query->id);
+        $padre->numero_referidos = $padre->numero_referidos + 1;
         $usuario->ip = $request->ip();
+        $usuario->networks()->attach(1, ['padre_id' => $padre->id]);
+        $padre->save();
+
+
         $usuario->save();
+
+
 
         $permisos = Role::findOrFail($request->rol_id)->permissions;
 

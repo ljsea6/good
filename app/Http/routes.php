@@ -23,13 +23,17 @@ $api->version('v1', function ($api) {
         $api->post('oauth/access_token', 'UsersController@authorization');
 
         $api->group(['middleware' => 'api.auth'], function ($api) {
-            $api->resource('users', 'UsersController');
+            $api->get('oauth/access/login', 'UsersController@login');
+            $api->get('users', ['uses' => 'UsersController@index', 'as' => 'api.users.index']);
         });
-    });
 
+        $api->get('oauth/access', 'UsersController@login');
+        $api->post('oauth/access_login', ['uses' => 'UsersController@access', 'as' => 'access.login']);
+
+    });
 });
 
-Route::any('orders/list/paid', ['uses' => 'OrdersController@lists_paid', 'as' => 'admin.orders.list.paid']);
+Route::any('orders/list/paid', ['uses' => 'OrdersController@contador', 'as' => 'admin.orders.list.paid']);
 //Pdfs
 Route::any('reportes/datos/products', ['uses' => 'ReportesController@products', 'as' => 'admin.reportes.datos.products']);
 
@@ -245,14 +249,26 @@ Route::group(['prefix' => 'admin', 'middleware' => 'auth'], function () {
     Route::any('reportes/product', ['uses' => 'ProductsController@welcome', 'as' => 'admin.reportes.product']);
 
     // orders
-    Route::get('orders/list', ['uses' => 'OrdersController@lists', 'as' => 'admin.orders.list']);
-    Route::any('orders/list/paid', ['uses' => 'OrdersController@lists_paid', 'as' => 'admin.orders.list.paid']);
-    Route::any('orders/list/pending', ['uses' => 'OrdersController@lists_pending', 'as' => 'admin.orders.list.pending']);
 
-    Route::get('orders', ['uses' => 'OrdersController@home', 'as' => 'admin.orders.home']);
-    Route::post('orders/{id}', ['uses' => 'OrdersController@up', 'as' => 'admin.orders.up']);
-    Route::get('orders/{id}/edit', ['uses' => 'OrdersController@edit', 'as' => 'admin.orders.edit']);
-    Route::any('orders/paid', ['uses' => 'OrdersController@anyData', 'as' => 'admin.orders.paid']);
+    Route::group(['middleware' => 'role:contabilidad'], function () {
+        Route::get('orders/list-paid', ['uses' => 'OrdersController@listpaid', 'as' => 'admin.orders.list-paid']);
+        Route::get('orders/list-pending', ['uses' => 'OrdersController@listpending', 'as' => 'admin.orders.list-pending']);
+        Route::any('orders/list/paid', ['uses' => 'OrdersController@paid', 'as' => 'admin.orders.list.paid']);
+        Route::any('orders/list/pending', ['uses' => 'OrdersController@pending', 'as' => 'admin.orders.list.pending']);
+
+
+    });
+
+    Route::group(['middleware' => 'role:logistica'], function () {
+        Route::get('orders', ['uses' => 'OrdersController@home', 'as' => 'admin.orders.home']);
+        Route::post('orders/{id}', ['uses' => 'OrdersController@up', 'as' => 'admin.orders.up']);
+        Route::get('orders/{id}/edit', ['uses' => 'OrdersController@edit', 'as' => 'admin.orders.edit']);
+        Route::any('orders/paid', ['uses' => 'OrdersController@anyData', 'as' => 'admin.orders.paid']);
+    });
+
+
+
+
 
     Route::any('reportes/order', ['uses' => 'OrdersController@index', 'as' => 'admin.reportes.order']);
     Route::any('reportes/orders', ['uses' => 'OrdersController@orders', 'as' => 'admin.reportes.orders']);

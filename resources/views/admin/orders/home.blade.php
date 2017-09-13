@@ -25,14 +25,12 @@
                             <th>Cliente</th>
                             <th>Email</th>
                             <th>Dirección</th>
-                            <th>Ciudad</th>
-                            <th>País</th>
                             <th>Télefono</th>
                             <th>Precio</th>
                             <th>Detalle Orden</th>
-                            <th>Estado</th>
-                            <th>Fecha Compra Cliente</th>
-                            <th>Fecha Compra</th>
+                            <th>Estado Shopify</th>
+                            <th>Fecha Shopify</th>
+                            <th>Fecha Good</th>
                             <th>Código Envio Internacional</th>
                             <th>Código Envio Nacional</th>
                             <th>Estado Orden</th>
@@ -65,8 +63,6 @@
                     { data: 'customer', name: 'customer', orderable: false, searchable: true },
                     { data: 'email', name: 'email', orderable: false, searchable: true },
                     { data: 'address', name: 'address', orderable: false, searchable: true },
-                    { data: 'city', name: 'city', orderable: true, searchable: true },
-                    { data: 'country', name: 'country', orderable: false, searchable: true },
                     { data: 'phone', name: 'phone', orderable: false, searchable: true },
                     { data: 'value', name: 'value', orderable: true, searchable: true  },
                     { data: 'order', name: 'order', orderable: true, searchable: true  },

@@ -32,7 +32,8 @@ class VerifyCsrfToken extends BaseVerifier {
                 'customers/meta',
                 'products/create',
                 'admin/orders/*',
-                'api/*'
+                'api/*',
+                'api/oauth/*'
                
         ];
 }

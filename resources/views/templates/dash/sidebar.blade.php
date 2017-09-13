@@ -1,7 +1,8 @@
 <aside class="side-navigation-wrap">
     <div class="sidenav-inner">
         <ul class="side-nav magic-nav">
-            <br>
+
+            @role('tercero|logistica|contabilidad')
             <li class="has-submenu">
                 <a href="{{ route('admin.index') }}" class="animsition-link text-left">
                     <i class="fa fa-area-chart">
@@ -16,13 +17,7 @@
                     <span class="nav-text">Buscar Referidos</span>
                 </a>
             </li>
-            {{--<li class="has-submenu">
-                <a href="{{ route('admin.network') }}" class="animsition-link text-left">
-                    <i class="fa fa-sitemap">
-                    </i>
-                    <span class="nav-text">Referidos</span>
-                </a>
-            </li>--}}
+
             <li class="has-submenu">
                 <a href="#send" data-toggle="collapse" aria-expanded="false" class="text-left">
                     <i class="fa fa-folder-open">
@@ -38,15 +33,13 @@
                                 Enviar Email
                             </a>
                         </li>
-                       
+
                     </ul>
                 </div>
             </li>
-            @permission('configuracion')
+            @endrole
 
-
-
-
+            @role('contabilidad|administrador')
             <li class="has-submenu">
                 <a href="#contabilidad" data-toggle="collapse" aria-expanded="false" class="text-left">
                     <i class="fa fa-pie-chart">
@@ -56,16 +49,26 @@
                 <div class="sub-menu collapse secondary list-style-circle" id="contabilidad">
                     <ul>
                         <li>
-                            <a href="{{ route('admin.orders.list') }}" class="text-left">
+                            <a href="{{ route('admin.orders.list-paid') }}" class="text-left">
                                 <i class="fa fa-chevron-right">
                                 </i>
                                 <span class="nav-text">Ordenes Pagas</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ route('admin.orders.list-pending') }}" class="text-left">
+                                <i class="fa fa-chevron-right">
+                                </i>
+                                <span class="nav-text">Ordenes Pendientes</span>
                             </a>
                         </li>
 
                     </ul>
                 </div>
             </li>
+            @endrole
+
+            @role('logistica|administrador')
             <li class="has-submenu">
                 <a href="#logistica" data-toggle="collapse" aria-expanded="false" class="text-left">
                     <i class="fa fa-skyatlas">
@@ -85,6 +88,10 @@
                     </ul>
                 </div>
             </li>
+            @endrole
+
+            @permission('configuracion')
+
             {{--<li class="has-submenu">
                 <a href="{{ route('admin.reglas.index') }}" class="text-left">
                     <i class="fa fa-gavel">
@@ -92,6 +99,7 @@
                     <span class="nav-text">Reglas</span>
                 </a>
             </li>--}}
+
             <li class="has-submenu">
                 <a href="#reportes" data-toggle="collapse" aria-expanded="false" class="text-left">
                     <i class="fa fa-bar-chart">
