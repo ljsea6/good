@@ -36,38 +36,39 @@
                             @endif
                         </div>
 
-                          <div class="row">
-                        <div class="col-md-6">
-                        {!! Field::number('identificacion', ['ph' => 'Identificacion' , 'required']) !!}
-                         </div>
-                         <div class="col-md-6">
-                        {!! Field::select('tipo_id', $tipos->toarray() , ['required']) !!}
-                          </div>
-                          </div>
                         <div class="row">
-                            <div class="col-md-6">
+                            <div class="col-sm-6 col-sm-offset-3 col-sm-6 col-sm-offset-3 col-md-6 col-md-offset-3 col-lg-6 col-lg-offset-3 text-left form-group">
+                                {!! Field::number('identificacion', ['ph' => 'Identificacion' , 'required']) !!}
+                             </div>
+                             <div class="col-sm-6 col-sm-offset-3 col-md-6 col-md-offset-3 col-lg-6 col-lg-offset-3 text-left form-group">
+                                {!! Field::select('tipo_id', $tipos->toarray() , ['required']) !!}
+                              </div>
+                            <div class="col-sm-6 col-sm-offset-3 col-md-6 col-md-offset-3 col-lg-6 col-lg-offset-3 text-left form-group">
                                 {!! Field::text('nombres', ['ph' => 'Nombres', 'required']) !!}
                             </div>
-                            <div class="col-md-6">
+                            <div class="col-sm-6 col-sm-offset-3 col-md-6 col-md-offset-3 col-lg-6 col-lg-offset-3 text-left form-group">
                                 {!! Field::text('apellidos', ['ph' => 'Apellidos', 'required']) !!}
                             </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-4">
+                            <div class="col-sm-6 col-sm-offset-3 col-md-6 col-md-offset-3 col-lg-6 col-lg-offset-3 text-left form-group">
                                 {!! Field::text('direccion', ['ph' => 'Direccion' ,'label' => 'Dirección' , 'required']) !!}
                             </div>
-                            <div class="col-md-2">
+                            <div class="col-sm-6 col-sm-offset-3 col-md-6 col-md-offset-3 col-lg-6 col-lg-offset-3 text-left form-group">
                                 {!! Field::text('telefono', ['ph' => 'Telefono' ,'label' => 'Teléfono', 'required','maxlength' => '10', 'OnKeyPress' => 'return event.charCode >= 48 && event.charCode <= 57'  ]) !!}
                             </div>
-                            <div class="col-md-2">
+                            <div class="col-sm-6 col-sm-offset-3 col-md-6 col-md-offset-3 col-lg-6 col-lg-offset-3 text-left form-group">
                                 {!! Field::text('celular', array('placeholder' => 'Celular','maxlength' => 10, 'OnKeyPress' => 'return event.charCode >= 48 && event.charCode <= 57' )) !!}
                             </div>  
-                            <div class="col-md-4">
+                            <div class="col-sm-6 col-sm-offset-3 col-md-6 col-md-offset-3 col-lg-6 col-lg-offset-3 text-left form-group">
                                 {!! Field::email('email', ['ph' => 'Email' , 'required']) !!}
                             </div>
+                            <div class="col-sm-6 col-sm-offset-3 col-md-6 col-md-offset-3 col-lg-6 col-lg-offset-3 text-left form-group">
+                                {!! Field::select('ciudad_id', $ciudades->toArray(), ['required']) !!}
+                            </div>
                         </div>
-                        {!! Field::select('ciudad_id', $ciudades->toArray(), ['required']) !!}
-                        <button class="btn btn-primary nextBtn btn-lg pull-right" type="button" >Siguiente</button>
+
+                        <div class="col-sm-6 col-sm-offset-3 col-md-6 col-md-offset-3 col-lg-6 col-lg-offset-3 form-group">
+                            <button class="btn btn-primary nextBtn pull-right" type="button" >Siguiente</button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -77,46 +78,43 @@
                         <h3> Creacion de usuario : </h3>
                         <hr>
                         <div class="row">
-                            <div class="col-md-6">
+                            <div class="col-sm-6 col-sm-offset-3 col-md-6 col-md-offset-3 col-lg-6 col-lg-offset-3 text-left form-group">
                                 {!! Field::text('usuario', ['ph' => 'Usuario' , 'required']) !!}
                             </div>
-                            <div class="col-md-6">
+                            <div class="col-sm-6 col-sm-offset-3 col-md-6 col-md-offset-3 col-lg-6 col-lg-offset-3 text-left form-group">
                                 {!! Field::password('contraseña', ['ph' => '********' , 'required']) !!}
                             </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-6">
+
+                            <div class="col-sm-6 col-sm-offset-3 col-md-6 col-md-offset-3 col-lg-6 col-lg-offset-3 text-left form-group">
                                 {!! Field::select('oficina_id', $oficinas->toArray(), ['required']) !!}
                             </div>
-                             <div class="col-md-6">
+                             <div class="col-sm-6 col-sm-offset-3 col-md-6 col-md-offset-3 col-lg-6 col-lg-offset-3 text-left form-group">
                                 {!! Field::select('rol_id', $roles->toArray(), ['required']) !!}
                             </div>
-                            <div class="col-md-6">
+                            <div class="col-sm-6 col-sm-offset-3 col-md-6 col-md-offset-3 col-lg-6 col-lg-offset-3 text-left form-group">
                                 {!! Field::select('id_red', $red->toArray(), ['required']) !!}
                             </div>
-                            <div class="col-md-6">
+                            <div class="col-sm-6 col-sm-offset-3 col-md-6 col-md-offset-3 col-lg-6 col-lg-offset-3 text-left form-group">
                                {!! Field::email('email_Patrocinador', ['ph' => 'Email', 'class' => 'input-lg font-14']) !!}
                             </div>
 
-
-                        </div>
-                        <div class="row">
-                            <div class="col-md-4">
+                            <div class="col-sm-6 col-sm-offset-3 col-md-6 col-md-offset-3 col-lg-6 col-lg-offset-3 text-left form-group">
                                 <b>Control de acceso por IP :</b>
-                                <select name='control_ip' OnChange="if (this.value==1) { $('#ips').show(); } else  { $('#ips').hide(); }" class="form-control">
+                                <select id="control_ip" name='control_ip' OnChange="if (this.value==1) { $('#ips').show(); } else  { $('#ips').hide(); }" class="form-control">
                                     <option value="0">NO</option>
                                     <option value="1">SI</option>
                                 </select>                            
                             </div>
-                            <div class="col-md-8" id='ips' style='display:none;'>
+                            <div class="col-sm-6 col-sm-offset-3 col-md-6 col-md-offset-3 col-lg-6 col-lg-offset-3 text-left form-group" id='ips' style='display:none;'>
                                 {!! Field::text('ips_autorizadas', ['ph' => 'IPs Autorizadas, separadas por coma (,) ' , '']) !!}
                             </div>
                         </div>
-                        <br>
-                       
-                   <button class="btn btn-success btn-lg pull-right guardar" type="submit">Guardar</button>  
+                        <br><br>
+                        <div class="col-sm-6 col-sm-offset-3 col-md-6 col-md-offset-3 col-lg-6 col-lg-offset-3 form-group">
+                            <button class="btn btn-primary  pull-right guardar" type="submit">Guardar</button>
 
-                        <button class="btn btn-primary prevBtn btn-lg pull-left" type="button">Anterior</button>
+                            <button class="btn btn-primary prevBtn  pull-left" type="button">Anterior</button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -128,12 +126,53 @@
 
 @section('scripts')
 <script type="text/javascript">
-    $('#cliente').select2({
+    $('#control_ip').select2({
+        theme: "bootstrap",
+        width: '100%',
+        language: "es",
+        placeholder: "Seleccionar Tipo Control...",
+        maximumSelectionLength: 5,
+
+    });
+    $('#id_red').select2({
+        theme: "bootstrap",
+        width: '100%',
+        language: "es",
+        placeholder: "Seleccionar Red...",
+        maximumSelectionLength: 5,
+
+    });
+    $('#rol_id').select2({
+        theme: "bootstrap",
+        width: '100%',
+        language: "es",
+        placeholder: "Seleccionar Rol...",
+        maximumSelectionLength: 5,
+
+    });
+
+    $('#oficina_id').select2({
+        theme: "bootstrap",
+        width: '100%',
+        language: "es",
+        placeholder: "Seleccionar Oficina...",
+        maximumSelectionLength: 5,
+
+    });
+
+    $('#tipo_id').select2({
+        theme: "bootstrap",
+        width: '100%',
                 language: "es",
-                placeholder: "Seleccionar cliente...",
-                maximumSelectionLength: 5
+                placeholder: "Seleccionar Tipo...",
+                maximumSelectionLength: 5,
+
+
+
     });
     $('#ciudad_id').select2({
+        theme: "bootstrap",
+        width: '100%',
                 language: "es",
                 placeholder: "Seleccionar ciudad...",
                 allowClear: false

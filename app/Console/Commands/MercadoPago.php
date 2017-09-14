@@ -74,6 +74,7 @@ class MercadoPago extends Command
         $orders = Order::where('financial_status', 'pending')->get();
         $contador = 0;
 
+        Logorder::truncate();
 
         foreach ($orders as $order) {
 

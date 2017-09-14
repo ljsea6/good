@@ -194,7 +194,9 @@
                             </div>
                             <div class="col-lg-6 col-lg-offset-3 col-md-6 col-md-offset-3 text-left">
                                 <div class="form-group">
-                                    <select id="tipo" name="tipo" class="js-example-basic-single" style="width: 100%">
+                                    <label>Tipo orden</label>
+                                    <select id="tipo" name="tipo" class="form-control" required>
+                                        <option value=""></option>
                                         <option value="nacional">Nacional</option>
                                         <option value="internacional">Internacional</option>
                                     </select>
@@ -216,7 +218,13 @@
     <script>
         $(document).ready(function(){
 
-            $(".js-example-basic-single").select2({});
+            $("#tipo").select2({
+                theme: "bootstrap",
+                width: '100%',
+                language: "es",
+                placeholder: "Seleccionar Tipo Orden...",
+                allowClear: true
+            });
 
             $(function () {
                 $('#datetimepicker1').datetimepicker({

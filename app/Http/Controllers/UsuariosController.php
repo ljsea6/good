@@ -44,27 +44,52 @@ class UsuariosController extends Controller {
 
         return Datatables::of($usuarios)
 
+            ->addColumn('identificacion', function ($usuarios) {
+                return '<div align=left>'.$usuarios->identificacion.'</div>';
+            })
+            ->addColumn('nombres', function ($usuarios) {
+                return '<div align=left>'.$usuarios->nombres.'</div>';
+            })
+            ->addColumn('apellidos', function ($usuarios) {
+                return '<div align=left>'.$usuarios->apellidos.'</div>';
+            })
+            ->addColumn('direccion', function ($usuarios) {
+                return '<div align=left>'.$usuarios->direccion.'</div>';
+            })
+            ->addColumn('ciudad', function ($usuarios) {
+                return '<div align=left>'.$usuarios->ciudad.'</div>';
+            })
+            ->addColumn('rol', function ($usuarios) {
+                return '<div align=left>'.$usuarios->rol.'</div>';
+            })
+            ->addColumn('tipo', function ($usuarios) {
+                return '<div align=left>'.$usuarios->tipo.'</div>';
+            })
             ->addColumn('permisos', function ($usuarios) {
                 return '
-                <a data-toggle="modal" tercero_id="' . $usuarios->id . '" data-target="#permisos" class="btn btn-primary btn-xs get-permisos" OnClick="get_permisos(' . $usuarios->id . ');">
-                                Permisos
-                </a>';
+                    <div align=left>
+                        <a data-toggle="modal" tercero_id="' . $usuarios->id . '" data-target="#permisos" class="btn btn-primary btn-xs get-permisos" OnClick="get_permisos(' . $usuarios->id . ');">Permisos</a>
+                    </div>
+                ';
             })
             ->addColumn('action', function ($usuarios) {
                 return '
-                <a href="' . route('admin.usuarios.edit', $usuarios->id) . '"  class="btn btn-warning btn-xs">
-                        <span class="glyphicon glyphicon-wrench" aria-hidden="true"></span>
-                </a>
-                <a href="' . route('admin.usuarios.destroy', $usuarios->id) . '"  onclick="return confirm(\'¿ Desea eliminar el registro seleccionado ?\')" class="btn btn-danger btn-xs">
-                        <span class="glyphicon glyphicon-remove-circle" aria-hidden="true"></span>
-                </a>';
+                    <div align=left>
+                        <a  href="' . route('admin.usuarios.edit', $usuarios->id) . '"  class="btn btn-warning btn-xs">
+                            <span class="glyphicon glyphicon-wrench" aria-hidden="true"></span>
+                        </a>
+                        <a href="' . route('admin.usuarios.destroy', $usuarios->id) . '"  onclick="return confirm(\'¿ Desea eliminar el registro seleccionado ?\')" class="btn btn-danger btn-xs">
+                                <span class="glyphicon glyphicon-remove-circle" aria-hidden="true"></span>
+                        </a>
+                    </div>
+                ';
             })
             ->editColumn('avatar', function ($usuarios) {
 
                 if ($usuarios->avatar !== NULL) {
-                    return '<img src="' . asset($usuarios->avatar) . '" class="img-circle avatar_table" />';
+                    return '<div align=left><img src="' . asset($usuarios->avatar) . '" class="img-circle avatar_table" /></div> ';
                 } else {
-                    return '<img src="' . asset('img/avatar-bg.png') . '" class="img-circle avatar_table"/>';
+                    return '<div align=left><img src="' . asset('img/avatar-bg.png') . '" class="img-circle avatar_table"/></div>';
                 }
 
             })

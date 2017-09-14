@@ -56,7 +56,7 @@
                             <th>
                                 ID
                             </th>
-                            <th>
+                            <th >
                                 Nombre
                             </th>
                             <th>
@@ -89,7 +89,11 @@
                             </h4>
                         </div>
                         <div class="modal-body" style="position: relative; margin: 0 auto; width: 70%;">
-                            {!! Form::select('permisos', $permisos, null, ['id' => 'select-permisos','class' => 'form-control', 'multiple']) !!}
+                            <div class="row">
+                                <div class="col-md-12 text-left">
+                                    {!! Form::select('permisos', $permisos, null, ['id' => 'select-permisos','class' => 'form-control', 'multiple']) !!}
+                                </div>
+                            </div>
                         </div>
                         <div class="modal-footer">
                             <a href="#" data-dismiss="modal" class="btn btn-danger">
@@ -135,8 +139,8 @@
         });
 
         $('#select-permisos').multiSelect({
-            selectableHeader: "<div class='text-center'><b>Permisos no asignados</b></div>",
-            selectionHeader: "<div class='text-center'><b>Permisos asignados</b></div>",
+            selectableHeader: "<hr><div class='text-left'><b>Permisos no asignados</b><br><br></div>",
+            selectionHeader: "<hr><div class='text-left'><b>Permisos asignados</b><br><br></div>",
             afterSelect: function(value) {
                 $.ajax({
                     url: '{{ route('asignar.permisos') }}',

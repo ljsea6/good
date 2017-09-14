@@ -25,13 +25,22 @@ class RolesController extends Controller {
 
         $roles = Roles::select('id', 'name', 'description');
         return Datatables::of($roles)
+            ->addColumn('id', function ($roles) {
+                return '<div align=left>'.$roles->id.'</div>';
+            })
+            ->addColumn('name', function ($roles) {
+                return '<div align=left>'.$roles->name.'</div>';
+            })
+            ->addColumn('description', function ($roles) {
+                return '<div align=left>'.$roles->description.'</div>';
+            })
             ->addColumn('permisos', function ($roles) {
-                return '<div align=center><a data-toggle="modal" rol_id=' . $roles->id . ' data-target="#permisos" class="btn btn-primary get-permisos btn-xs" OnClick="get_permisos(' . $roles->id . ')">
+                return '<div align=left><a data-toggle="modal" rol_id=' . $roles->id . ' data-target="#permisos" class="btn btn-primary get-permisos btn-xs" OnClick="get_permisos(' . $roles->id . ')">
                                 Permisos
                 </a></div>';
             })
             ->addColumn('action', function ($roles) {
-                return '<div align=center><a href="' . route('admin.perfiles.edit', $roles->id) . '"  class="btn btn-warning btn-xs">
+                return '<div align=left><a href="' . route('admin.perfiles.edit', $roles->id) . '"  class="btn btn-warning btn-xs">
                         <span class="glyphicon glyphicon-wrench" aria-hidden="true"></span>
                 </a>
                 <a href="' . route('admin.perfiles.destroy', $roles->id) . '"  onclick="return confirm(\'¿Seguro que deseas eliminarlo ?\')" class="btn btn-danger btn-xs">

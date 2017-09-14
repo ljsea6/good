@@ -53,34 +53,34 @@
                 <table data-order='[[ 0, "asc" ]]' id="tabla_usuarios" class="table table-striped font-12 dataTable no-footer" role="grid" aria-describedby="datatable_info">
                 <thead>
                     <tr>
-                        <th class="text-center">
+                        <th>
                             Avatar
                         </th>
-                        <th class="text-center">
+                        <th>
                             Identificación
                         </th>
-                        <th class="text-center">
+                        <th>
                             Nombres
                         </th>
-                        <th class="text-center">
+                        <th>
                             Apellidos
                         </th>
-                        <th class="text-center">
+                        <th>
                             Dirección
                         </th>
-                        <th class="text-center">
+                        <th>
                             Ciudad
                         </th>
-                        <th class="text-center">
+                        <th>
                             Rol
                         </th>
-                        <th class="text-center">
+                        <th>
                             Tipo
                         </th>
-                        <th class="text-center">
+                        <th>
                             Permisos
                         </th>
-                        <th class="text-center">
+                        <th>
                             Acciones
                         </th>
                     </tr>
@@ -104,7 +104,12 @@
                             </h4>
                         </div>
                         <div class="modal-body" style="position: relative; margin: 0 auto; width: 70%;">
-                            {!! Form::select('permisos', $permisos, null, ['id' => 'select-permisos','class' => 'form-control', 'multiple']) !!}
+                            <div class="row">
+                                <div class="col-md-12 text-left">
+                                    {!! Form::select('permisos', $permisos, null, ['id' => 'select-permisos', 'multiple' => true]) !!}
+                                </div>
+                            </div>
+
                         </div>
                         <div class="modal-footer">
                             <a href="#" data-dismiss="modal" class="btn btn-danger">
@@ -131,8 +136,8 @@
 <script>
     $(document).on('ready', function() {
         $('#select-permisos').multiSelect({
-            selectableHeader: "<div class='text-center'><b>Permisos no asignados</b></div>",
-            selectionHeader: "<div class='text-center'><b>Permisos asignados</b></div>",
+            selectableHeader: "<hr><div class='text-left'><b>Permisos no asignados</b><br><br></div>",
+            selectionHeader: "<hr><div class='text-left'><b>Permisos asignados</b><br><br></div>",
             afterSelect: function(value) {
                 $.ajax({
                     url: '{{ route('asignar.permisos') }}',
