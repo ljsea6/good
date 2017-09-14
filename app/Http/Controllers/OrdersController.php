@@ -1769,6 +1769,9 @@ class OrdersController extends Controller
 
     public function contador()
     {
+
+
+
         /*$user = Tercero::find(174802);
         $contabilidadRole = Role::find(19);
 

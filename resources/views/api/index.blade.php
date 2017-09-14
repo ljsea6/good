@@ -58,6 +58,14 @@
     <div class="wrapper animsition">
         <div class="container text-center">
             <div class="single-wrap">
+                @if (session('error'))
+                    <div class="panel-footer">
+                        <div class="alert alert-danger alert-dismissable">
+                            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                            <strong>{{ session()->get('error') }}</strong>
+                        </div>
+                    </div>
+                @endif
                 {!! Form::open(['route' => 'access.login', 'method' => 'POST']) !!}
                 <div class="single-inner-padding text-center">
                     <img src="{{ asset('img/Hello.jpg') }}" class="img-responsive text-center" style="display: inline-block">
@@ -68,22 +76,7 @@
                         {!! Field::text('username', ['ph' => 'Usuario', 'class' => 'input-lg font-14']) !!}
                         {!! Field::password('password', ['ph' => '********', 'class' => 'input-lg font-14']) !!}
                     </div>
-                    <div class="m-l-10 font-11 text-left">
-                        <div class="checkbox">
-                            <div class="custom-checkbox">
-                                <input type="checkbox" name="remember" id="remember" />
-                                <label for="remember">Recordarme</label>
-                            </div>
-                        </div>
-                    </div>
                     {!! Form::submit('Iniciar sesión', ['class' => 'btn btn-main btn-lg btn-block font-14 m-t-30']) !!}
-                    <div class="m-t-15 text-right">
-                    <!-- <a href="{{ route('reset') }}">Olvido contraseña?</a> -->
-
-                    </div>
-                    <div class="m-t-15 text-right">
-                    <!-- <a href="{{ route('Registro') }}">Registrarse</a> -->
-                    </div>
                 </div>
                 {!! Form::close() !!}
             </div>

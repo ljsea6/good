@@ -132,7 +132,7 @@
         language: "es",
         placeholder: "Seleccionar Tipo Control...",
         maximumSelectionLength: 5,
-
+        allowClear: true
     });
     $('#id_red').select2({
         theme: "bootstrap",
@@ -140,6 +140,7 @@
         language: "es",
         placeholder: "Seleccionar Red...",
         maximumSelectionLength: 5,
+        allowClear: true
 
     });
     $('#rol_id').select2({
@@ -148,6 +149,7 @@
         language: "es",
         placeholder: "Seleccionar Rol...",
         maximumSelectionLength: 5,
+        allowClear: true
 
     });
 
@@ -157,6 +159,7 @@
         language: "es",
         placeholder: "Seleccionar Oficina...",
         maximumSelectionLength: 5,
+        allowClear: true
 
     });
 
@@ -166,6 +169,7 @@
                 language: "es",
                 placeholder: "Seleccionar Tipo...",
                 maximumSelectionLength: 5,
+        allowClear: true
 
 
 
@@ -175,7 +179,7 @@
         width: '100%',
                 language: "es",
                 placeholder: "Seleccionar ciudad...",
-                allowClear: false
+                allowClear: true
     });
     function readURL(input) {
         if (input.files && input.files[0]) {

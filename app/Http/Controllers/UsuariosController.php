@@ -43,7 +43,6 @@ class UsuariosController extends Controller {
                 ->orderby('terceros.id');
 
         return Datatables::of($usuarios)
-
             ->addColumn('identificacion', function ($usuarios) {
                 return '<div align=left>'.$usuarios->identificacion.'</div>';
             })

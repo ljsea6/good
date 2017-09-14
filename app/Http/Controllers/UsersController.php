@@ -15,6 +15,9 @@ use Illuminate\Foundation\Auth\AuthenticatesAndRegistersUsers;
 use Illuminate\Foundation\Auth\ThrottlesLogins;
 use GuzzleHttp\Client;
 use App\Entities\Tercero;
+use GuzzleHttp\Psr7;
+use GuzzleHttp\Exception\RequestException;
+
 
 class UsersController extends Controller
 {
@@ -25,15 +28,22 @@ class UsersController extends Controller
     public function access(Request $request)
     {
         $client = new Client();
-        $res = $client->request('post', 'http://localhost/api/oauth/access_token', [
-            'json' => [
-                "grant_type" => "password",
-                "client_id" => $request['client_id'],
-                "client_secret" => $request['client_secret'],
-                "username" => $request['username'],
-                "password" => $request['password']
-            ]
-        ]);
+
+        try {
+            $res = $client->request('post', 'http://localhost/api/oauth/access_token', [
+                'json' => [
+                    "grant_type" => "password",
+                    "client_id" => $request['client_id'],
+                    "client_secret" => $request['client_secret'],
+                    "username" => $request['username'],
+                    "password" => $request['password']
+                ]
+            ]);
+        } catch (RequestException $e) {
+            return redirect()->back()->with([
+                'error' => 'revisar credenciales'
+            ]);
+        }
 
         $code = $res->getStatusCode();
         $results = json_decode($res->getBody(), true);
@@ -44,7 +54,6 @@ class UsersController extends Controller
             $token_type = $results['token_type'];
             $expires_in = $results['expires_in'];
 
-
             $request = $client->request('get', 'http://localhost/api/oauth/access/login', [
                 'headers' => [
                     "Authorization" => $token_type . " " . $access_token,
@@ -54,12 +63,9 @@ class UsersController extends Controller
             $code_final = $request->getStatusCode();
 
             if ($code_final == 200) {
-                $final = json_decode($request->getBody(), true);
-
                 return 'sirve';
             }
         }
-
     }
 
     public function login()
