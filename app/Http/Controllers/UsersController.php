@@ -41,7 +41,7 @@ class UsersController extends Controller
             ]);
         } catch (RequestException $e) {
             return redirect()->back()->with([
-                'error' => 'revisar credenciales'
+                'error' => 'Usuario o contraseña incorrecto, por favor verifique sus datos.'
             ]);
         }
 
