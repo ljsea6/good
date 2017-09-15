@@ -1,7 +1,5 @@
 <?php
-
 namespace App\Http\Controllers;
-
 use App\Entities\Tercero_network;
 use Illuminate\Http\Request;
 use App\Http\Requests;
@@ -18,21 +16,16 @@ use MP;
 use MercadoPagoException;
 use Bican\Roles\Models\Role;
 use Bican\Roles\Models\Permission;
-
-
-
 class OrdersController extends Controller
 {
     public function listpaid()
     {
         return view('admin.orders.paid');
     }
-
     public function listpending()
     {
         return view('admin.orders.pending');
     }
-
     private function parseException($message)
     {
         $error = new \stdClass();
@@ -50,19 +43,15 @@ class OrdersController extends Controller
         }
         return $error;
     }
-
     public function paid()
     {
         ini_set('memory_limit','1000M');
         ini_set('xdebug.max_nesting_level', 120);
         ini_set('max_execution_time', 3000);
-
         $orders = Order::where('financial_status', 'paid')->get();
         $result = array();
         foreach ($orders as $order) {
-
             foreach ($order->line_items as $item) {
-
                 if (isset($order->shipping_lines[0]['price'])){
                     $data = [
                         'nombre_producto' => $item['name'],
@@ -84,13 +73,10 @@ class OrdersController extends Controller
                         'total' => number_format($order->total_price)
                     ];
                 }
-
                 array_push($result, $data);
             }
         }
-
         $send = collect($result);
-
         return Datatables::of($send)
             ->addColumn('nombre_producto', function ($send) {
                 return '<div align=left>' . $send['nombre_producto'] . '</div>';
@@ -115,7 +101,6 @@ class OrdersController extends Controller
             })
             ->make(true);
     }
-
     public function pending()
     {
         ini_set('memory_limit','1000M');
@@ -124,9 +109,7 @@ class OrdersController extends Controller
         $orders = Order::where('financial_status', 'pending')->get();
         $result = array();
         foreach ($orders as $order) {
-
             foreach ($order->line_items as $item) {
-
                 if (isset($order->shipping_lines[0]['price'])){
                     $data = [
                         'nombre_producto' => $item['name'],
@@ -148,13 +131,10 @@ class OrdersController extends Controller
                         'total' => number_format($order->total_price)
                     ];
                 }
-
                 array_push($result, $data);
             }
         }
-
         $send = collect($result);
-
         return Datatables::of($send)
             ->addColumn('nombre_producto', function ($send) {
                 return '<div align=left>' . $send['nombre_producto'] . '</div>';
@@ -179,12 +159,10 @@ class OrdersController extends Controller
             })
             ->make(true);
     }
-
     public function home()
     {
         return view('admin.orders.home');
     }
-
     public function edit($id)
     {
         $order = Order::find($id);
@@ -194,11 +172,9 @@ class OrdersController extends Controller
             'product' => $product
         ]);
     }
-
     public function up(Request $request, $id)
     {
         if (isset($request['tipo']) && isset($request['date']) && !isset($request['code'])) {
-
             $type = $request['tipo'];
             $date = $request['date'];
             $order = Order::find($id);
@@ -206,33 +182,25 @@ class OrdersController extends Controller
             $order->estado_orden = 'comprado';
             $order->bitacora = currentUser();
             $order->save();
-
             if ($order) {
                 if ($type == 'nacional' && isset($order->line_items[0]['product_id']) && count($order->line_items[0]['product_id']) > 0) {
                     $product = Product::find($order->line_items[0]['product_id']);
-
                     if ($product->tipo_producto == null) {
                         $product->tipo_producto = $type;
                         $product->save();
                     }
                 }
-
                 if ($type == 'internacional' && $order->line_items[0]['product_id'] && count($order->line_items[0]['product_id']) > 0) {
                     $product = Product::find($order->line_items[0]['product_id']);
-
                     if ($product->tipo_producto == null) {
                         $product->tipo_producto = $type;
                         $product->save();
                     }
                 }
-
                 return redirect()->back()->with(['success' =>'Compra realizada con exito.']);
             }
-
         }
-
         if (!isset($request['tipo']) && !isset($request['date']) && isset($request['code'])) {
-
             $code = $request['code'];
             $order = Order::find($id);
             $order->codigo_envio = $code;
@@ -240,14 +208,11 @@ class OrdersController extends Controller
             $order->estado_orden = 'envio_nacional';
             $order->bitacora = currentUser();
             $order->save();
-
             if ($order) {
                 return redirect()->back()->with(['success' =>'Código Nacional agregado con exito.']);
             }
         }
-
         if (!isset($request['tipo']) && !isset($request['date']) && isset($request['code_internacional'])) {
-
             $code = $request['code_internacional'];
             $order = Order::find($id);
             $order->codigo_envio_internacional = $code;
@@ -255,22 +220,15 @@ class OrdersController extends Controller
             $order->estado_orden = 'envio_internacional';
             $order->bitacora = currentUser();
             $order->save();
-
             if ($order) {
                 return redirect()->back()->with(['success' =>'Código Internacional agregado con exito.']);
             }
         }
-
-
-
     }
-
     public function anyData()
     {
         $orders = Order::where('financial_status', 'paid')->get();
-
         $send = collect($orders);
-
         return Datatables::of($send )
             ->addColumn('name', function ($send) {
                 return '<div align=left>' . $send->name . '</div>';
@@ -278,7 +236,6 @@ class OrdersController extends Controller
             ->addColumn('customer', function ($send) {
                 $customer = Customer::where('email', $send->email)->first();
                 $orden_sin = 'Orden sin cliente';
-
                 if (count($customer) > 0) {
                     return '<div align=left>' . $customer->first_name . '</div>';
                 } else {
@@ -301,13 +258,9 @@ class OrdersController extends Controller
             ->addColumn('order', function ($send) {
                 $result = '';
                 foreach ($send->line_items as $item ){
-
                     $product = Product::find($item['product_id']);
-
                     if(count($product['image']) > 0 && count($product['images']) > 0) {
-
-
-                            $result .= '<div class="container" style="width: 100%">
+                        $result .= '<div class="container" style="width: 100%">
                                                 <div class="row">
                                                     <div class="col-md-12">
                                                          <p><strong>Nombre: ' . $item['title'] . '</strong></p>
@@ -327,11 +280,8 @@ class OrdersController extends Controller
                                                     </div>
                                                 </div>
                                             </div> <hr>';
-
-
                     }
                 }
-
                 if (count($send->shipping_lines) > 0) {
                     foreach ($send->shipping_lines as $line) {
                         return '
@@ -363,7 +313,7 @@ class OrdersController extends Controller
                         ';
                     }
                 } else {
-                        return '
+                    return '
                   
                     <div class="text-left">
                         <button style="color: #f60620" class="btn-link" data-toggle="modal" data-target="#myModal'. $send->order_number .'">#'. $send->order_number .'</button>
@@ -390,7 +340,6 @@ class OrdersController extends Controller
                         </div>
                     </div>                        
                 ';
-
                 }
             })
             ->addColumn('financial_status', function ($send) {
@@ -409,9 +358,7 @@ class OrdersController extends Controller
                 return '<div align=left>' . $send->codigo_envio_internacional . '</div>';
             })
             ->addColumn('estado_orden', function ($send) {
-
                 $product = Product::find($send->line_items[0]['product_id']);
-
                 if (!isset($product->tipo_producto) || $product->tipo_producto == null || $product->tipo_producto == '') {
                     $result = '';
                     $state = '';
@@ -449,9 +396,7 @@ class OrdersController extends Controller
                                                 </div>
                                             </div>
                                             ';
-
                     }
-
                     if ($send->estado_orden == "comprado") {
                         $state .= 'Comprado';
                         $result .= '        <div class="stepwizard">
@@ -482,10 +427,7 @@ class OrdersController extends Controller
                                                 </div>
                                             </div>
                                             ';
-
                     }
-
-
                     return '
                         <div align=left>
                             <button style="color: #f60620" class="btn-link" data-toggle="modal" data-target="#myModal-'. $send->order_number .'">' . $state . '</button>
@@ -510,9 +452,7 @@ class OrdersController extends Controller
                         </div>
                         
                        ';
-
                 }
-
                 if (isset($product->tipo_producto) && $product->tipo_producto == 'nacional') {
                     $result = '';
                     $state = '';
@@ -547,7 +487,6 @@ class OrdersController extends Controller
                                             </div>
                                             ';
                     }
-
                     if ($send->estado_orden == "comprado") {
                         $state .= 'Comprado';
                         $result .= '        <div class="stepwizard">
@@ -586,7 +525,6 @@ class OrdersController extends Controller
                                             </div>
                                             ';
                     }
-
                     if ($send->estado_orden == "envio_nacional") {
                         $state .= 'Nacional';
                         $result .= '        <div class="stepwizard">
@@ -632,7 +570,6 @@ class OrdersController extends Controller
                                             </div>
                                             ';
                     }
-
                     if ($send->estado_orden == "entregado") {
                         $state .= 'Entregado';
                         $result .= '        <div class="stepwizard">
@@ -685,7 +622,6 @@ class OrdersController extends Controller
                                             </div>
                                             ';
                     }
-
                     return '
                         <div align=left>
                             <button style="color: #f60620" class="btn-link" data-toggle="modal" data-target="#myModal-'. $send->order_number .'">' . $state . '</button>
@@ -710,11 +646,8 @@ class OrdersController extends Controller
                         </div>
                         
                        ';
-
                 }
-
                 if (isset($product->tipo_producto) && $product->tipo_producto == 'internacional') {
-
                     $result = '';
                     $state = '';
                     if ($send->estado_orden == "pendiente") {
@@ -754,7 +687,6 @@ class OrdersController extends Controller
                                            
                                             ';
                     }
-
                     if ($send->estado_orden == "comprado") {
                         $state .= 'Comprado';
                         $result .= '        <div class="stepwizard">
@@ -799,7 +731,6 @@ class OrdersController extends Controller
  
                                             ';
                     }
-
                     if ($send->estado_orden == "envio_nacional") {
                         $state .= 'Nacional';
                         $result .= '        <div class="stepwizard">
@@ -857,7 +788,6 @@ class OrdersController extends Controller
                                             
                                             ';
                     }
-
                     if ($send->estado_orden == "envio_internacional") {
                         $state .= 'Internacional';
                         $result .= '        <div class="stepwizard">
@@ -910,7 +840,6 @@ class OrdersController extends Controller
                                            
                                             ';
                     }
-
                     if ($send->estado_orden == "entregado") {
                         $state .= 'Entregado';
                         $result .= '        <div class="stepwizard">
@@ -968,7 +897,6 @@ class OrdersController extends Controller
                                             </div>
                                             ';
                     }
-
                     return '
                         <div align=left>
                             <button style="color: #f60620" class="btn-link" data-toggle="modal" data-target="#myModal-'. $send->order_number .'">' . $state . '</button>
@@ -993,27 +921,21 @@ class OrdersController extends Controller
                         </div>
                         
                        ';
-
                 }
-
             })
             ->addColumn('action', function ($send ) {
                 return '<div align=left><a href="/admin/orders/'. $send->id .'/edit"  class="btn btn-danger btn-xs text-center">Comprar</a></div>';
             })
             ->make(true);
     }
-
     public function index()
     {
         return view('admin.orders.index');
     }
-
     public function orders()
     {
         $orders = Logorder::all();
-
         $send = collect($orders);
-
         return Datatables::of($send )
             ->addColumn('id', function ($send) {
                 return '<div align=left>' . $send->id . '</div>';
@@ -1038,16 +960,13 @@ class OrdersController extends Controller
             })
             ->make(true);
     }
-
     public function status_orders()
     {
         $orders = DB::table('logsorders')
             ->select(DB::raw('count(id) as number'), 'status_shopify', 'status_mercadopago', 'payment_method_id')
             ->groupBy('status_shopify', 'status_mercadopago', 'payment_method_id')
             ->get();
-
         $send = collect($orders);
-
         return Datatables::of($send )
             ->addColumn('number', function ($send) {
                 return '<div align=left>' . $send->number . '</div>';
@@ -1063,49 +982,36 @@ class OrdersController extends Controller
             })
             ->make(true);
     }
-
     public function verify_webhook($data, $hmac_header)
     {
         $calculated_hmac = base64_encode(hash_hmac('sha256', $data, 'afc86df7e11dcbe0ab414fa158ac1767', true));
         return hash_equals($hmac_header, $calculated_hmac);
     }
-
     public function create()
     {
         $api_url = 'https://c17edef9514920c1d2a6aeaf9066b150:afc86df7e11dcbe0ab414fa158ac1767@mall-hello.myshopify.com';
         $client = new \GuzzleHttp\Client();
-
         $input = file_get_contents('php://input');
         $order = json_decode($input, true);
-
         $hmac_header = $_SERVER['HTTP_X_SHOPIFY_HMAC_SHA256'];
         $verified = $this->verify_webhook(collect($order), $hmac_header);
         $resultapi = error_log('Webhook verified: ' . var_export($verified, true));
-
         if ($resultapi == 'true') {
             $result = Order::where('order_id', $order['id'])
-                    ->where('email', $order['email'])
-                    ->where('network_id', 1)
-                    ->first();
-
+                ->where('email', $order['email'])
+                ->where('network_id', 1)
+                ->first();
             if (count($result) == 0) {
-
                 $owner = Customer::where('email', $order['email'])->first();
-
                 if (count($owner) > 0) {
-
                     $tipo_orden = '';
                     $i = 0;
                     $n = 0;
-
                     if (isset($order['line_items']) && count($order['line_items']) > 0) {
                         foreach ($order['line_items'] as $item) {
-
                             $product = Product::find($item['product_id']);
-
                             if (strtolower($item['vendor'])  == 'nacional' || strtolower($item['vendor'])  == 'a - nacional') {
                                 $n++;
-
                                 if (count($product) > 0) {
                                     $product->tipo_producto = 'nacional';
                                     $product->save();
@@ -1113,7 +1019,6 @@ class OrdersController extends Controller
                             }
                             if (strtolower($item['vendor'])  != 'nacional' && strtolower($item['vendor'])  != 'a - nacional') {
                                 $i++;
-
                                 if (count($product) > 0) {
                                     $product->tipo_producto = 'internacional';
                                     $product->save();
@@ -1121,7 +1026,6 @@ class OrdersController extends Controller
                             }
                         }
                     }
-
                     if ($i > 0 && $n > 0) {
                         $tipo_orden .= 'nacional/internacional';
                         $i = 0;
@@ -1137,7 +1041,6 @@ class OrdersController extends Controller
                         $i = 0;
                         $n = 0;
                     }
-
                     Order::create([
                         'billing_address' => $order['billing_address'],
                         'browser_ip' => $order['browser_ip'],
@@ -1202,50 +1105,34 @@ class OrdersController extends Controller
                         'origin' => 'webhooks',
                         'tipo_orden' => $tipo_orden
                     ]);
-
                     $tipo_orden = '';
-
                     if ($order['financial_status'] == "paid") {
-
                         if (isset($order['line_items']) && count($order['line_items']) > 0) {
                             foreach ($order['line_items'] as $item) {
                                 $product = Product::find($item['product_id']);
-
                                 if (count($product) > 0) {
                                     $product->precio_unidad = $item['price'];
                                     $product->unidades_vendidas = $product->unidades_vendidas + $item['quantity'];
                                     $product->save();
                                 }
-
                             }
                         }
-
                         $tercero = Tercero::with('networks')->where('email', $order['email'])->first();
-
                         if (count($tercero->networks[0]['pivot']['padre_id']) > 0 && $tercero->state == true) {
-
                             $padre = Tercero::where('id', $tercero->networks[0]['pivot']['padre_id'])->first();
-
                             if ($padre->state) {
-
                                 $find = Tercero::find($padre->id);
                                 $find->numero_ordenes_referidos = $find->numero_ordenes_referidos + 1;
                                 $find->total_price_orders = $find->total_price_orders + $order['total_price'];
                                 $find->ganacias = $find->total_price_orders * 0.05;
                                 $find->save();
-
                                 $customer = Customer::where('customer_id', $padre->customer_id)->where('network_id', 1)->first();
-
                                 if (count($customer) > 0) {
-
                                     $res = $client->request('get', $api_url . '/admin/customers/' . $find->customer_id . '/metafields.json');
                                     $metafields = json_decode($res->getBody(), true);
                                     $results = array();
-
                                     if (count($metafields['metafields']) > 0) {
-
                                         foreach ($metafields['metafields'] as $metafield) {
-
                                             if ($metafield['key'] === 'referidos') {
                                                 $res = $client->request('put', $api_url . '/admin/customers/' . $find->customer_id . '/metafields/' . $metafield['id'] . '.json', array(
                                                         'form_params' => array(
@@ -1258,10 +1145,8 @@ class OrdersController extends Controller
                                                         )
                                                     )
                                                 );
-
                                                 array_push($results, json_decode($res->getBody(), true));
                                             }
-
                                             if ($metafield['key'] === 'compras') {
                                                 $res = $client->request('put', $api_url . '/admin/customers/' . $find->customer_id . '/metafields/' . $metafield['id'] . '.json', array(
                                                         'form_params' => array(
@@ -1274,10 +1159,8 @@ class OrdersController extends Controller
                                                         )
                                                     )
                                                 );
-
                                                 array_push($results, json_decode($res->getBody(), true));
                                             }
-
                                             if ($metafield['key'] === 'valor') {
                                                 $res = $client->request('put', $api_url . '/admin/customers/' . $find->customer_id . '/metafields/' . $metafield['id'] . '.json', array(
                                                         'form_params' => array(
@@ -1290,7 +1173,6 @@ class OrdersController extends Controller
                                                         )
                                                     )
                                                 );
-
                                                 array_push($results, json_decode($res->getBody(), true));
                                             }
                                         }
@@ -1299,7 +1181,6 @@ class OrdersController extends Controller
                             }
                         }
                     }
-
                     return response()->json(['status' => 'The resource is created successfully'], 200);
                 }
             } else {
@@ -1307,37 +1188,27 @@ class OrdersController extends Controller
             }
         }
     }
-
     public function update()
     {
         $api_url = 'https://c17edef9514920c1d2a6aeaf9066b150:afc86df7e11dcbe0ab414fa158ac1767@mall-hello.myshopify.com';
         $client = new \GuzzleHttp\Client();
-
         $input = file_get_contents('php://input');
         $order = json_decode($input, true);
-
         $hmac_header = $_SERVER['HTTP_X_SHOPIFY_HMAC_SHA256'];
         $verified = $this->verify_webhook(collect($order), $hmac_header);
         $resultapi = error_log('Webhook verified: ' . var_export($verified, true));
-
         if ($resultapi == 'true') {
-
             if ($order['financial_status'] == 'paid') {
-
                 $result = Order::where('order_id', $order['id'])
-                        ->where('email', $order['email'])
-                        ->where('network_id', 1)
-                        ->first();
-
+                    ->where('email', $order['email'])
+                    ->where('network_id', 1)
+                    ->first();
                 if (count($result) > 0) {
-
                     if ($result->financial_status != "paid") {
-
                         $update = Order::find($result->id);
                         $update->financial_status = $order['financial_status'];
                         $update->updated_at = Carbon::parse($order['updated_at']);
                         $update->save();
-
                         $log = Logorder::where('name', $update->name)
                             ->where('checkout_id', $update->checkout_id)
                             ->where('order_id', $update->order_id)
@@ -1346,54 +1217,38 @@ class OrdersController extends Controller
                             ->where('name', '=', $update->name)
                             ->where('checkout_id', '=', $update->checkout_id)
                             ->where('order_id', '=', $update->order_id)->delete();
-
                         if (count($log) > 0) {
                             $log_delete = Logorder::find($log->id);
                             if ($log_delete != null) {
                                 $log_delete->delete();
                             }
-
                         }
-
                         if (isset($order['line_items']) && count($order['line_items']) > 0) {
                             foreach ($order['line_items'] as $item) {
                                 $product = Product::find($item['product_id']);
-
                                 if (count($product) > 0) {
                                     $product->precio_unidad = $item['price'];
                                     $product->unidades_vendidas = $product->unidades_vendidas + $item['quantity'];
                                     $product->save();
                                 }
-
                             }
                         }
-
                         $tercero = Tercero::with('networks')->where('email', $order['email'])->first();
-
                         if (count($tercero->networks[0]['pivot']['padre_id']) > 0 && $tercero->state == true) {
-
                             $padre = Tercero::where('id', $tercero->networks[0]['pivot']['padre_id'])->first();
-
                             if ($padre->state) {
-
                                 $find = Tercero::find($padre->id);
                                 $find->numero_ordenes_referidos = $find->numero_ordenes_referidos + 1;
                                 $find->total_price_orders = $find->total_price_orders + $order['total_price'];
                                 $find->ganacias = $find->total_price_orders * 0.05;
                                 $find->save();
-
                                 $customer = Customer::where('customer_id', $padre->customer_id)->where('network_id', 1)->first();
-
                                 if (count($customer) > 0) {
-
                                     $res = $client->request('get', $api_url . '/admin/customers/' . $find->customer_id . '/metafields.json');
                                     $metafields = json_decode($res->getBody(), true);
                                     $results = array();
-
                                     if (count($metafields['metafields']) > 0) {
-
                                         foreach ($metafields['metafields'] as $metafield) {
-
                                             if ($metafield['key'] === 'referidos') {
                                                 $res = $client->request('put', $api_url . '/admin/customers/' . $find->customer_id . '/metafields/' . $metafield['id'] . '.json', array(
                                                         'form_params' => array(
@@ -1406,10 +1261,8 @@ class OrdersController extends Controller
                                                         )
                                                     )
                                                 );
-
                                                 array_push($results, json_decode($res->getBody(), true));
                                             }
-
                                             if ($metafield['key'] === 'compras') {
                                                 $res = $client->request('put', $api_url . '/admin/customers/' . $find->customer_id . '/metafields/' . $metafield['id'] . '.json', array(
                                                         'form_params' => array(
@@ -1422,10 +1275,8 @@ class OrdersController extends Controller
                                                         )
                                                     )
                                                 );
-
                                                 array_push($results, json_decode($res->getBody(), true));
                                             }
-
                                             if ($metafield['key'] === 'valor') {
                                                 $res = $client->request('put', $api_url . '/admin/customers/' . $find->customer_id . '/metafields/' . $metafield['id'] . '.json', array(
                                                         'form_params' => array(
@@ -1438,7 +1289,6 @@ class OrdersController extends Controller
                                                         )
                                                     )
                                                 );
-
                                                 array_push($results, json_decode($res->getBody(), true));
                                             }
                                         }
@@ -1446,28 +1296,21 @@ class OrdersController extends Controller
                                 }
                             }
                         }
-
                         return response()->json(['status' => 'The resource is created successfully'], 200);
                     } else {
                         return response()->json(['status' => 'order not processed'], 200);
                     }
                 } else {
-
                     $owner = Customer::where('email', $order['email'])->first();
                     if (count($owner) > 0) {
-
                         $tipo_orden = '';
                         $i = 0;
                         $n = 0;
-
                         if (isset($order['line_items']) && count($order['line_items']) > 0) {
                             foreach ($order['line_items'] as $item) {
-
                                 $product = Product::find($item['product_id']);
-
                                 if (strtolower($item['vendor'])  == 'nacional' || strtolower($item['vendor'])  == 'a - nacional') {
                                     $n++;
-
                                     if (count($product) > 0) {
                                         $product->tipo_producto = 'nacional';
                                         $product->save();
@@ -1475,7 +1318,6 @@ class OrdersController extends Controller
                                 }
                                 if (strtolower($item['vendor'])  != 'nacional' && strtolower($item['vendor'])  != 'a - nacional') {
                                     $i++;
-
                                     if (count($product) > 0) {
                                         $product->tipo_producto = 'internacional';
                                         $product->save();
@@ -1483,7 +1325,6 @@ class OrdersController extends Controller
                                 }
                             }
                         }
-
                         if ($i > 0 && $n > 0) {
                             $tipo_orden .= 'nacional/internacional';
                             $i = 0;
@@ -1499,7 +1340,6 @@ class OrdersController extends Controller
                             $i = 0;
                             $n = 0;
                         }
-
                         Order::create([
                             'billing_address' => $order['billing_address'],
                             'browser_ip' => $order['browser_ip'],
@@ -1564,50 +1404,34 @@ class OrdersController extends Controller
                             'origin' => 'webhooks',
                             'tipo_orden' => $tipo_orden
                         ]);
-
                         $tipo_orden = '';
-
                         if ($order['financial_status'] == "paid") {
-
                             if (isset($order['line_items']) && count($order['line_items']) > 0) {
                                 foreach ($order['line_items'] as $item) {
                                     $product = Product::find($item['product_id']);
-
                                     if (count($product) > 0) {
                                         $product->precio_unidad = $item['price'];
                                         $product->unidades_vendidas = $product->unidades_vendidas + $item['quantity'];
                                         $product->save();
                                     }
-
                                 }
                             }
-
                             $tercero = Tercero::with('networks')->where('email', $order['email'])->first();
-
                             if (count($tercero->networks[0]['pivot']['padre_id']) > 0 && $tercero->state == true) {
-
                                 $padre = Tercero::where('id', $tercero->networks[0]['pivot']['padre_id'])->first();
-
                                 if ($padre->state) {
-
                                     $find = Tercero::find($padre->id);
                                     $find->numero_ordenes_referidos = $find->numero_ordenes_referidos + 1;
                                     $find->total_price_orders = $find->total_price_orders + $order['total_price'];
                                     $find->ganacias = $find->total_price_orders * 0.05;
                                     $find->save();
-
                                     $customer = Customer::where('customer_id', $padre->customer_id)->where('network_id', 1)->first();
-
                                     if (count($customer) > 0) {
-
                                         $res = $client->request('get', $api_url . '/admin/customers/' . $find->customer_id . '/metafields.json');
                                         $metafields = json_decode($res->getBody(), true);
                                         $results = array();
-
                                         if (count($metafields['metafields']) > 0) {
-
                                             foreach ($metafields['metafields'] as $metafield) {
-
                                                 if ($metafield['key'] === 'referidos') {
                                                     $res = $client->request('put', $api_url . '/admin/customers/' . $find->customer_id . '/metafields/' . $metafield['id'] . '.json', array(
                                                             'form_params' => array(
@@ -1620,10 +1444,8 @@ class OrdersController extends Controller
                                                             )
                                                         )
                                                     );
-
                                                     array_push($results, json_decode($res->getBody(), true));
                                                 }
-
                                                 if ($metafield['key'] === 'compras') {
                                                     $res = $client->request('put', $api_url . '/admin/customers/' . $find->customer_id . '/metafields/' . $metafield['id'] . '.json', array(
                                                             'form_params' => array(
@@ -1636,10 +1458,8 @@ class OrdersController extends Controller
                                                             )
                                                         )
                                                     );
-
                                                     array_push($results, json_decode($res->getBody(), true));
                                                 }
-
                                                 if ($metafield['key'] === 'valor') {
                                                     $res = $client->request('put', $api_url . '/admin/customers/' . $find->customer_id . '/metafields/' . $metafield['id'] . '.json', array(
                                                             'form_params' => array(
@@ -1652,7 +1472,6 @@ class OrdersController extends Controller
                                                             )
                                                         )
                                                     );
-
                                                     array_push($results, json_decode($res->getBody(), true));
                                                 }
                                             }
@@ -1661,22 +1480,14 @@ class OrdersController extends Controller
                                 }
                             }
                         }
-
                         $orders_paid = $orders = Logorder::where('status_shopify', 'pending')->where('status_mercadopago', 'approved')->get();
-
                         foreach ($orders_paid as $paid) {
-
                             $order_result = Order::where('order_id', $paid->order_id)->where('checkout_id', $paid->checkout_id)->first();
-
                             if (count($order_result) > 0 ) {
-
                                 if ($order_result->financial_status == 'paid') {
-
                                     $delete = Logorder::where('order_id', $paid->order_id)->where('checkout_id', $paid->checkout_id)->first();
-
                                     if (count($delete) > 0) {
                                         Logorder::find($delete->id)->delete();
-
                                         DB::table('logsorders')
                                             ->where('id', $delete->id)
                                             ->where('name', '=', $delete->name)
@@ -1686,26 +1497,18 @@ class OrdersController extends Controller
                                 }
                             }
                         }
-
                         return response()->json(['status' => 'The resource is created successfully'], 200);
                     }
                 }
             } else {
                 $orders_paid = $orders = Logorder::where('status_shopify', 'pending')->where('status_mercadopago', 'approved')->get();
-
                 foreach ($orders_paid as $paid) {
-
                     $order_result = Order::where('order_id', $paid->order_id)->where('checkout_id', $paid->checkout_id)->first();
-
                     if (count($order_result) > 0 ) {
-
                         if ($order_result->financial_status == 'paid') {
-
                             $delete = Logorder::where('order_id', $paid->order_id)->where('checkout_id', $paid->checkout_id)->first();
-
                             if (count($delete) > 0) {
                                 Logorder::find($delete->id)->delete();
-
                                 DB::table('logsorders')
                                     ->where('id', $delete->id)
                                     ->where('name', '=', $delete->name)
@@ -1717,15 +1520,11 @@ class OrdersController extends Controller
                 }
                 return response()->json(['status' => 'order not processed'], 200);
             }
-
-
         }
     }
-
     public function delete()
     {
         /*
-
         $input = file_get_contents('php://input');
         $order = json_decode($input, true);
         if ($order['financial_status'] !== 'paid') {
@@ -1733,60 +1532,43 @@ class OrdersController extends Controller
                     ->where('email', $order['email'])
                     ->where('network_id', 1)
                     ->delete();
-
             $product = Product::where('id', $order['line_items'][0]['product_id'])->get();
-
             if (count($product) > 0) {
                 $find = Product::find($product[0]['id']);
                 $find->unidades_vendidas = $find->unidades_vendidas - 1;
                 $find->save();
             }
-
             $resultaux = Customer::where('email', strtolower($order['email']))
                     ->where('customer_id', $order['customer']['id'])
                     ->where('network_id', 1)
                     ->get();
-
             if (count($resultaux) > 0) {
-
                 $tercero = Tercero::where('email', $resultaux[0]['last_name'])->where('state', true)->first();
-
                 if (count($tercero) > 0) {
                     $find = Tercero::find($tercero->id);
                     DB::table('terceros')->where('id', $find->id)->update(['total_price_orders' => $find->total_price_orders - $order['total_price']]);
                     DB::table('terceros')->where('id', $find->id)->update(['numero_ordenes_referidos' => $find->numero_ordenes_referidos - 1]);
                 }
-
                 if (count($tercero) == 0) {
                     $find = Tercero::find(26);
                     DB::table('terceros')->where('id', 26)->update(['total_price_orders' => $find->total_price_orders - $order['total_price']]);
                     DB::table('terceros')->where('id', 26)->update(['numero_ordenes_referidos' => $find->numero_ordenes_referidos - 1]);
                 }
             }
-
             return response()->json(['status' => 'The resource is created successfully'], 200);
         }
         *
          */
     }
-
     public function contador()
     {
-
-
-
         /*$user = Tercero::find(174802);
         $contabilidadRole = Role::find(19);
-
         //$user->attachRole($contabilidadRole);
         if ($user->is('contabilidad|servicio.al.cliente'))
             return response()->json('Es contador');
         else
             return response()->json('No es contador');*/
-
-
-
-
         /* $orders = Order::where('financial_status', 'paid')->get();
         $products = Product::all();
         $contador = 0;
@@ -1795,32 +1577,24 @@ class OrdersController extends Controller
             $contador++;
             foreach ($orders as $order) {
                 if (isset($order->line_items) && count($order->line_items) > 0) {
-
                     foreach ($order->line_items as $item) {
                         if ($item['product_id'] == $product->id) {
                             $cont = $cont + $item['quantity'];
                         }
                     }
                 }
-
             }
             if ($contador == 200) {
                 usleep(1000000);
                 $contador = 0;
             }
-
             $update = Product::find($product->id);
             $update->unidades_vendidas = $cont;
             $update->save();
             $cont = 0;
         }
-
         return 'echo';*/
-
-
-
         /*$totalProducts = array();
-
         $api_url = 'https://c17edef9514920c1d2a6aeaf9066b150:afc86df7e11dcbe0ab414fa158ac1767@mall-hello.myshopify.com';
         $client = new \GuzzleHttp\Client();
         $res = $client->request('GET', $api_url . '/admin/collects/count.json?collection_id=338404417');
@@ -1831,17 +1605,13 @@ class OrdersController extends Controller
             usleep(10000000);
         }
         $countProcucts = json_decode($res->getBody(), true);
-
         $pagesNumber = $countProcucts['count']/250;
         $number = explode( '.', $pagesNumber);
         $entera = (int)$number[0];
         $decimal = (int)$number[1];
-
-
         if($decimal !== 0) {
             $entera = $entera + 1;
         }
-
         for ($i = 1; $i <= $entera; $i++) {
             $res = $client->request('GET', $api_url . '/admin/collects.json?collection_id=338404417&fields=product_id&limit=250&&page=' . $i);
             $results = json_decode($res->getBody(), true);
@@ -1855,30 +1625,21 @@ class OrdersController extends Controller
                 array_push($totalProducts, $p);
             }
         }
-
         $results = array();
-
         foreach ($totalProducts as $item) {
             array_push($results, $item['product_id']);
         }*/
-
-
         /*$orders = Order::all();
         $i = 0;
         $n = 0;
         foreach ($orders as $order) {
             $i = 0;
             $n = 0;
-
             if (isset($order->line_items) && count($order->line_items) > 0) {
                 foreach ($order->line_items as $item) {
-
-
                     $product = Product::find($item['product_id']);
-
                     if (strtolower($item['vendor'])  == 'nacional' || strtolower($item['vendor'])  == 'a - nacional') {
                         $n++;
-
                         if (count($product) > 0) {
                             $product->tipo_producto = 'nacional';
                             $product->save();
@@ -1886,7 +1647,6 @@ class OrdersController extends Controller
                     }
                     if (strtolower($item['vendor'])  != 'nacional' && strtolower($item['vendor'])  != 'a - nacional') {
                         $i++;
-
                         if (count($product) > 0) {
                             $product->tipo_producto = 'internacional';
                             $product->save();
@@ -1894,7 +1654,6 @@ class OrdersController extends Controller
                     }
                 }
             }
-
             if ($i > 0 && $n > 0) {
                 $update = Order::find($order->id);
                 $update->tipo_orden = 'nacional/internacional';
@@ -1917,45 +1676,27 @@ class OrdersController extends Controller
                 $n = 0;
             }
         }
-
         return 'echo';*/
-
-
-
         /* $user = Tercero::find(22);
          $role = Role::find(0);
-
-
          $user->attachPermission(21);*/
-
         /*define('CLIENT_ID', "7134341661319721");
         define('CLIENT_SECRET', "b7cQUIoU5JF4iWVvjM0w1YeX4b7VwLpw");
-
         $mp = new MP(CLIENT_ID, CLIENT_SECRET);
-
         define('payments', '/v1/payments/search?external_reference=');
         define('access', '&access_token=');
         define('ACCESS_TOKEN', $mp->get_access_token());
-
         $orders = Order::where('financial_status', 'pending')->get();
         $contador = 0;
-
-
         foreach ($orders as $order) {
-
             $result = array();
-
             $results = Logorder::where('order_id', $order->order_id)->where('checkout_id', $order->checkout_id)->first();
-
             if (count($results) == 0) {
-
                 $contador ++;
-
                 if ($contador  == 300) {
                     usleep(1000000);
                     $contador = 0;
                 }
-
                 try {
                     $result = $mp->get(payments . $order->checkout_id . access . ACCESS_TOKEN);
                 } catch (MercadoPagoException $e) {
@@ -1964,15 +1705,10 @@ class OrdersController extends Controller
                     $paymentError->data = $e->getMessage();
                     $paymentError->code = $e->getCode();
                 }
-
                 if (isset($result['response']['results']) && count($result['response']['results']) > 0) {
-
                     if ($result['response']['results'][0]['payment_method_id'] == 'efecty') {
-
                         $days = Carbon::parse($result['response']['results'][0]['date_created'])->diffInDays();
-
                         if ($days > 2) {
-
                             Logorder::create([
                                 'order_id' => $order->order_id,
                                 'checkout_id' => $order->checkout_id,
@@ -1998,15 +1734,12 @@ class OrdersController extends Controller
                     }
                 }
             }
-
             if (count($results) > 0) {
                 $contador ++;
-
                 if ($contador  == 300) {
                     usleep(1000000);
                     $contador = 0;
                 }
-
                 try {
                     $result = $mp->get(payments . $order->checkout_id . access . ACCESS_TOKEN);
                 } catch (MercadoPagoException $e) {
@@ -2015,9 +1748,7 @@ class OrdersController extends Controller
                     $paymentError->data = $e->getMessage();
                     $paymentError->code = $e->getCode();
                 }
-
                 if (isset($result['response']['results']) && count($result['response']['results']) > 0) {
-
                     $log_update = Logorder::find($results->id);
                     $log_update->status_mercadopago = $result['response']['results'][0]['status'];
                     $log_update->status_shopify = $order->financial_status;
@@ -2026,5 +1757,4 @@ class OrdersController extends Controller
             }
         }*/
     }
-
 }

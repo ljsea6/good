@@ -1,9 +1,6 @@
 <?php
-
 namespace App\Http;
-
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
-
 class Kernel extends HttpKernel
 {
     /**
@@ -22,9 +19,8 @@ class Kernel extends HttpKernel
         //\Bican\Roles\Middleware\VerifyLevel::class,
         //\Bican\Roles\Middleware\VerifyPermission::class,
         //\Bican\Roles\Middleware\VerifyRole::class,
-        
-    ];
 
+    ];
     /**
      * The application's route middleware.
      *
@@ -44,4 +40,3 @@ class Kernel extends HttpKernel
         'level' => \Bican\Roles\Middleware\VerifyLevel::class,
     ];
 }
-

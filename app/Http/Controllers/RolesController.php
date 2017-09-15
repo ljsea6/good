@@ -1,15 +1,12 @@
 <?php
 namespace App\Http\Controllers;
-
 use App\Entities\Roles;
 use App\Entities\RolesPermisos;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Styde\Html\Facades\Alert;
 use Yajra\Datatables\Datatables;
-
 class RolesController extends Controller {
-
     /**
      * Display a listing of the resource.
      *
@@ -19,9 +16,7 @@ class RolesController extends Controller {
         //$roles = Roles::paginate(10);
         return view('admin.roles.index', compact('roles'));
     }
-
     public function anyData() {
-        
 
         $roles = Roles::select('id', 'name', 'description');
         return Datatables::of($roles)
@@ -49,7 +44,6 @@ class RolesController extends Controller {
             })
             ->make(true);
     }
-
     /**
      * Show the form for creating a new resource.
      *
@@ -58,7 +52,6 @@ class RolesController extends Controller {
     public function create() {
         return view('admin.roles.create');
     }
-
     /**
      * Store a newly created resource in storage.
      *
@@ -70,12 +63,9 @@ class RolesController extends Controller {
         $rol->usuario_id = currentUser()->id;
         $rol->ip         = $request->ip();
         $rol->save();
-
         Alert::message("Rol registrado con exito! ", 'success');
-
         return redirect()->route('admin.roles.index');
     }
-
     /**
      * Display the specified resource.
      *
@@ -83,7 +73,6 @@ class RolesController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function show($id) {}
-
     /**
      * Show the form for editing the specified resource.
      *
@@ -94,7 +83,6 @@ class RolesController extends Controller {
         $rol = Roles::findOrFail($id);
         return view('admin.roles.edit', compact('rol'));
     }
-
     /**
      * Update the specified resource in storage.
      *
@@ -108,12 +96,9 @@ class RolesController extends Controller {
         $rol->usuario_id = currentUser()->id;
         $rol->ip         = $request->ip();
         $rol->save();
-
         Alert::message('Rol ' . $rol->nombre . " Actualizado con exito! ", 'success');
-
         return redirect()->route('admin.roles.index');
     }
-
     /**
      * Remove the specified resource from storage.
      *
@@ -123,28 +108,20 @@ class RolesController extends Controller {
     public function destroy($id) {
         $rol = Roles::findOrFail($id);
         $rol->delete();
-
         Alert::message('Rol ' . $rol->nombre . " eliminado con exito! ", 'success');
-
         return redirect()->route('admin.roles.index');
     }
-
     public function permisos($id) {
         $rol = Roles::findOrFail($id);
-
         //$permisos =   RolesPermisos::with(['permiso'])->where('rol_id', '=', $id)->get(array('permiso.ruta'));
         $permisos = RolesPermisos::with('permiso')->
         where('rol_id', '=', $id)->
-            get()->toArray();
-
+        get()->toArray();
         $rutas = [];
-
 //Pasamos un arreglo on los permisos para poderlo validar en la vista
         foreach ($permisos as $permiso) {
             array_push($rutas, $permiso['permiso']);
         }
-
         return view('admin.roles.permisos', compact('rutas'));
     }
-
 }

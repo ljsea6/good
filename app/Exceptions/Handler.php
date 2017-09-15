@@ -1,14 +1,10 @@
 <?php
-
 namespace App\Exceptions;
-
 use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
-
-
 class Handler extends ExceptionHandler
 {
     /**
@@ -20,7 +16,6 @@ class Handler extends ExceptionHandler
         HttpException::class,
         ModelNotFoundException::class,
     ];
-
     /**
      * Report or log an exception.
      *
@@ -33,7 +28,6 @@ class Handler extends ExceptionHandler
     {
         return parent::report($e);
     }
-
     /**
      * Render an exception into an HTTP response.
      *
@@ -48,6 +42,5 @@ class Handler extends ExceptionHandler
         } else {
             return parent::render($request, $e);
         }
-
     }
 }

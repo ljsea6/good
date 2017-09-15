@@ -1,14 +1,12 @@
 <?php
-
 namespace App\Http\Controllers;
-
 use Illuminate\Http\Request;
-
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use App\User;
 use Dingo\Api\Routing\Helpers;
 use App\Transformers\UserTransformer;
+use Authorizer;
 use Auth;
 use Illuminate\Foundation\Auth\AuthenticatesAndRegistersUsers;
 use Illuminate\Foundation\Auth\ThrottlesLogins;
@@ -16,17 +14,13 @@ use GuzzleHttp\Client;
 use App\Entities\Tercero;
 use GuzzleHttp\Psr7;
 use GuzzleHttp\Exception\RequestException;
-use LucaDegasperi\OAuth2Server\Authorizer;
-
-
 class UsersController extends Controller
 {
     use Helpers, AuthenticatesAndRegistersUsers, ThrottlesLogins;
-
+    protected $username = 'usuario';
     public function access(Request $request)
     {
         $client = new Client();
-
         try {
             $res = $client->request('post', 'http://localhost/api/oauth/access_token', [
                 'json' => [
@@ -42,80 +36,36 @@ class UsersController extends Controller
                 'error' => 'Usuario o contraseña incorrecto, por favor verifique sus datos.'
             ]);
         }
-
         $code = $res->getStatusCode();
         $results = json_decode($res->getBody(), true);
-
         if ($code == 200) {
-
             $access_token = $results['access_token'];
             $token_type = $results['token_type'];
             $expires_in = $results['expires_in'];
-
             $request = $client->request('get', 'http://localhost/api/oauth/access/login', [
                 'headers' => [
                     "Authorization" => $token_type . " " . $access_token,
                 ]
             ]);
-
             $code_final = $request->getStatusCode();
-
             if ($code_final == 200) {
                 return 'sirve';
             }
         }
     }
-
     public function login()
     {
         return view('api.index');
     }
-
-    public function authorizeGet()
-    {
-        $authParams = Authorizer::getAuthCodeRequestParams();
-
-        $formParams = array_except($authParams,'client');
-
-        $formParams['client_id'] = $authParams['client']->getId();
-
-        $formParams['scope'] = implode(config('oauth2.scope_delimiter'), array_map(function ($scope) {
-            return $scope->getId();
-        }, $authParams['scopes']));
-
-        return View::make('api.authorization-form', ['params' => $formParams, 'client' => $authParams['client']]);
-    }
-
-    public function authorizePost()
-    {
-        $params = Authorizer::getAuthCodeRequestParams();
-        $params['user_id'] = Auth::user()->id;
-        $redirectUri = '/';
-
-        // If the user has allowed the client to access its data, redirect back to the client with an auth code.
-        if (Request::has('approve')) {
-            $redirectUri = Authorizer::issueAuthCode('user', $params['user_id'], $params);
-        }
-
-        // If the user has denied the client to access its data, redirect back to the client with an error message.
-        if (Request::has('deny')) {
-            $redirectUri = Authorizer::authCodeRequestDeniedRedirectUri();
-        }
-
-        return Redirect::to($redirectUri);
-    }
-
     public function verify($username, $password)
     {
         $credentials = [
             'email'    => $username,
             'password' => $password,
         ];
-
         if (Auth::once($credentials)) {
             return Auth::user()->id;
         }
-
         return false;
     }
 
@@ -123,7 +73,6 @@ class UsersController extends Controller
     {
         return $this->response->array(Authorizer::issueAccessToken());
     }
-
     /**
      * Display a listing of the resource.
      *
@@ -131,12 +80,9 @@ class UsersController extends Controller
      */
     public function index()
     {
-
         $users = User::paginate(25);
-
         return $this->response->paginator($users, new UserTransformer);
     }
-
     /**
      * Show the form for creating a new resource.
      *
@@ -146,7 +92,6 @@ class UsersController extends Controller
     {
         //
     }
-
     /**
      * Store a newly created resource in storage.
      *
@@ -157,7 +102,6 @@ class UsersController extends Controller
     {
         //
     }
-
     /**
      * Display the specified resource.
      *
@@ -168,7 +112,6 @@ class UsersController extends Controller
     {
         //
     }
-
     /**
      * Show the form for editing the specified resource.
      *
@@ -179,7 +122,6 @@ class UsersController extends Controller
     {
         //
     }
-
     /**
      * Update the specified resource in storage.
      *
@@ -191,7 +133,6 @@ class UsersController extends Controller
     {
         //
     }
-
     /**
      * Remove the specified resource from storage.
      *

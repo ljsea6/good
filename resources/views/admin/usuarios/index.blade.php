@@ -53,34 +53,34 @@
                 <table data-order='[[ 0, "asc" ]]' id="tabla_usuarios" class="table table-striped font-12 dataTable no-footer" role="grid" aria-describedby="datatable_info">
                 <thead>
                     <tr>
-                        <th>
+                        <th class="text-center">
                             Avatar
                         </th>
-                        <th>
+                        <th class="text-center">
                             Identificación
                         </th>
-                        <th>
+                        <th class="text-center">
                             Nombres
                         </th>
-                        <th>
+                        <th class="text-center">
                             Apellidos
                         </th>
-                        <th>
+                        <th class="text-center">
                             Dirección
                         </th>
-                        <th>
+                        <th class="text-center">
                             Ciudad
                         </th>
-                        <th>
+                        <th class="text-center">
                             Rol
                         </th>
-                        <th>
+                        <th class="text-center">
                             Tipo
                         </th>
-                        <th>
+                        <th class="text-center">
                             Permisos
                         </th>
-                        <th>
+                        <th class="text-center">
                             Acciones
                         </th>
                     </tr>
@@ -104,12 +104,7 @@
                             </h4>
                         </div>
                         <div class="modal-body" style="position: relative; margin: 0 auto; width: 70%;">
-                            <div class="row">
-                                <div class="col-md-12 text-left">
-                                    {!! Form::select('permisos', $permisos, null, ['id' => 'select-permisos', 'multiple' => true]) !!}
-                                </div>
-                            </div>
-
+                            {!! Form::select('permisos', $permisos, null, ['id' => 'select-permisos','class' => 'form-control', 'multiple']) !!}
                         </div>
                         <div class="modal-footer">
                             <a href="#" data-dismiss="modal" class="btn btn-danger">
@@ -136,8 +131,8 @@
 <script>
     $(document).on('ready', function() {
         $('#select-permisos').multiSelect({
-            selectableHeader: "<hr><div class='text-left'><b>Permisos no asignados</b><br><br></div>",
-            selectionHeader: "<hr><div class='text-left'><b>Permisos asignados</b><br><br></div>",
+            selectableHeader: "<div class='text-center'><b>Permisos no asignados</b></div>",
+            selectionHeader: "<div class='text-center'><b>Permisos asignados</b></div>",
             afterSelect: function(value) {
                 $.ajax({
                     url: '{{ route('asignar.permisos') }}',
