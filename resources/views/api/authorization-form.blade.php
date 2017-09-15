@@ -3,98 +3,60 @@
 @section('titulo','Api Good')
 
 @section('styles')
-    <style type="text/css">
-        .container{
-            margin-top: 5%;
+    <style>
+        .logo-alert{
+            position: relative;
+            display: block;
+            max-width: 300px;
+            margin: 0 auto;
         }
-        .single-wrap{
-            border-radius: inherit;
+
+        .alert{
+            color: white;
+            text-align: justify;
         }
-        .single-wrap:before{
-            display: none;
+
+        .boton{
+            background-color: white;
+            color: gray;
+            transition: .3s ease-out
         }
-        #field_usuario .control-label, #field_password .control-label{
-            display: none;
+
+        .boton:hover{
+            transition: .3s ease-in;
+            background: #363636;
+            color: white;
         }
-        .fullscreen-bg {
-            position: fixed;
-            top: 0;
-            right: 0;
-            bottom: 0;
-            left: 0;
-            overflow: hidden;
-            z-index: -100;
-        }
-        .fullscreen-bg__video {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: auto;
-            height: auto;
-            min-width: 100%;
-            min-height: 100%;
-            -webkit-transform: translate(-50%, -50%);
-            -ms-transform: translate(-50%, -50%);
-            transform: translate(-50%, -50%);
-        }
-        @media (max-width: 767px) {
-            .fullscreen-bg {
-                background: url("{{ asset('video/Coverr-office.jpg') }}") center center / cover no-repeat;
-            }
-            .fullscreen-bg__video {
-                display: none;
-            }
-        }
+
     </style>
 @endsection
 @section('content')
-    <div class="fullscreen-bg" style="position: initial">
-        <video loop muted autoplay poster="{{ asset('video/Coverr-office.jpg') }}" class="fullscreen-bg__video">
-            <source src="{{ asset('video/Coverr-office.mp4') }}" type="video/mp4"/>
-            <source src="{{ asset('video/Coverr-office.webm') }}" type="video/webm"/>
-        </video>
-    </div>
-    <div class="wrapper animsition">
-        <div class="container text-center">
-            <div class="single-wrap">
-                @if (session('error'))
-                    <div class="panel-footer">
-                        <div class="alert alert-danger alert-dismissable">
-                            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-                            <strong>{{ session()->get('error') }}</strong>
-                        </div>
-                    </div>
-                @endif
+    <div style="background: url(http://res.cloudinary.com/www-virgin-com/virgin-com-prod/sites/virgin.com/files/Articles/Entrepreneur%20Getty/Entrepreneur_breakfast_getty_2.jpg) no-repeat center / cover; height: 100vh">
+        <div style="display: flex; justify-content: center; align-items: center; width: 400px; height: 400px; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background-color: white; box-shadow: 0 0 12px 3px rgba(0,0,0,.3); background: url(https://cdn.shopify.com/s/files/1/1935/1047/files/formularios_aae53d1f-29e4-40e6-b6ae-97e3db315af6.png?4265544440743003433) no-repeat center / cover; box-sizing: border-box">
+            <div class="row">
+                <img src="https://cdn.shopify.com/s/files/1/1935/1047/files/logo_65771d4d-e60d-4306-927a-e126a6ced852.png?18373408933088602249" alt="" class="logo-alert img-fluid">
+                <div class="col-xs-12 col-md-8 col-md-offset-2">
+                    <p class="alert">La aplicación {{$client->getName()}} solicita permisos de usuario para continuar.</p>
+                </div>
+                <div class="col-xs-12 col-md-8 col-md-offset-2 text-center">
                     <form method="post" action="{{route('oauth.authorize.post', $params)}}" class="form form-horizontal">
-                        <div class="single-inner-padding text-center">
-                            <div class="alert alert-success" role="alert">
-                                    <p>La aplicación <strong><span class="label label-danger">{{$client->getName()}}</span></strong> solicta permisos de usuario para continuar.</p>
-                            </div>
-
-                            <img src="{{ asset('img/Hello.jpg') }}" class="img-responsive text-center" style="display: inline-block">
                             {{ csrf_field() }}
-
                             <input type="hidden" name="client_id" value="{{$params['client_id']}}">
-
                             <input type="hidden" name="redirect_uri" value="{{$params['redirect_uri']}}">
-
                             <input type="hidden" name="response_type" value="{{$params['response_type']}}">
-
 
                             <input type="hidden" name="state" value="{{$params['state']}}">
 
-
                             <input type="hidden" name="scope" value="{{$params['scope']}}">
-                            <button type="submit" class="btn btn-primary" name="approve" value="1">Aprobar</button>
-                            <button type="submit" class="btn btn-primary" name="deny" value="1">Denegar</button>
-                        </div>
+                            <button type="submit" class="btn boton" name="approve" value="1">Aprobar</button>
+                            <button type="submit" class="btn boton" name="deny" value="1">Denegar</button>
                     </form>
-
+                </div>
             </div>
         </div>
     </div>
-
 @endsection
 
 @section('scripts')
+    
 @endsection
