@@ -9,7 +9,6 @@ use App\Http\Controllers\Controller;
 use App\User;
 use Dingo\Api\Routing\Helpers;
 use App\Transformers\UserTransformer;
-use Authorizer;
 use Auth;
 use Illuminate\Foundation\Auth\AuthenticatesAndRegistersUsers;
 use Illuminate\Foundation\Auth\ThrottlesLogins;
@@ -17,13 +16,12 @@ use GuzzleHttp\Client;
 use App\Entities\Tercero;
 use GuzzleHttp\Psr7;
 use GuzzleHttp\Exception\RequestException;
+use LucaDegasperi\OAuth2Server\Authorizer;
 
 
 class UsersController extends Controller
 {
     use Helpers, AuthenticatesAndRegistersUsers, ThrottlesLogins;
-
-    protected $username = 'usuario';
 
     public function access(Request $request)
     {
@@ -71,6 +69,40 @@ class UsersController extends Controller
     public function login()
     {
         return view('api.index');
+    }
+
+    public function authorizeGet()
+    {
+        $authParams = Authorizer::getAuthCodeRequestParams();
+
+        $formParams = array_except($authParams,'client');
+
+        $formParams['client_id'] = $authParams['client']->getId();
+
+        $formParams['scope'] = implode(config('oauth2.scope_delimiter'), array_map(function ($scope) {
+            return $scope->getId();
+        }, $authParams['scopes']));
+
+        return View::make('api.authorization-form', ['params' => $formParams, 'client' => $authParams['client']]);
+    }
+
+    public function authorizePost()
+    {
+        $params = Authorizer::getAuthCodeRequestParams();
+        $params['user_id'] = Auth::user()->id;
+        $redirectUri = '/';
+
+        // If the user has allowed the client to access its data, redirect back to the client with an auth code.
+        if (Request::has('approve')) {
+            $redirectUri = Authorizer::issueAuthCode('user', $params['user_id'], $params);
+        }
+
+        // If the user has denied the client to access its data, redirect back to the client with an error message.
+        if (Request::has('deny')) {
+            $redirectUri = Authorizer::authCodeRequestDeniedRedirectUri();
+        }
+
+        return Redirect::to($redirectUri);
     }
 
     public function verify($username, $password)

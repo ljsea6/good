@@ -1349,7 +1349,10 @@ class OrdersController extends Controller
 
                         if (count($log) > 0) {
                             $log_delete = Logorder::find($log->id);
-                            $log_delete->delete();
+                            if ($log_delete != null) {
+                                $log_delete->delete();
+                            }
+
                         }
 
                         if (isset($order['line_items']) && count($order['line_items']) > 0) {

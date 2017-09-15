@@ -69,9 +69,6 @@
                 {!! Form::open(['route' => 'access.login', 'method' => 'POST']) !!}
                 <div class="single-inner-padding text-center">
                     <img src="{{ asset('img/Hello.jpg') }}" class="img-responsive text-center" style="display: inline-block">
-                    <input type="hidden" id="grant_type" name="grant_type" value="password">
-                    <input type="hidden" id="client_id" name="client_id" value="65n6yfbn45654m67yrt">
-                    <input type="hidden" id="client_secret" name="client_secret" value="34b5454 54567 7btjb867biib5n85">
                     <div class="form-group form-input-group m-t-30 m-b-5">
                         {!! Field::text('username', ['ph' => 'Usuario', 'class' => 'input-lg font-14']) !!}
                         {!! Field::password('password', ['ph' => '********', 'class' => 'input-lg font-14']) !!}
@@ -82,6 +79,7 @@
             </div>
         </div>
     </div>
+
 
 @endsection
 

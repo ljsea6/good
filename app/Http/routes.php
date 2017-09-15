@@ -15,6 +15,9 @@
  * Rutas del Api
  */
 
+
+
+
 $api = app('Dingo\Api\Routing\Router');
 
 $api->version('v1', function ($api) {
@@ -27,6 +30,43 @@ $api->version('v1', function ($api) {
             $api->get('oauth/access/login', 'UsersController@login');
             $api->get('users', ['uses' => 'UsersController@index', 'as' => 'api.users.index']);
         });
+
+
+        $api->get('oauth/authorize', ['as' => 'oauth.authorize.get', 'middleware' => ['check-authorization-params', 'auth'], function() {
+
+            $authParams = Authorizer::getAuthCodeRequestParams();
+
+            $formParams = array_except($authParams,'client');
+
+            $formParams['client_id'] = $authParams['client']->getId();
+
+            $formParams['scope'] = implode(config('oauth2.scope_delimiter'), array_map(function ($scope) {
+                return $scope->getId();
+            }, $authParams['scopes']));
+
+            return View::make('api.authorization-form', ['params' => $formParams, 'client' => $authParams['client']]);
+        }]);
+
+        $api->post('oauth/authorize', ['as' => 'oauth.authorize.post', 'middleware' => ['csrf', 'check-authorization-params', 'auth'], function() {
+
+            $params = Authorizer::getAuthCodeRequestParams();
+            $params['user_id'] = Auth::user()->id;
+            $redirectUri = '/';
+
+            // If the user has allowed the client to access its data, redirect back to the client with an auth code.
+            if (Request::has('approve')) {
+                $redirectUri = Authorizer::issueAuthCode('user', $params['user_id'], $params);
+            }
+
+            // If the user has denied the client to access its data, redirect back to the client with an error message.
+            if (Request::has('deny')) {
+                $redirectUri = Authorizer::authCodeRequestDeniedRedirectUri();
+            }
+
+            return Redirect::to($redirectUri);
+        }]);
+
+
 
         $api->get('oauth/access', 'UsersController@login');
         $api->post('oauth/access_login', ['uses' => 'UsersController@access', 'as' => 'access.login']);
@@ -62,8 +102,8 @@ Route::get('/', ['as' => 'login', 'uses' => 'Auth\AuthController@getLogin']);
 Route::post('/', ['as' => 'login', 'uses' => 'Auth\AuthController@postLogin']);
 Route::get('logout', ['as' => 'logout', 'uses' => 'Auth\AuthController@getLogout']);
 // Password reset link
-Route::get('olvido-contraseña', ['as' => 'reset', 'uses' => 'auth\PasswordController@getEmail']);
-Route::post('olvido-contraseña', ['as' => 'reset', 'uses' => 'auth\PasswordController@postEmail']);
+Route::get('olvido-contraseña', ['as' => 'reset', 'uses' => 'Auth\PasswordController@getEmail']);
+Route::post('olvido-contraseña', ['as' => 'reset', 'uses' => 'Auth\PasswordController@postEmail']);
 //Registrar nuevo usuario
 Route::get('Registarse', ['as' => 'Registro', 'uses' => 'UsuariosController@getusuario']);
 route::post('registro', ['uses' => 'UsuariosController@storenuevo', 'as' => 'admin.usuarios.storenuevo']);
@@ -73,8 +113,8 @@ Route::post('recuperar-contraseña', ['as' => 'recuperar', 'uses' => 'Auth\Passw
 Route::get('registro/payu', [ 'as' => 'PayuController@paybefore', 'as' =>'admin.payu.payu']);
 //Route::get('registro/payu', [ 'as' => 'pay', 'uses' =>'PayuController@pay']);
     //payu
-    Route::get('/pay', ['as' => 'pay', 'uses' => 'PaymentController@pay']); # You will need one more.
-    Route::get('/payment/status', ['as' => 'payment_status', 'uses' => 'PaymentController@status']); /** * Using Named Routs to demonstrate all the possibilities. */ 
+    //Route::get('/pay', ['as' => 'pay', 'uses' => 'PaymentController@pay']); # You will need one more.
+    //Route::get('/payment/status', ['as' => 'payment_status', 'uses' => 'PaymentController@status']); /** * Using Named Routs to demonstrate all the possibilities. */
 Route::group(['prefix' => 'admin', 'middleware' => 'auth'], function () {
 
     /* gifts
@@ -134,24 +174,24 @@ Route::group(['prefix' => 'admin', 'middleware' => 'auth'], function () {
     Route::get('Proveedores/{id}/destroy', ['uses' => 'UsuariosController@destroy', 'as' => 'admin.usuarios.destroy']);
     Route::get('Proveedores/{id}/hijos', ['uses' => 'UsuariosController@hijos', 'as' => 'admin.usuarios.hijos']);
     //Mensajeros
-    Route::get('mensajeros/data', ['uses' => 'MensajerosController@anyData', 'as' => 'mensajeros.data']);
-    Route::resource('mensajeros', 'MensajerosController');
-    Route::get('mensajeros/{id}/destroy', ['uses' => 'MensajerosController@destroy', 'as' => 'admin.mensajeros.destroy']);
+    //Route::get('mensajeros/data', ['uses' => 'MensajerosController@anyData', 'as' => 'mensajeros.data']);
+    //Route::resource('mensajeros', 'MensajerosController');
+   // Route::get('mensajeros/{id}/destroy', ['uses' => 'MensajerosController@destroy', 'as' => 'admin.mensajeros.destroy']);
     //Clientes
-    Route::post('cliente/crear', ['as' => 'cliente.crear', 'uses' => 'ClientesController@crear_landing']);
-    Route::get('clientes/data', ['uses' => 'ClientesController@anyData', 'as' => 'clientes.data']);
-    Route::any('clientes/servicios', ['uses' => 'ClientesController@servicios', 'as' => 'clientes.servicios']);
-    Route::resource('clientes', 'ClientesController');
-    Route::get('clientes/{id}/destroy', ['uses' => 'ClientesController@destroy', 'as' => 'admin.clientes.destroy']);
+    //Route::post('cliente/crear', ['as' => 'cliente.crear', 'uses' => 'ClientesController@crear_landing']);
+    //Route::get('clientes/data', ['uses' => 'ClientesController@anyData', 'as' => 'clientes.data']);
+    //Route::any('clientes/servicios', ['uses' => 'ClientesController@servicios', 'as' => 'clientes.servicios']);
+    //Route::resource('clientes', 'ClientesController');
+    //Route::get('clientes/{id}/destroy', ['uses' => 'ClientesController@destroy', 'as' => 'admin.clientes.destroy']);
     // Clientes
-    Route::get('couriers/data', ['uses' => 'CourierController@anyData', 'as' => 'couriers.data']);
+    /*Route::get('couriers/data', ['uses' => 'CourierController@anyData', 'as' => 'couriers.data']);
     Route::resource('couriers', 'CourierController');
     Route::get('couriers/{id}/destroy', ['uses' => 'CourierController@destroy', 'as' => 'admin.couriers.destroy']);
     // Tarifas
     Route::resource('tarifas', 'TarifasController');
     Route::post('tarifas.masivos', ['uses' => 'TarifasController@masivos', 'as' => 'admin.tarifas.masivos']);
     Route::get('tarifas.costos', ['uses' => 'TarifasController@costos', 'as' => 'admin.tarifas.costos']);
-    Route::post('tarifas/valor', ['as' => 'tarifas.valor', 'uses' => 'TarifasController@valor']);
+    Route::post('tarifas/valor', ['as' => 'tarifas.valor', 'uses' => 'TarifasController@valor']);*/
     
     // Roles
     Route::get('roles/data', ['uses' => 'RolesController@anyData', 'as' => 'roles.data']);
@@ -169,7 +209,7 @@ Route::group(['prefix' => 'admin', 'middleware' => 'auth'], function () {
     
 
     // Estados
-    Route::get('estados/data', ['uses' => 'EstadosController@anyData', 'as' => 'estados.data']);
+    /*Route::get('estados/data', ['uses' => 'EstadosController@anyData', 'as' => 'estados.data']);
     Route::resource('estados', 'EstadosController');
     Route::get('estados/{id}/destroy', ['uses' => 'EstadosController@destroy', 'as' => 'admin.estados.destroy']);
     // Zonas
@@ -185,7 +225,7 @@ Route::group(['prefix' => 'admin', 'middleware' => 'auth'], function () {
     Route::get('limites/{id}/data', ['uses' => 'LimitesController@anyData', 'as' => 'limites.data']);
     Route::resource('limites', 'LimitesController');
     Route::get('limites/{id}/destroy', ['uses' => 'LimitesController@destroy', 'as' => 'admin.limites.destroy']);
-    Route::get('limites/{id}/index', ['uses' => 'LimitesController@index', 'as' => 'admin.limites.index']);
+    Route::get('limites/{id}/index', ['uses' => 'LimitesController@index', 'as' => 'admin.limites.index']);*/
     // Ciudades
     Route::get('ciudades/data', ['uses' => 'CiudadesController@anyData', 'as' => 'ciudades.data']);
     Route::resource('ciudades', 'CiudadesController');
@@ -199,9 +239,9 @@ Route::group(['prefix' => 'admin', 'middleware' => 'auth'], function () {
     Route::resource('dominios', 'DominiosController');
     Route::get('dominios/{id}/destroy', ['uses' => 'DominiosController@destroy', 'as' => 'admin.dominios.destroy']);
     // Servicios
-    Route::get('servicios/data', ['uses' => 'ServiciosController@anyData', 'as' => 'servicios.data']);
+    /*Route::get('servicios/data', ['uses' => 'ServiciosController@anyData', 'as' => 'servicios.data']);
     Route::resource('servicios', 'ServiciosController');
-    Route::get('servicios/{id}/destroy', ['uses' => 'ServiciosController@destroy', 'as' => 'admin.servicios.destroy']);
+    Route::get('servicios/{id}/destroy', ['uses' => 'ServiciosController@destroy', 'as' => 'admin.servicios.destroy']);*/
     // Sucursales
     Route::get('oficinas/data', ['uses' => 'OficinasController@anyData', 'as' => 'oficinas.data']);
     Route::resource('oficinas', 'OficinasController');
@@ -213,7 +253,7 @@ Route::group(['prefix' => 'admin', 'middleware' => 'auth'], function () {
     //Log
     Route::resource('logs', 'LogsController');
     // Recogidas
-    Route::post('recogidas/asignar3', ['uses' => 'RecogidasController@asignar3', 'as' => 'admin.recogidas.asignar3']);
+   /* Route::post('recogidas/asignar3', ['uses' => 'RecogidasController@asignar3', 'as' => 'admin.recogidas.asignar3']);
     Route::post('datos_recogida', ['uses' => 'RecogidasController@datos', 'as' => 'admin.recogidas.datos']);
     Route::post('recogidas/ingresar_update', ['uses' => 'RecogidasController@ingresar_update', 'as' => 'admin.recogidas.ingresar_update']);
     Route::get('recogidas/asignar', ['uses' => 'RecogidasController@asignar', 'as' => 'admin.recogidas.asignar']);
@@ -222,9 +262,9 @@ Route::group(['prefix' => 'admin', 'middleware' => 'auth'], function () {
     Route::get('recogidas/{id}/ingresar', ['uses' => 'RecogidasController@ingresar', 'as' => 'admin.recogidas.ingresar']);
     Route::get('recogidas/{id}/ingresar_pago', ['uses' => 'RecogidasController@ingresar_pago', 'as' => 'admin.recogidas.ingresar_pago']);
     Route::any('recogidas/calendario', ['uses' => 'RecogidasController@calendario', 'as' => 'admin.calendario.recogidas']);
-    Route::resource('recogidas', 'RecogidasController', ['only' => ['index', 'create', 'store','edit','update']]);
+    Route::resource('recogidas', 'RecogidasController', ['only' => ['index', 'create', 'store','edit','update']]);*/
     // Ordenes
-    Route::get('ordenes/llegada/{id}/', ['uses' => 'OrdenesController@datosOrden', 'as' => 'admin.ordenes.llegada']);
+/*    Route::get('ordenes/llegada/{id}/', ['uses' => 'OrdenesController@datosOrden', 'as' => 'admin.ordenes.llegada']);
     Route::get('ordenes/obs/{id}/', ['uses' => 'OrdenesController@datosObservaciones', 'as' => 'admin.ordenes.obs']);
     Route::post('ordenes/llegada/update/', ['uses' => 'OrdenesController@updateLlegada', 'as' => 'admin.ordenes.update.llegada']);
     Route::post('ordenes/impresion/update/', ['uses' => 'OrdenesController@updateImpresion', 'as' => 'admin.ordenes.update.impresion']);
@@ -236,15 +276,15 @@ Route::group(['prefix' => 'admin', 'middleware' => 'auth'], function () {
     Route::get('ordenes/{id}/detalle_orden/', ['uses' => 'OrdenesController@detalle', 'as' => 'admin.ordenes.detalle']);
     //Opciones de orden
     Route::get('con_recogida', ['as' => 'admin.ordenes.numero', 'uses' => 'OrdenesController@conRecogida']);
-    Route::get('sin_recogida', ['as' => 'admin.ordenes.sinnumero', 'uses' => 'OrdenesController@sinNumero']);
+    Route::get('sin_recogida', ['as' => 'admin.ordenes.sinnumero', 'uses' => 'OrdenesController@sinNumero']);*/
     //Para procesar los planos
     Route::post('uploads', ['as' => 'uploads', 'uses' => 'FilesController@Uploads_init']);
     Route::post('uploads_init', ['as' => 'uploads_init', 'uses' => 'FilesController@postUploads']);
     Route::resource('files', 'FilesController');
     //Para las envios
-    Route::any('envios/resultados', ['uses' => 'EnviosController@resultados', 'as' => 'admin.envios.resultados']);
+ /*   Route::any('envios/resultados', ['uses' => 'EnviosController@resultados', 'as' => 'admin.envios.resultados']);
     Route::resource('envios', 'EnviosController');
-    Route::get('envios/{id}/detalle/', ['uses' => 'EnviosController@detalle', 'as' => 'admin.envios.detalle']);
+    Route::get('envios/{id}/detalle/', ['uses' => 'EnviosController@detalle', 'as' => 'admin.envios.detalle']);*/
     
     //Para los reportes
     Route::any('reportes/product', ['uses' => 'ProductsController@welcome', 'as' => 'admin.reportes.product']);
@@ -283,20 +323,20 @@ Route::group(['prefix' => 'admin', 'middleware' => 'auth'], function () {
     Route::any('reportes/descargar', ['uses' => 'ReportesController@descargar', 'as' => 'admin.reportes.descargar']);
     Route::resource('reportes', 'ReportesController', ['only' => ['index']]);
 
-    //Manifiestos
+   /* //Manifiestos
     Route::get('manifiestos/datos/{id}/', ['uses' => 'ManifiestosController@datos', 'as' => 'admin.manifiestos.datos']);
     Route::any('manifiestos/descargar', ['uses' => 'ManifiestosController@descargar', 'as' => 'admin.manifiestos.descargar']);
     Route::resource('manifiestos', 'ManifiestosController', ['only' => ['index', 'create', 'store']]);
     Route::any('manifiestos/data', ['uses' => 'ManifiestosController@anyData', 'as' => 'manifiestos.data']);
-    Route::get('manifiestos/{id}/destroy', ['uses' => 'ManifiestosController@destroy', 'as' => 'admin.manifiestos.destroy']);
+    Route::get('manifiestos/{id}/destroy', ['uses' => 'ManifiestosController@destroy', 'as' => 'admin.manifiestos.destroy']);*/
     //Punteo
-    Route::any('punteo.subirarchivo', ['uses' => 'PunteoController@subirArchivo', 'as' => 'punteo.subirarchivo']);
+   /* Route::any('punteo.subirarchivo', ['uses' => 'PunteoController@subirArchivo', 'as' => 'punteo.subirarchivo']);
     Route::any('firmar', ['uses' => 'PunteoController@firmar', 'as' => 'firmar']);
     Route::get('punteo', ['uses' => 'PunteoController@punteo', 'as' => 'admin.punteo.index']);
-    Route::get('punteo/inconsistencias/{id}/', ['uses' => 'PunteoController@datos', 'as' => 'admin.punteo.inconsistencias']);
+    Route::get('punteo/inconsistencias/{id}/', ['uses' => 'PunteoController@datos', 'as' => 'admin.punteo.inconsistencias']);*/
     //Digitacion
-    Route::get('digitacion/cuenta/{id}', ['uses' => 'DigitacionController@cuenta', 'as' => 'admin.digitacion.cuenta']);
-    Route::resource('digitacion', 'DigitacionController', ['only' => ['index', 'store']]);
+   /* Route::get('digitacion/cuenta/{id}', ['uses' => 'DigitacionController@cuenta', 'as' => 'admin.digitacion.cuenta']);
+    Route::resource('digitacion', 'DigitacionController', ['only' => ['index', 'store']]);*/
     //Facturacion
     Route::any('factura_imprimir/{id}/email/{email}', ['uses' => 'FacturacionController@imprimir', 'as' => 'admin.facturacion.imprimir']);
     Route::any('facturacion/buscar', ['uses' => 'FacturacionController@buscar', 'as' => 'admin.facturacion.buscar']);
