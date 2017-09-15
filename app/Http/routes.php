@@ -14,6 +14,8 @@
  * Rutas del Api
  */
 
+
+
 $api = app('Dingo\Api\Routing\Router');
 
 $api->version('v1', function ($api) {
@@ -108,9 +110,9 @@ Route::group(['prefix' => 'admin', 'middleware' => 'auth'], function () {
     Route::get('/feredidos', ['uses' => 'AdminController@anyData', 'as' => 'admin.referidos']);
 
     // Usuarios
-    Route::get('usuarios/data', ['uses' => 'UsuariosController@anyData', 'as' => 'usuarios.data']);
-    Route::resource('usuarios', 'UsuariosController');
-    Route::get('usuarios/{id}/hijos', ['uses' => 'UsuariosController@hijos', 'as' => 'admin.usuarios.hijos']);
+    Route::get('usuarios/data', ['uses' => 'UsersController@anyData', 'as' => 'usuarios.data']);
+    Route::resource('users', 'UsersController');
+    Route::get('usuarios/{id}/hijos', ['uses' => 'UsersController@hijos', 'as' => 'admin.usuarios.hijos']);
     //Proveedores
     Route::get('proveedores', ['uses' => 'AdminController@indexprovedores', 'as' => 'admin.proveedores.index']);
     Route::get('proveedores/data', ['uses' => 'ProveedoresController@anyData', 'as' => 'Proveedores.data']);
@@ -142,8 +144,8 @@ Route::group(['prefix' => 'admin', 'middleware' => 'auth'], function () {
     Route::resource('comisiones', 'ComisionesController');
     //Route::get('proveedores/update', ['uses' => 'ProveedoresController@update', 'as' => 'admin.Proveedores.update']);
     Route::resource('proveedores', 'ProveedoresController');
-    Route::get('Proveedores/{id}/destroy', ['uses' => 'UsuariosController@destroy', 'as' => 'admin.usuarios.destroy']);
-    Route::get('Proveedores/{id}/hijos', ['uses' => 'UsuariosController@hijos', 'as' => 'admin.usuarios.hijos']);
+    Route::get('Proveedores/{id}/destroy', ['uses' => 'UsersController@destroy', 'as' => 'admin.usuarios.destroy']);
+    Route::get('Proveedores/{id}/hijos', ['uses' => 'UsersController@hijos', 'as' => 'admin.usuarios.hijos']);
     //Mensajeros
     //Route::get('mensajeros/data', ['uses' => 'MensajerosController@anyData', 'as' => 'mensajeros.data']);
     //Route::resource('mensajeros', 'MensajerosController');

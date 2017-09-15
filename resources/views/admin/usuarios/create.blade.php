@@ -17,7 +17,7 @@
                     </div>
                 </div>
             </div>
-            {!! Form::open(['route' => ['admin.usuarios.store'] , 'method' => 'POST' , 'files' => true]) !!}
+            {!! Form::open(['route' => ['admin.users.store'] , 'method' => 'POST' , 'files' => true]) !!}
             <div class="row setup-content" id="step-1">
                 <div class="col-xs-12">
                     <div class="col-md-12">

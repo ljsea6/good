@@ -23,6 +23,7 @@ class UsuariosController extends Controller {
      * @return \Illuminate\Http\Response
      */
 
+
     public function index()
     {
         return $permisos = Permission::lists('name', 'id')->get();

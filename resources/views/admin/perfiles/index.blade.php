@@ -89,7 +89,12 @@
                             </h4>
                         </div>
                         <div class="modal-body" style="position: relative; margin: 0 auto; width: 70%;">
-                            {!! Form::select('permisos', $permisos, null, ['id' => 'select-permisos','class' => 'form-control', 'multiple']) !!}
+                            <div class="row">
+                                <div class="col-md-12 text-left">
+                                    {!! Form::select('permisos', $permisos, null, ['id' => 'select-permisos', 'multiple' => true]) !!}
+                                </div>
+                            </div>
+
                         </div>
                         <div class="modal-footer">
                             <a href="#" data-dismiss="modal" class="btn btn-danger">

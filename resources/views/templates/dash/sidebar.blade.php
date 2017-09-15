@@ -303,10 +303,10 @@
                         </li>
 
                         <li>
-                            <a href="{{ route('admin.usuarios.index') }}" class="text-left">
+                            <a href="{{ route('admin.users.index') }}" class="text-left">
                                 <i class="fa fa-user">
                                 </i>
-                                Gestion de suarios
+                                Usuarios
                             </a>
                         </li>
 

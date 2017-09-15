@@ -17,7 +17,7 @@
                 </div>
             </div>
         </div>
-        {!! Form::model($usuario, ['route' => ['admin.usuarios.update', $usuario->id] , 'method' => 'PUT' , 'files' => true]) !!}
+        {!! Form::model($usuario, ['route' => ['admin.users.update', $usuario->id] , 'method' => 'PUT' , 'files' => true]) !!}
             <div class="row setup-content" id="step-1">
                 <div class="col-xs-12">
                     <div class="col-md-12">
