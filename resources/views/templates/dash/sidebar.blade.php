@@ -167,7 +167,7 @@
                     <ul>
                         @permission('reporte.entregas.devoluciones')                    
                         <li>
-                            <a href="{{ route('admin.reportes.index') }}" class="text-left">
+                            <a href="#" class="text-left">
                                 <i class="fa fa-truck">
                                 </i>
                                 <span>
@@ -190,7 +190,7 @@
                 <div class="sub-menu collapse secondary list-style-circle" id="submenu4">
                     <ul>
                         <li>
-                            <a href="{{ route('admin.recogidas.index') }}" class="text-left">
+                            <a href="#" class="text-left">
                                 <i class="fa fa-truck">
                                 </i>
                                 <span>

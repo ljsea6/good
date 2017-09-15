@@ -68,7 +68,7 @@ $api->version('v1', function ($api) {
 
 
 
-        $api->get('oauth/access', 'UsersController@login');
+        //$api->get('oauth/access', 'UsersController@login');
         $api->post('oauth/access_login', ['uses' => 'UsersController@access', 'as' => 'access.login']);
 
     });
