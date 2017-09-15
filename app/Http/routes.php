@@ -27,30 +27,11 @@ $api->version('v1', function ($api) {
             $api->get('users', ['uses' => 'UsersController@index', 'as' => 'api.users.index']);
         });
 
-        $api->get('oauth/authorize', ['as' => 'oauth.authorize.get', 'middleware' => ['check-authorization-params', 'auth'], function() {
-            $authParams = Authorizer::getAuthCodeRequestParams();
-            $formParams = array_except($authParams,'client');
-            $formParams['client_id'] = $authParams['client']->getId();
-            $formParams['scope'] = implode(config('oauth2.scope_delimiter'), array_map(function ($scope) {
-                return $scope->getId();
-            }, $authParams['scopes']));
-            return View::make('api.authorization-form', ['params' => $formParams, 'client' => $authParams['client']]);
-        }]);
 
-        $api->post('oauth/authorize', ['as' => 'oauth.authorize.post', 'middleware' => ['csrf', 'check-authorization-params', 'auth'], function() {
-            $params = Authorizer::getAuthCodeRequestParams();
-            $params['user_id'] = Auth::user()->id;
-            $redirectUri = '/';
-            // If the user has allowed the client to access its data, redirect back to the client with an auth code.
-            if (Request::has('approve')) {
-                $redirectUri = Authorizer::issueAuthCode('user', $params['user_id'], $params);
-            }
-            // If the user has denied the client to access its data, redirect back to the client with an error message.
-            if (Request::has('deny')) {
-                $redirectUri = Authorizer::authCodeRequestDeniedRedirectUri();
-            }
-            return Redirect::to($redirectUri);
-        }]);
+
+        $api->get('oauth/authorize', ['uses' => 'UsersController@authorizeGet', 'as' => 'oauth.authorize.get', 'middleware' => ['check-authorization-params', 'auth']]);
+
+        $api->post('oauth/authorize', ['uses' => 'UsersController@authorizePost', 'as' => 'oauth.authorize.post', 'middleware' => ['csrf', 'check-authorization-params', 'auth']]);
 
     });
 });
@@ -112,7 +93,7 @@ Route::group(['prefix' => 'admin', 'middleware' => 'auth'], function () {
     // Usuarios
     Route::get('usuarios/data', ['uses' => 'UsersController@anyData', 'as' => 'usuarios.data']);
     Route::resource('users', 'UsersController');
-    Route::get('usuarios/{id}/hijos', ['uses' => 'UsersController@hijos', 'as' => 'admin.usuarios.hijos']);
+    Route::get('usuarios/{id}/hijos', ['uses' => 'UsersControllerController@hijos', 'as' => 'admin.usuarios.hijos']);
     //Proveedores
     Route::get('proveedores', ['uses' => 'AdminController@indexprovedores', 'as' => 'admin.proveedores.index']);
     Route::get('proveedores/data', ['uses' => 'ProveedoresController@anyData', 'as' => 'Proveedores.data']);

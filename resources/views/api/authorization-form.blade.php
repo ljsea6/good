@@ -31,7 +31,7 @@
     </style>
 @endsection
 @section('content')
-    
+
     <div style="background: url(http://res.cloudinary.com/www-virgin-com/virgin-com-prod/sites/virgin.com/files/Articles/Entrepreneur%20Getty/Entrepreneur_breakfast_getty_2.jpg) no-repeat center / cover; height: 100vh">
         <div style="display: flex; justify-content: center; align-items: center; max-width: 400px; height: 400px; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background-color: white; box-shadow: 0 0 12px 3px rgba(0,0,0,.3); background: url(https://cdn.shopify.com/s/files/1/1935/1047/files/formularios_aae53d1f-29e4-40e6-b6ae-97e3db315af6.png?4265544440743003433) no-repeat center / cover; box-sizing: border-box">
             <div class="row">

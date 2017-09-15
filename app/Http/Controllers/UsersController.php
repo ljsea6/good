@@ -24,14 +24,46 @@ use App\Http\Requests\Terceros\Usuarios\NuevoUsuario;
 use App\Http\Requests\Terceros\Usuarios\NuevoUsuarioexterno;
 use Bican\Roles\Models\Permission;
 use Bican\Roles\Models\Role;
+use Illuminate\Http\Response;
+use Illuminate\Queue\RedisQueue;
 use Styde\Html\Facades\Alert;
 use Yajra\Datatables\Datatables;
 use DB;
+use View;
 
 class UsersController extends Controller
 {
     use Helpers, AuthenticatesAndRegistersUsers, ThrottlesLogins;
     protected $username = 'usuario';
+
+    public function authorizeGet()
+    {
+        $authParams = Authorizer::getAuthCodeRequestParams();
+        $formParams = array_except($authParams,'client');
+        $formParams['client_id'] = $authParams['client']->getId();
+        $formParams['scope'] = implode(config('oauth2.scope_delimiter'), array_map(function ($scope) {
+            return $scope->getId();
+        }, $authParams['scopes']));
+        return View::make('api.authorization-form', ['params' => $formParams, 'client' => $authParams['client']]);
+    }
+
+    public function authorizePost(Request $request)
+    {
+
+        $params = Authorizer::getAuthCodeRequestParams();
+        $params['user_id'] = Auth::user()->id;
+        $redirectUri = '/';
+        // If the user has allowed the client to access its data, redirect back to the client with an auth code.
+        if ($request->has('approve')) {
+            $redirectUri = Authorizer::issueAuthCode('user', $params['user_id'], $params);
+        }
+        // If the user has denied the client to access its data, redirect back to the client with an error message.
+        if ($request->has('deny')) {
+            $redirectUri = Authorizer::authCodeRequestDeniedRedirectUri();
+        }
+        return redirect($redirectUri);
+
+    }
     public function access(Request $request)
     {
         $client = new Client();
@@ -82,7 +114,6 @@ class UsersController extends Controller
         }
         return false;
     }
-
     public function authorization()
     {
         return $this->response->array(Authorizer::issueAccessToken());
