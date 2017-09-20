@@ -31,6 +31,7 @@
                             <th>Estado Shopify</th>
                             <th>Fecha Shopify</th>
                             <th>Fecha Good</th>
+                            <th>Tipo</th>
                             <th>Código Envio Internacional</th>
                             <th>Código Envio Nacional</th>
                             <th>Estado Orden</th>
@@ -52,6 +53,7 @@
                 responsive: true,
                 processing: true,
                 serverSide: true,
+                lengthChange : false,
                 buttons: [
                   'copy', 'csv', 'excel', 'pdf', 'print'
                 ],
@@ -69,6 +71,7 @@
                     { data: 'financial_status', name: 'financial_status', orderable: true, searchable: true },
                     { data: 'fecha_compra_cliente', name: 'fecha_compra_cliente', orderable: true, searchable: true },
                     { data: 'fecha_compra', name: 'fecha_compra', orderable: true, searchable: true },
+                    { data: 'tipo_orden', name: 'tipo_orden', orderable: true, searchable: true },
                     { data: 'codigo_envio_internacional', name: 'codigo_envio_internacional', orderable: true, searchable: true },
                     { data: 'codigo_envio', name: 'codigo_envio', orderable: true, searchable: true },
                     { data: 'estado_orden', name: 'estado_orden', orderable: true, searchable: true },

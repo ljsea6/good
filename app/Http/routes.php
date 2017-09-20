@@ -10,11 +10,10 @@
 |
  */
 //<a href="{{ route('reset') }}">Olvido contraseña?</a>
+
 /**
- * Rutas del Api
+ * Routes Dingo API
  */
-
-
 
 $api = app('Dingo\Api\Routing\Router');
 
@@ -26,9 +25,7 @@ $api->version('v1', function ($api) {
         $api->group(['middleware' => 'api.auth'], function ($api) {
             $api->get('users', ['uses' => 'UsersController@index', 'as' => 'api.users.index']);
         });
-
-
-
+        
         $api->get('oauth/authorize', ['uses' => 'UsersController@authorizeGet', 'as' => 'oauth.authorize.get', 'middleware' => ['check-authorization-params', 'auth']]);
 
         $api->post('oauth/authorize', ['uses' => 'UsersController@authorizePost', 'as' => 'oauth.authorize.post', 'middleware' => ['csrf', 'check-authorization-params', 'auth']]);

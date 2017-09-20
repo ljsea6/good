@@ -45,6 +45,7 @@ class OrdersController extends Controller
     }
     public function paid()
     {
+
         ini_set('memory_limit','1000M');
         ini_set('xdebug.max_nesting_level', 120);
         ini_set('max_execution_time', 3000);
@@ -100,6 +101,7 @@ class OrdersController extends Controller
                 return '<div align=left>' . $send['total'] . '</div>';
             })
             ->make(true);
+
     }
     public function pending()
     {
@@ -350,6 +352,9 @@ class OrdersController extends Controller
             })
             ->addColumn('fecha_compra', function ($send) {
                 return '<div align=left>' . Carbon::parse($send->fecha_compra)->toFormattedDateString() . '</div>';
+            })
+            ->addColumn('tipo_orden', function ($send) {
+                return '<div align=left>' . $send->tipo_orden . '</div>';
             })
             ->addColumn('codigo_envio', function ($send) {
                 return '<div align=left>' . $send->codigo_envio . '</div>';
@@ -1233,8 +1238,10 @@ class OrdersController extends Controller
                                 }
                             }
                         }
+
                         $tercero = Tercero::with('networks')->where('email', $order['email'])->first();
-                        if (count($tercero->networks[0]['pivot']['padre_id']) > 0 && $tercero->state == true) {
+
+                        if (isset($tercero->networks) && isset($tercero->networks[0]) && isset($tercero->networks[0]['pivot']) && count($tercero->networks[0]['pivot']['padre_id']) > 0 && $tercero->state == true) {
                             $padre = Tercero::where('id', $tercero->networks[0]['pivot']['padre_id'])->first();
                             if ($padre->state) {
                                 $find = Tercero::find($padre->id);
@@ -1562,6 +1569,44 @@ class OrdersController extends Controller
     }
     public function contador()
     {
+        $data = array(
+            'form_params' => array(
+                'fulfillment' => array(
+                    "tracking_urls" => array(
+                        "http://www.enviacolvanes.com.co/Contenido.aspx?rastreo=014985753008"
+                    ),
+                    "tracking_numbers" => array(
+                        "014985753008"
+                    ),
+                    'line_items' => [
+                        "id" => '36848089473'
+                    ]
+                )
+            )
+        );
+
+        $api_url = 'https://c17edef9514920c1d2a6aeaf9066b150:afc86df7e11dcbe0ab414fa158ac1767@mall-hello.myshopify.com';
+        $client = new \GuzzleHttp\Client();
+        $res = $client->request('put', $api_url . '/admin/orders/5599849793/fulfillments/4862722433.json', $data);
+        $order = json_decode($res->getBody(), true);
+        return $order;
+
+       /* $res = $client->request('get', $api_url . '/admin/orders/5599849793/fulfillments.json');
+        $order = json_decode($res->getBody(), true);
+        return $order;  */
+
+      /* $res = $client->request('post', $api_url . '/admin/orders/5599849793/fulfillments/4862722433/events.json', array(
+                                        'form_params' => array(
+                                            'event' => array(
+                                                "status" => "delivered"
+                                            )
+                                        )
+                                    )
+                                );*/
+
+
+
+
         /*$user = Tercero::find(174802);
         $contabilidadRole = Role::find(19);
         //$user->attachRole($contabilidadRole);
