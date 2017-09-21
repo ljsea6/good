@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\User;
 use Dingo\Api\Routing\Helpers;
 use App\Transformers\UserTransformer;
+use App\Transformers\TerceroTransformer;
 use Authorizer;
 use Auth;
 use Illuminate\Foundation\Auth\AuthenticatesAndRegistersUsers;
@@ -36,6 +37,80 @@ class UsersController extends Controller
     use Helpers, AuthenticatesAndRegistersUsers, ThrottlesLogins;
     protected $username = 'usuario';
 
+    public function verify_code(Request $request)
+    {
+        if (isset($request['code'])) {
+
+            $code = $request['code'];
+
+            $result = Tercero::where('email', $code)->first();
+
+            if (count($result) > 0) {
+
+                return $this->response->array([
+                    'message' => 'The code is valid'
+                ]);
+
+            } else {
+
+               return $this->response->errorUnauthorized();
+            }
+        } else {
+            return $this->response->errorBadRequest();
+        }
+    }
+
+    public function verify_code_tercero(Request $request)
+    {
+        if (isset($request['code']) && isset($request['email'])) {
+
+
+            $code = $request['code'];
+            $email = $request['email'];
+
+            $tercero = Tercero::with('networks')->where('email', $email)->first();
+
+            if (count($tercero) > 0) {
+
+                if ($tercero->email != $code) {
+
+                    if (isset($tercero->networks) &&count($tercero->networks) > 0) {
+
+                        $padre = Tercero::find($tercero->networks[0]['pivot']['padre_id']);
+
+                        if (count($padre) > 0 ) {
+
+                            if ($padre->email == $code) {
+                                return $this->response->array([
+                                    'message' => 'The code is valid'
+                                ]);
+                            } else {
+                                return $this->response->errorUnauthorized();
+                            }
+                        }
+                    }
+
+                } else {
+                    return $this->response->errorUnauthorized();
+                }
+            }
+
+            if (count($tercero) == 0) {
+
+                if ($code != $email) {
+
+                } else {
+                    return $this->response->errorUnauthorized([
+                        'message' => 'Usted no está registrado y no puede poner '
+                    ]);
+                }
+            }
+
+        } else {
+            return $this->response->errorBadRequest();
+        }
+    }
+
     public function authorizeGet()
     {
         $authParams = Authorizer::getAuthCodeRequestParams();
@@ -46,7 +121,6 @@ class UsersController extends Controller
         }, $authParams['scopes']));
         return View::make('api.authorization-form', ['params' => $formParams, 'client' => $authParams['client']]);
     }
-
     public function authorizePost(Request $request)
     {
 

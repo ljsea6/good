@@ -54,13 +54,6 @@
                             </div>
 
                             <div class="col-lg-6 col-lg-offset-3 col-md-6 col-md-offset-3 text-left">
-                                <div class="form-group">
-                                    <label for="code" class="text-left"># Códido de Envio Nacional</label>
-                                    <input type="text" class="form-control" id="code" name="code" disabled>
-                                </div>
-                            </div>
-
-                            <div class="col-lg-6 col-lg-offset-3 col-md-6 col-md-offset-3 text-left">
                                 <button type="submit" class="btn btn-danger text-left">Guardar</button>
                                 <a href="{{route('admin.orders.home')}}" class="btn btn-danger text-right">Atrás</a>
                             </div>
@@ -78,13 +71,6 @@
                                 <div class="form-group">
                                     <label for="code" class="text-left"># Códido de Envio Nacional</label>
                                     <input type="text" class="form-control" id="code" name="code" required>
-                                </div>
-                            </div>
-
-                            <div class="col-lg-6 col-lg-offset-3 col-md-6 col-md-offset-3 text-left">
-                                <div class="form-group">
-                                    <label for="url" class="text-left">Url Envio</label>
-                                    <input type="url" class="form-control" id="url" name="url" required>
                                 </div>
                             </div>
 
@@ -135,6 +121,13 @@
                             </div>
 
                             <div class="col-lg-6 col-lg-offset-3 col-md-6 col-md-offset-3 text-left">
+                                <div class="form-group">
+                                    <label for="code" class="text-left">Url Envío</label>
+                                    <input type="url" class="form-control" id="url" name="url" value="{{$order->url_envio}}" disabled>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-6 col-lg-offset-3 col-md-6 col-md-offset-3 text-left">
                                 <a href="{{route('admin.orders.home')}}" class="btn btn-danger text-right">Atrás</a>
                             </div>
                         @endif
@@ -165,12 +158,6 @@
                                 <div class="form-group">
                                     <label for="code" class="text-left"># Códido de Envio Nacional</label>
                                     <input type="text" class="form-control" id="code" name="code" required>
-                                </div>
-                            </div>
-                            <div class="col-lg-6 col-lg-offset-3 col-md-6 col-md-offset-3 text-left">
-                                <div class="form-group">
-                                    <label for="url" class="text-left">Url Envio</label>
-                                    <input type="url" class="form-control" id="url" name="url" required>
                                 </div>
                             </div>
 

@@ -279,33 +279,38 @@ class OrdersController extends Controller
             }
         }
 
-        if (!isset($request['date']) && !isset($request['tipo_orden']) && isset($request['code']) && isset($request['url'])) {
+        if (!isset($request['date']) && !isset($request['tipo_orden']) && isset($request['code']) && !isset($request['url'])) {
 
             $code = $request['code'];
             $order = Order::find($id);
             $order->codigo_envio = $code;
-            $order->url_envio = $request['url'];
             $order->fecha_envio_n = Carbon::now();
             $order->estado_orden = 'envio_nacional';
             $order->bitacora = currentUser();
             $order->save();
+
+
             if ($order && $order->tipo_orden == 'nacional') {
+
+                $update = Order::find($order->id);
+                $update->url_envio = 'http://www.enviacolvanes.com.co/Contenido.aspx?rastreo=' . $code;
+                $update->save();
 
                 $api_url = 'https://c17edef9514920c1d2a6aeaf9066b150:afc86df7e11dcbe0ab414fa158ac1767@mall-hello.myshopify.com';
                 $client = new \GuzzleHttp\Client();
 
-                $res = $client->request('get', $api_url . '/admin/orders/'. $order->order_id .'/fulfillments.json');
+                $res = $client->request('get', $api_url . '/admin/orders/'. $update->order_id .'/fulfillments.json');
                 $fulfillments = json_decode($res->getBody(), true);
 
                 if ($res->getStatusCode() == 200) {
                     if (isset($fulfillments['fulfillments'][0]) && count($fulfillments['fulfillments'][0]) > 0 && $fulfillments['fulfillments'][0]['status'] == 'success') {
 
-                        $fulfillment = $client->request('put', $api_url . '/admin/orders/'. $order->order_id .'/fulfillments/'. $fulfillments['fulfillments'][0]['id'] .'.json', array(
+                        $fulfillment = $client->request('put', $api_url . '/admin/orders/'. $update->order_id .'/fulfillments/'. $fulfillments['fulfillments'][0]['id'] .'.json', array(
                                 'form_params' => array(
                                     'fulfillment' => array(
                                         "tracking_company" => "Envia",
-                                        "tracking_number" => $order->codigo_envio,
-                                        "tracking_url" => $order->url_envio
+                                        "tracking_number" => $update->codigo_envio,
+                                        "tracking_url" => $update->url_envio
                                     )
                                 )
                             )
@@ -313,7 +318,7 @@ class OrdersController extends Controller
 
                         if ($fulfillment->getStatusCode() == 200) {
 
-                            $event = $client->request('post', $api_url . '/admin/orders/'. $order->order_id .'/fulfillments/'. $fulfillments['fulfillments'][0]['id'] .'/events.json', array(
+                            $event = $client->request('post', $api_url . '/admin/orders/'. $update->order_id .'/fulfillments/'. $fulfillments['fulfillments'][0]['id'] .'/events.json', array(
                                     'form_params' => array(
                                         'event' => array(
                                             "status" => "out_for_delivery"
@@ -332,21 +337,25 @@ class OrdersController extends Controller
 
             if ($order && $order->tipo_orden != 'nacional') {
 
+                $update = Order::find($order->id);
+                $update->url_envio = 'http://www.enviacolvanes.com.co/Contenido.aspx?rastreo=' . $code;
+                $update->save();
+
                 $api_url = 'https://c17edef9514920c1d2a6aeaf9066b150:afc86df7e11dcbe0ab414fa158ac1767@mall-hello.myshopify.com';
                 $client = new \GuzzleHttp\Client();
 
-                $res = $client->request('get', $api_url . '/admin/orders/'. $order->order_id .'/fulfillments.json');
+                $res = $client->request('get', $api_url . '/admin/orders/'. $update->order_id .'/fulfillments.json');
                 $fulfillments = json_decode($res->getBody(), true);
 
                 if ($res->getStatusCode() == 200) {
                     if (isset($fulfillments['fulfillments'][0]) && count($fulfillments['fulfillments'][0]) > 0 && $fulfillments['fulfillments'][0]['status'] == 'success') {
 
-                        $fulfillment = $client->request('put', $api_url . '/admin/orders/'. $order->order_id .'/fulfillments/'. $fulfillments['fulfillments'][0]['id'] .'.json', array(
+                        $fulfillment = $client->request('put', $api_url . '/admin/orders/'. $update->order_id .'/fulfillments/'. $fulfillments['fulfillments'][0]['id'] .'.json', array(
                                 'form_params' => array(
                                     'fulfillment' => array(
                                         "tracking_company" => "Envia",
-                                        "tracking_number" => $order->codigo_envio,
-                                        "tracking_url" => $order->url_envio
+                                        "tracking_number" => $update->codigo_envio,
+                                        "tracking_url" => $update->url_envio
                                     )
                                 )
                             )
@@ -354,7 +363,7 @@ class OrdersController extends Controller
 
                         if ($fulfillment->getStatusCode() == 200) {
 
-                            $event = $client->request('post', $api_url . '/admin/orders/'. $order->order_id .'/fulfillments/'. $fulfillments['fulfillments'][0]['id'] .'/events.json', array(
+                            $event = $client->request('post', $api_url . '/admin/orders/'. $update->order_id .'/fulfillments/'. $fulfillments['fulfillments'][0]['id'] .'/events.json', array(
                                     'form_params' => array(
                                         'event' => array(
                                             "status" => "out_for_delivery"
