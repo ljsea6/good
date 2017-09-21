@@ -12,18 +12,11 @@
                 </div>
             </div>
         @endif
-        @if($order->fecha_compra == null)
-            <h2>Comprar Orden</h2>
+            @if($order->fecha_compra == null)
+                <h2>Comprar Orden</h2>
             @endif
-        @if(isset($product->tipo_producto) && count($product->tipo_producto) > 0 && $product->tipo_producto == 'nacional')
-                <h2>Envio Nacional</h2>
-            @endif
-            @if(isset($product->tipo_producto) && count($product->tipo_producto) > 0 &&$product->tipo_producto == 'internacional')
-                <h2>Envio Internacional</h2>
-            @endif
-
         <div class="panel panel-danger">
-            <div class="panel-heading">Orden</div>
+            <div class="panel-heading">Orden {{ $order->tipo_orden }}</div>
             <div class="row">
                 <div class="panel-body">
                     <form class="form" action="/admin/orders/{{ $order->id }}" method="post">
@@ -35,18 +28,28 @@
                             </div>
                         </div>
 
-                        @if(isset($product->tipo_producto) && count($product->tipo_producto) > 0 && $product->tipo_producto == 'internacional' && $order->fecha_compra != null && $order->codigo_envio == null && $order->codigo_envio_internacional == null)
+                        @if ($order->fecha_compra != null)
                             <div class="col-lg-6 col-lg-offset-3 col-md-6 col-md-offset-3 text-left">
                                 <div class="form-group">
                                     <label for="code" class="text-left">Fecha Compra</label>
                                     <input id="date" name="date" type='text' class="form-control" value="{{$order->fecha_compra}}" disabled/>
                                 </div>
                             </div>
+                        @endif
+
+                        @if($order->fecha_compra != null && $order->tipo_orden != 'nacional' && $order->codigo_envio == null && $order->codigo_envio_internacional == null)
 
                             <div class="col-lg-6 col-lg-offset-3 col-md-6 col-md-offset-3 text-left">
                                 <div class="form-group">
                                     <label for="code" class="text-left"># Códido de Envio Internacional</label>
-                                    <input type="text" class="form-control" id="code_internacional" name="code_internacional">
+                                    <input type="text" class="form-control" id="code_internacional" name="code_internacional" required>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-6 col-lg-offset-3 col-md-6 col-md-offset-3 text-left">
+                                <div class="form-group">
+                                    <label for="url" class="text-left">Url Envio</label>
+                                    <input type="url" class="form-control" id="url" name="url" required>
                                 </div>
                             </div>
 
@@ -62,14 +65,7 @@
                                 <a href="{{route('admin.orders.home')}}" class="btn btn-danger text-right">Atrás</a>
                             </div>
                         @endif
-
-                        @if(isset($product->tipo_producto) && count($product->tipo_producto) > 0 && $product->tipo_producto == 'internacional' && $order->fecha_compra != null && $order->codigo_envio == null && $order->codigo_envio_internacional != null)
-                            <div class="col-lg-6 col-lg-offset-3 col-md-6 col-md-offset-3 text-left">
-                                <div class="form-group">
-                                    <label for="code" class="text-left">Fecha Compra</label>
-                                    <input id="date" name="date" type='text' class="form-control" value="{{$order->fecha_compra}}" disabled/>
-                                </div>
-                            </div>
+                        @if($order->fecha_compra != null && $order->tipo_orden != 'nacional' && $order->codigo_envio == null && $order->codigo_envio_internacional != null)
 
                             <div class="col-lg-6 col-lg-offset-3 col-md-6 col-md-offset-3 text-left">
                                 <div class="form-group">
@@ -81,7 +77,14 @@
                             <div class="col-lg-6 col-lg-offset-3 col-md-6 col-md-offset-3 text-left">
                                 <div class="form-group">
                                     <label for="code" class="text-left"># Códido de Envio Nacional</label>
-                                    <input type="text" class="form-control" id="code" name="code">
+                                    <input type="text" class="form-control" id="code" name="code" required>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-6 col-lg-offset-3 col-md-6 col-md-offset-3 text-left">
+                                <div class="form-group">
+                                    <label for="url" class="text-left">Url Envio</label>
+                                    <input type="url" class="form-control" id="url" name="url" required>
                                 </div>
                             </div>
 
@@ -90,14 +93,8 @@
                                 <a href="{{route('admin.orders.home')}}" class="btn btn-danger text-right">Atrás</a>
                             </div>
                         @endif
+                        @if($order->fecha_compra != null && $order->tipo_orden != 'nacional' && $order->codigo_envio != null && $order->codigo_envio_internacional == null )
 
-                        @if(isset($product->tipo_producto) && count($product->tipo_producto) > 0 && $product->tipo_producto == 'internacional' && $order->fecha_compra != null && $order->codigo_envio != null && $order->codigo_envio_internacional == null )
-                            <div class="col-lg-6 col-lg-offset-3 col-md-6 col-md-offset-3 text-left">
-                                <div class="form-group">
-                                    <label for="code" class="text-left">Fecha Compra</label>
-                                    <input id="date" name="date" type='text' class="form-control" value="{{$order->fecha_compra}}" disabled/>
-                                </div>
-                            </div>
                             <div class="col-lg-6 col-lg-offset-3 col-md-6 col-md-offset-3 text-left">
                                 <div class="form-group">
                                     <label for="code" class="text-left"># Códido de Envio Internacional</label>
@@ -112,18 +109,18 @@
                             </div>
 
                             <div class="col-lg-6 col-lg-offset-3 col-md-6 col-md-offset-3 text-left">
-                                <button id="submitButton" type="submit" class="btn btn-danger text-left">Guardar</button>
+                                <div class="form-group">
+                                    <label for="url" class="text-left">Url Envio</label>
+                                    <input type="url" class="form-control" id="url" name="url" value="{{$order->url_envio}}">
+                                </div>
+                            </div>
+
+                            <div class="col-lg-6 col-lg-offset-3 col-md-6 col-md-offset-3 text-left">
                                 <a href="{{route('admin.orders.home')}}" class="btn btn-danger text-right">Atrás</a>
                             </div>
                         @endif
+                        @if($order->fecha_compra != null && $order->tipo_orden != 'nacional' && $order->codigo_envio != null && $order->codigo_envio_internacional != null )
 
-                        @if(isset($product->tipo_producto) && count($product->tipo_producto) > 0 && $product->tipo_producto == 'internacional' && $order->fecha_compra != null && $order->codigo_envio != null && $order->codigo_envio_internacional != null )
-                            <div class="col-lg-6 col-lg-offset-3 col-md-6 col-md-offset-3 text-left">
-                                <div class="form-group">
-                                    <label for="code" class="text-left">Fecha Compra</label>
-                                    <input id="date" name="date" type='text' class="form-control" value="{{$order->fecha_compra}}" disabled/>
-                                </div>
-                            </div>
                             <div class="col-lg-6 col-lg-offset-3 col-md-6 col-md-offset-3 text-left">
                                 <div class="form-group">
                                     <label for="code" class="text-left"># Códido de Envio Internacional</label>
@@ -142,36 +139,38 @@
                             </div>
                         @endif
 
-                        @if(isset($product->tipo_producto) && count($product->tipo_producto) > 0 && $product->tipo_producto == 'nacional' && $order->fecha_compra != null && $order->codigo_envio != null)
-                            <div class="col-lg-6 col-lg-offset-3 col-md-6 col-md-offset-3 text-left">
-                                <div class="form-group">
-                                    <label for="code" class="text-left">Fecha Compra</label>
-                                    <input id="date" name="date" type='text' class="form-control" value="{{$order->fecha_compra}}" disabled/>
-                                </div>
-                            </div>
+                        @if($order->fecha_compra != null && $order->tipo_orden != 'nacional/internacional' && $order->tipo_orden != 'internacional' &&  $order->codigo_envio != null && $order->url_envio != null)
+
                             <div class="col-lg-6 col-lg-offset-3 col-md-6 col-md-offset-3 text-left">
                                 <div class="form-group">
                                     <label for="code" class="text-left"># Códido de Envio Nacional</label>
                                     <input type="text" class="form-control" id="code" name="code" value="{{$order->codigo_envio}}" disabled>
                                 </div>
                             </div>
+                            <div class="col-lg-6 col-lg-offset-3 col-md-6 col-md-offset-3 text-left">
+                                <div class="form-group">
+                                    <label for="url" class="text-left">Url Envio</label>
+                                    <input type="url" class="form-control" id="url" name="url" value="{{$order->url_envio}}" disabled>
+                                </div>
+                            </div>
 
                             <div class="col-lg-6 col-lg-offset-3 col-md-6 col-md-offset-3 text-left">
                                 <a href="{{route('admin.orders.home')}}" class="btn btn-danger text-right">Atrás</a>
                             </div>
-                        @endif
 
-                        @if(isset($product->tipo_producto) && count($product->tipo_producto) > 0 && $product->tipo_producto == 'nacional' && $order->fecha_compra != null && $order->codigo_envio == null )
+                        @endif
+                        @if($order->fecha_compra != null && $order->tipo_orden != 'nacional/internacional' && $order->tipo_orden != 'internacional' && $order->codigo_envio == null && $order->url_envio == null)
+
                             <div class="col-lg-6 col-lg-offset-3 col-md-6 col-md-offset-3 text-left">
                                 <div class="form-group">
-                                    <label for="code" class="text-left">Fecha Compra</label>
-                                    <input id="date" name="date" type='text' class="form-control" value="{{$order->fecha_compra}}" disabled/>
+                                    <label for="code" class="text-left"># Códido de Envio Nacional</label>
+                                    <input type="text" class="form-control" id="code" name="code" required>
                                 </div>
                             </div>
                             <div class="col-lg-6 col-lg-offset-3 col-md-6 col-md-offset-3 text-left">
                                 <div class="form-group">
-                                    <label for="code" class="text-left"># Códido de Envio Nacional</label>
-                                    <input type="text" class="form-control" id="code" name="code">
+                                    <label for="url" class="text-left">Url Envio</label>
+                                    <input type="url" class="form-control" id="url" name="url" required>
                                 </div>
                             </div>
 
@@ -181,7 +180,7 @@
                             </div>
                         @endif
 
-                        @if(!isset($product->tipo_producto) && $order->fecha_compra == null && $order->codigo_envio == null && $order->codigo_envio_internacional == null)
+                        @if($order->codigo_envio == null && $order->codigo_envio_internacional == null && $order->fecha_compra == null)
                             <div class="col-lg-6 col-lg-offset-3 col-md-6 col-md-offset-3 text-left">
                                 <div class="form-group">
                                     <div class='input-group date' id='datetimepicker1'>
@@ -191,12 +190,29 @@
                                     </span>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="col-lg-6 col-lg-offset-3 col-md-6 col-md-offset-3 text-left">
                                 <div class="form-group">
-                                    <select id="tipo" name="tipo" class="js-example-basic-single" style="width: 100%">
-                                        <option value="nacional">Nacional</option>
-                                        <option value="internacional">Internacional</option>
+                                    <label for="tipo_orden">Tipo Orden:</label>
+                                    <select  class="form-control"name="tipo_orden" id="tipo_orden" required>
+
+                                            @if ($order->tipo_orden == 'nacional')
+                                                <option value=""></option>
+                                                <option value="nacional" selected>Nacional</option>
+                                                <option value="internacional">Internacional</option>
+                                                <option value="nacional/internacional">Nacional/Internacional</option>
+                                            @endif
+                                            @if ($order->tipo_orden == 'internacional')
+                                                <option value=""></option>
+                                                <option value="nacional">Nacional</option>
+                                                <option value="internacional" selected>Internacional</option>
+                                                <option value="nacional/internacional">Nacional/Internacional</option>
+                                            @endif
+                                            @if ($order->tipo_orden == 'nacional/internacional')
+                                                <option value=""></option>
+                                                <option value="nacional">Nacional</option>
+                                                <option value="internacional">Internacional</option>
+                                                <option value="nacional/internacional" selected>Nacional/Internacional</option>
+                                            @endif
+
                                     </select>
                                 </div>
                             </div>
@@ -215,8 +231,13 @@
 @push('scripts')
     <script>
         $(document).ready(function(){
-
-            $(".js-example-basic-single").select2({});
+            $('#tipo_orden').select2({
+                theme: "bootstrap",
+                width: '100%',
+                language: "es",
+                placeholder: "Seleccionar Tipo...",
+                allowClear: true
+            });
 
             $(function () {
                 $('#datetimepicker1').datetimepicker({

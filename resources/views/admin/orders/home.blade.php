@@ -3,6 +3,7 @@
 @section('titulo', 'Gestion de Ordenes')
 
 @section('content')
+
     <div class="box">
         <div class="panel panel-default">
             <div class="panel-heading font-header">Listado de Ordenes</div>
@@ -38,6 +39,7 @@
                             <th>Acción</th>
                         </tr>
                         </thead>
+
                     </table>
                 </div>
             </div>
@@ -45,17 +47,22 @@
     </div>
 @stop
 @push('scripts')
+
     <script>
 
         $(document).ready(function(){
-            $('#orders').DataTable({
+
+           $('#orders').DataTable({
                 dom: 'Bfrtip',
                 responsive: true,
                 processing: true,
                 serverSide: true,
-                lengthChange : false,
                 buttons: [
-                  'copy', 'csv', 'excel', 'pdf', 'print'
+                  'copy', 'csv', 'excel', 'pdf', 'print', 'pageLength'
+                ],
+                lengthMenu: [
+                    [ 10, 25, 50, -1 ],
+                    [ '10 columnas', '25 columnas', '50 columnas', 'Todo' ]
                 ],
                 deferRender: true,
                 pagingType: "full_numbers",
@@ -79,13 +86,10 @@
                 ],
                 language: {
                     url: "{{ asset('css/Spanish.json') }}"
-                },
+                }
 
             });
 
         });
-
-
-
     </script>
 @endpush
