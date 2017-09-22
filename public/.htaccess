@@ -3,10 +3,9 @@
         Options -MultiViews
     </IfModule>
 
-    # enable cross domain access control
-    Header always set Access-Control-Allow-Origin "*"
-    Header always set Access-Control-Allow-Methods "POST, GET, OPTIONS"
-    Header set Access-Control-Allow-Origin "http://localhost/"
+    <IfModule mod_headers.c>
+        Header set Access-Control-Allow-Origin "http://good-hello.southcentralus.cloudapp.azure.com/"
+    </IfModule>
 
     RewriteEngine On
 
