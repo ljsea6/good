@@ -3,6 +3,10 @@
         Options -MultiViews
     </IfModule>
 
+    # enable cross domain access control
+    Header always set Access-Control-Allow-Origin "*"
+    Header always set Access-Control-Allow-Methods "POST, GET, OPTIONS"
+
     RewriteEngine On
 
     # Redirect Trailing Slashes If Not A Folder...
