@@ -70,6 +70,9 @@ route::post('registro', ['uses' => 'UsuariosController@storenuevo', 'as' => 'adm
 Route::get('recuperar-contraseña/{token}', ['as' => 'recuperar', 'uses' => 'Auth\PasswordController@getReset']);
 Route::post('recuperar-contraseña', ['as' => 'recuperar', 'uses' => 'Auth\PasswordController@postReset']);
 Route::get('registro/payu', [ 'as' => 'PayuController@paybefore', 'as' =>'admin.payu.payu']);
+
+
+
 //Route::get('registro/payu', [ 'as' => 'pay', 'uses' =>'PayuController@pay']);
 //payu
 //Route::get('/pay', ['as' => 'pay', 'uses' => 'PaymentController@pay']); # You will need one more.

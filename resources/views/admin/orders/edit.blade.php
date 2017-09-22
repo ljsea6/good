@@ -19,7 +19,7 @@
             <div class="panel-heading">Orden {{ $order->tipo_orden }}</div>
             <div class="row">
                 <div class="panel-body">
-                    <form class="form" action="/admin/orders/{{ $order->id }}" method="post">
+                    <form id="orden" class="form" action="/admin/orders/{{ $order->id }}" method="post">
 
                         <div class="col-lg-6 col-lg-offset-3 col-md-6 col-md-offset-3 text-left">
                             <div class="form-group">
@@ -236,6 +236,8 @@
                     }
                 });
             });
+
+            $("#orden").validate();
 
         });
 

@@ -36,7 +36,9 @@
                             <th>Código Envio Internacional</th>
                             <th>Código Envio Nacional</th>
                             <th>Estado Orden</th>
+                            @if (Auth::user()->hasRole('administrador'))
                             <th>Acción</th>
+                            @endif
                         </tr>
                         </thead>
 
@@ -82,7 +84,10 @@
                     { data: 'codigo_envio_internacional', name: 'codigo_envio_internacional', orderable: true, searchable: true },
                     { data: 'codigo_envio', name: 'codigo_envio', orderable: true, searchable: true },
                     { data: 'estado_orden', name: 'estado_orden', orderable: true, searchable: true },
+                    @if (Auth::user()->hasRole('administrador'))
                     { data: 'action', name: 'action', orderable: false, searchable: false }
+                    @endif
+
                 ],
                 language: {
                     url: "{{ asset('css/Spanish.json') }}"

@@ -556,7 +556,7 @@ class OrdersController extends Controller
                     return '<div align=left>' . $send->financial_status. '</div>';
                 })
                 ->addColumn('fecha_compra_cliente', function ($send) {
-                    return '<div align=left>' . Carbon::parse($send->updated_at)->toFormattedDateString() . '</div>';
+                    return '<div align=left>' . Carbon::parse($send->created_at)->toFormattedDateString() . '</div>';
                 })
                 ->addColumn('fecha_compra', function ($send) {
                     return '<div align=left>' . Carbon::parse($send->fecha_compra)->toFormattedDateString() . '</div>';
@@ -1261,7 +1261,7 @@ class OrdersController extends Controller
                     return '<div align=left>' . $send->financial_status. '</div>';
                 })
                 ->addColumn('fecha_compra_cliente', function ($send) {
-                    return '<div align=left>' . Carbon::parse($send->updated_at)->toFormattedDateString() . '</div>';
+                    return '<div align=left>' . Carbon::parse($send->created_at)->toFormattedDateString() . '</div>';
                 })
                 ->addColumn('fecha_compra', function ($send) {
                     return '<div align=left>' . Carbon::parse($send->fecha_compra)->toFormattedDateString() . '</div>';
@@ -1741,7 +1741,12 @@ class OrdersController extends Controller
 
                 })
                 ->addColumn('action', function ($send ) {
-                    return '<div align=left><a href="/admin/orders/'. $send->id .'/edit"  class="btn btn-danger btn-xs text-center">Comprar</a></div>';
+                    if ($send->fecha_compra == null) {
+                        return '<div align=left><a href="/admin/orders/'. $send->id .'/edit"  class="btn btn-danger btn-xs text-center">Comprar</a></div>';
+                    } else {
+                        return '<div align=left><a href="/admin/orders/'. $send->id .'/edit"  class="btn btn-danger btn-xs text-center">Envio</a></div>';
+                    }
+
                 })
                 ->make(true);
         }

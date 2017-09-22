@@ -39,22 +39,29 @@ class UsersController extends Controller
 
     public function verify_code(Request $request)
     {
-        if (isset($request['code'])) {
+        if (isset($request['code']) && isset($request['email'])) {
 
             $code = $request['code'];
+            $email = $request['email'];
 
-            $result = Tercero::where('email', $code)->first();
+            if ($code != $email) {
 
-            if (count($result) > 0) {
+                $result = Tercero::where('email', $code)->first();
 
-                return $this->response->array([
-                    'message' => 'The code is valid'
-                ]);
+                if (count($result) > 0) {
 
+                    return $this->response->array([
+                        'message' => 'The code is valid'
+                    ]);
+
+                } else {
+
+                    return $this->response->errorUnauthorized();
+                }
             } else {
-
-               return $this->response->errorUnauthorized();
+                return $this->response->errorUnauthorized();
             }
+
         } else {
             return $this->response->errorBadRequest();
         }
@@ -64,46 +71,51 @@ class UsersController extends Controller
     {
         if (isset($request['code']) && isset($request['email'])) {
 
-
             $code = $request['code'];
             $email = $request['email'];
 
-            $tercero = Tercero::with('networks')->where('email', $email)->first();
+            if ($code != $email) {
 
-            if (count($tercero) > 0) {
+                $tercero = Tercero::with('networks')->where('email', $email)->first();
 
-                if ($tercero->email != $code) {
+                if (count($tercero) > 0) {
 
-                    if (isset($tercero->networks) &&count($tercero->networks) > 0) {
+                    if ($tercero->email != $code) {
 
-                        $padre = Tercero::find($tercero->networks[0]['pivot']['padre_id']);
+                        if (isset($tercero->networks) &&count($tercero->networks) > 0) {
 
-                        if (count($padre) > 0 ) {
+                            $padre = Tercero::find($tercero->networks[0]['pivot']['padre_id']);
 
-                            if ($padre->email == $code) {
-                                return $this->response->array([
-                                    'message' => 'The code is valid'
-                                ]);
-                            } else {
-                                return $this->response->errorUnauthorized();
+                            if (count($padre) > 0 ) {
+
+                                if ($padre->email == $code) {
+                                    return $this->response->array([
+                                        'message' => 'The code is valid'
+                                    ]);
+                                } else {
+                                    return $this->response->errorUnauthorized();
+                                }
                             }
                         }
+
+                    } else {
+                        return $this->response->errorUnauthorized();
                     }
-
-                } else {
-                    return $this->response->errorUnauthorized();
                 }
-            }
 
-            if (count($tercero) == 0) {
-
-                if ($code != $email) {
-
-                } else {
-                    return $this->response->errorUnauthorized([
-                        'message' => 'Usted no está registrado y no puede poner '
-                    ]);
+                if (count($tercero) == 0) {
+                    $result = Tercero::where('email', $code)->first();
+                     if (count($result) > 0) {
+                         return $this->response->array([
+                             'message' => 'The code is valid'
+                         ]);
+                     } else {
+                         return $this->response->errorUnauthorized();
+                     }
                 }
+
+            } else {
+                return $this->response->errorUnauthorized();
             }
 
         } else {
