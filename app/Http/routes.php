@@ -20,7 +20,7 @@ $api = app('Dingo\Api\Routing\Router');
 $api->version('v1', function ($api) {
     $api->group(['namespace' => 'App\Http\Controllers'], function ($api) {
 
-        $api->post('oauth/verify_code', ['middleware' => 'cors', 'uses' => 'UsersController@verify_code']);
+        $api->post('oauth/verify_code', 'UsersController@verify_code');
         $api->post('oauth/verify_code_tercero', 'UsersController@verify_code_tercero');
 
         $api->post('oauth/access_token', 'UsersController@authorization');
