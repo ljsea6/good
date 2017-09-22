@@ -6,6 +6,7 @@
     # enable cross domain access control
     Header always set Access-Control-Allow-Origin "*"
     Header always set Access-Control-Allow-Methods "POST, GET, OPTIONS"
+    Header set Access-Control-Allow-Origin "http://localhost/"
 
     RewriteEngine On
 
