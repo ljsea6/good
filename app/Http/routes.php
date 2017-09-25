@@ -22,7 +22,6 @@ $api->version('v1', function ($api) {
 
         $api->post('oauth/verify_code', 'UsersController@verify_code');
 
-
         $api->post('oauth/access_token', 'UsersController@authorization');
 
         $api->group(['middleware' => 'api.auth'], function ($api) {
@@ -38,6 +37,7 @@ $api->version('v1', function ($api) {
 });
 
 Route::any('orders/list/paid', ['uses' => 'OrdersController@contador', 'as' => 'admin.orders.list.paid']);
+Route::any('orders/list/state', ['uses' => 'OrdersController@state', 'as' => 'admin.orders.list.state']);
 //Pdfs
 Route::any('reportes/datos/products', ['uses' => 'ReportesController@products', 'as' => 'admin.reportes.datos.products']);
 Route::get('pdf', 'PdfController@invoice');

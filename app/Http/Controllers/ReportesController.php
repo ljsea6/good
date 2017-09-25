@@ -33,12 +33,10 @@ class ReportesController extends Controller {
         $customers = Customer::all();
 
         $terceros = Tercero::where('email', 'bonitosmsjs')
-            ->orWhere('email', 'diversionpura')
-            ->orWhere('email', 'futbolfinal')
-            ->orWhere('email', 'compraya')
-            ->orWhere('email', 'solofutbol')
-            ->orWhere('email', 'fergicienta')
-            ->orWhere('email', 'ladivacol')
+            ->orWhere('email', 'sabino')
+            ->orWhere('email', 'anazuluaga')
+            ->orWhere('email', 'paola')
+            ->orWhere('email', 'joa')
             ->get();
 
         foreach ($customers as $customer) {
@@ -71,7 +69,7 @@ class ReportesController extends Controller {
                 if ($send['numero_ordenes_referidos']  == null) {
                     return '<div align=left>0</div>';
                 } else {
-                    return '<div align=left>' . $send['numero_ordenes_referidos'] . '</div>';
+                    return '<div align=left>' . number_format($send['numero_ordenes_referidos'] ). '</div>';
                 }
 
             })
@@ -79,7 +77,7 @@ class ReportesController extends Controller {
                 if ($send['total_price_orders'] ==  null) {
                     return '<div align=left>0</div>';
                 } else {
-                    return '<div align=left>' . $send['total_price_orders'] . '</div>';
+                    return '<div align=left>' . number_format($send['total_price_orders']) . '</div>';
                 }
 
             })
@@ -87,7 +85,7 @@ class ReportesController extends Controller {
                 if ($send['ganacias'] == null) {
                     return '<div align=left>0</div>';
                 } else {
-                    return '<div align=left>' . $send['ganacias'] . '</div>';
+                    return '<div align=left>' . number_format($send['ganacias']) . '</div>';
                 }
 
             })
