@@ -67,62 +67,6 @@ class UsersController extends Controller
         }
     }
 
-    public function verify_code_tercero(Request $request)
-    {
-        if (isset($request['code']) && isset($request['email'])) {
-
-            $code = $request['code'];
-            $email = $request['email'];
-
-            if ($code != $email) {
-
-                $tercero = Tercero::with('networks')->where('email', $email)->first();
-
-                if (count($tercero) > 0) {
-
-                    if ($tercero->email != $code) {
-
-                        if (isset($tercero->networks) &&count($tercero->networks) > 0) {
-
-                            $padre = Tercero::find($tercero->networks[0]['pivot']['padre_id']);
-
-                            if (count($padre) > 0 ) {
-
-                                if ($padre->email == $code) {
-                                    return $this->response->array([
-                                        'message' => 'The code is valid'
-                                    ]);
-                                } else {
-                                    return $this->response->errorUnauthorized();
-                                }
-                            }
-                        }
-
-                    } else {
-                        return $this->response->errorUnauthorized();
-                    }
-                }
-
-                if (count($tercero) == 0) {
-                    $result = Tercero::where('email', $code)->first();
-                     if (count($result) > 0) {
-                         return $this->response->array([
-                             'message' => 'The code is valid'
-                         ]);
-                     } else {
-                         return $this->response->errorUnauthorized();
-                     }
-                }
-
-            } else {
-                return $this->response->errorUnauthorized();
-            }
-
-        } else {
-            return $this->response->errorBadRequest();
-        }
-    }
-
     public function authorizeGet()
     {
         $authParams = Authorizer::getAuthCodeRequestParams();

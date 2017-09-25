@@ -467,10 +467,15 @@ class OrdersController extends Controller
                 })
                 ->addColumn('order', function ($send) {
                     $result = '';
-                    foreach ($send->line_items as $item ){
-                        $product = Product::find($item['product_id']);
-                        if(count($product['image']) > 0 && count($product['images']) > 0) {
-                            $result .= '<div class="container" style="width: 100%">
+                    if (count($send->line_items) > 0) {
+
+                        foreach ($send->line_items as $item ){
+
+                            $product = Product::find($item['product_id']);
+
+                            if(count($product) > 0 ) {
+
+                                $result .= '<div class="container" style="width: 100%">
                                                 <div class="row">
                                                     <div class="col-md-12">
                                                          <p><strong>Nombre: ' . $item['title'] . '</strong></p>
@@ -490,9 +495,11 @@ class OrdersController extends Controller
                                                     </div>
                                                 </div>
                                             </div> <hr>';
+                            }
                         }
                     }
                     if (count($send->shipping_lines) > 0) {
+
                         foreach ($send->shipping_lines as $line) {
                             return '
                   
@@ -2022,32 +2029,42 @@ class OrdersController extends Controller
         $hmac_header = $_SERVER['HTTP_X_SHOPIFY_HMAC_SHA256'];
         $verified = $this->verify_webhook(collect($order), $hmac_header);
         $resultapi = error_log('Webhook verified: ' . var_export($verified, true));
+
         if ($resultapi == 'true') {
+
             if ($order['financial_status'] == 'paid') {
+
                 $result = Order::where('order_id', $order['id'])
                     ->where('email', $order['email'])
                     ->where('network_id', 1)
                     ->first();
+
                 if (count($result) > 0) {
+
                     if ($result->financial_status != "paid") {
+
                         $update = Order::find($result->id);
                         $update->financial_status = $order['financial_status'];
                         $update->updated_at = Carbon::parse($order['updated_at']);
                         $update->save();
+
                         $log = Logorder::where('name', $update->name)
                             ->where('checkout_id', $update->checkout_id)
                             ->where('order_id', $update->order_id)
                             ->first();
+
                         DB::table('logsorders')
                             ->where('name', '=', $update->name)
                             ->where('checkout_id', '=', $update->checkout_id)
                             ->where('order_id', '=', $update->order_id)->delete();
+
                         if (count($log) > 0) {
                             $log_delete = Logorder::find($log->id);
                             if ($log_delete != null) {
                                 $log_delete->delete();
                             }
                         }
+
                         if (isset($order['line_items']) && count($order['line_items']) > 0) {
                             foreach ($order['line_items'] as $item) {
                                 $product = Product::find($item['product_id']);
@@ -2062,19 +2079,25 @@ class OrdersController extends Controller
                         $tercero = Tercero::with('networks')->where('email', $order['email'])->first();
 
                         if (isset($tercero->networks) && isset($tercero->networks[0]) && isset($tercero->networks[0]['pivot']) && count($tercero->networks[0]['pivot']['padre_id']) > 0 && $tercero->state == true) {
+
                             $padre = Tercero::where('id', $tercero->networks[0]['pivot']['padre_id'])->first();
+
                             if ($padre->state) {
+
                                 $find = Tercero::find($padre->id);
                                 $find->numero_ordenes_referidos = $find->numero_ordenes_referidos + 1;
                                 $find->total_price_orders = $find->total_price_orders + $order['total_price'];
                                 $find->ganacias = $find->total_price_orders * 0.05;
                                 $find->save();
                                 $customer = Customer::where('customer_id', $padre->customer_id)->where('network_id', 1)->first();
+
                                 if (count($customer) > 0) {
                                     $res = $client->request('get', $api_url . '/admin/customers/' . $find->customer_id . '/metafields.json');
                                     $metafields = json_decode($res->getBody(), true);
                                     $results = array();
+
                                     if (count($metafields['metafields']) > 0) {
+
                                         foreach ($metafields['metafields'] as $metafield) {
                                             if ($metafield['key'] === 'referidos') {
                                                 $res = $client->request('put', $api_url . '/admin/customers/' . $find->customer_id . '/metafields/' . $metafield['id'] . '.json', array(
@@ -2090,6 +2113,7 @@ class OrdersController extends Controller
                                                 );
                                                 array_push($results, json_decode($res->getBody(), true));
                                             }
+
                                             if ($metafield['key'] === 'compras') {
                                                 $res = $client->request('put', $api_url . '/admin/customers/' . $find->customer_id . '/metafields/' . $metafield['id'] . '.json', array(
                                                         'form_params' => array(
@@ -2104,6 +2128,7 @@ class OrdersController extends Controller
                                                 );
                                                 array_push($results, json_decode($res->getBody(), true));
                                             }
+
                                             if ($metafield['key'] === 'valor') {
                                                 $res = $client->request('put', $api_url . '/admin/customers/' . $find->customer_id . '/metafields/' . $metafield['id'] . '.json', array(
                                                         'form_params' => array(

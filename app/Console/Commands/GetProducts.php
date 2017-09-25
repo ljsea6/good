@@ -86,7 +86,7 @@ class GetProducts extends Command
         foreach ($products as $product) {
             $response = Product::find((int)$product['product']['id']);
 
-            if(!$response) {
+            if(count($response) == 0) {
                 Product::create([
                     'body_html' => $product['product']['body_html'],
                     'created_at' => Carbon::parse($product['product']['created_at']),
@@ -107,6 +107,13 @@ class GetProducts extends Command
                     'variants' => $product['product']['variants'],
                     'vendor' => $product['product']['vendor'],
                 ]);
+            }
+
+            if (count($response) > 0 && count($response->image) == 0 ) {
+
+                $response->image = $product['product']['image'];
+                $response->images = $product['product']['images'];
+                $response->save();
             }
 
         }
