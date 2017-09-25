@@ -3,7 +3,7 @@
         Options -MultiViews
     </IfModule>
 
-  
+
 
     RewriteEngine On
 
