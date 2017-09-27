@@ -53,7 +53,7 @@ class OrdersController extends Controller
         ini_set('memory_limit','1000M');
         ini_set('xdebug.max_nesting_level', 120);
         ini_set('max_execution_time', 3000);
-        $orders = Order::where('financial_status', 'paid')->get();
+        $orders = Order::where('financial_status', 'paid')->where('cancelled_at', null)->get();
         $result = array();
         foreach ($orders as $order) {
             foreach ($order->line_items as $item) {
@@ -112,7 +112,7 @@ class OrdersController extends Controller
         ini_set('memory_limit','1000M');
         ini_set('xdebug.max_nesting_level', 120);
         ini_set('max_execution_time', 3000);
-        $orders = Order::where('financial_status', 'pending')->get();
+        $orders = Order::where('financial_status', 'pending')->where('cancelled_at', null)->get();
         $result = array();
         foreach ($orders as $order) {
             foreach ($order->line_items as $item) {
@@ -4104,7 +4104,7 @@ class OrdersController extends Controller
                 usleep(10000000);
             }
 
-            if ($order_shopify['order']['financial_status'] == 'pending') {
+            if ($order_shopify['order']['financial_status'] == 'pending' && $order_shopify['order']['cancelled_at'] == null && $order_shopify['order']['cancel_reason'] == null) {
 
                 $contador ++;
                 if ($contador  == 300) {
@@ -4130,38 +4130,64 @@ class OrdersController extends Controller
                     $diferencia = $today->day - $date_created->day;
 
                     if ($payment_method_id  == 'efecty' && $status == 'pending') {
+
                         if ($today->year == $date_created->year) {
 
                             if ($today->month < $date_created->month) {
+
                                 return $result['response']['results'][0];
                             }
+
                             if ($today->month == $date_created->month) {
+
                                 if ($diferencia > 2) {
+
                                     return $result['response']['results'][0];
                                 }
                             }
-
                         }
 
+                        if ($today->year < $date_created->year) {
+
+                            if ($today->month > 1 ) {
+
+                                return $result['response']['results'][0];
+                            }
+
+                            if ($today->month == 1 && $date_created->month < 12) {
+
+                                return $result['response']['results'][0];
+                            }
+
+                            if ($today->month == 1 && $date_created->month == 12) {
+
+                                if ($today->day > 2) {
+
+                                    return $result['response']['results'][0];
+                                }
+
+                                if ($today->day == 2 && $date_created->day < 31) {
+
+                                    return $result['response']['results'][0];
+                                }
+
+                                if ($today->day < 2 && $date_created->day < 30) {
+
+                                    return $result['response']['results'][0];
+                                }
+                            }
+                        }
                     }
 
                     if ($payment_method_id  == 'efecty' && $status == 'cancelled') {
-                        if ($today->year == $date_created->year) {
 
-                            if ($today->month < $date_created->month) {
-                                return $result['response']['results'][0];
-                            }
-                            if ($today->month == $date_created->month) {
-                                if ($diferencia > 2) {
-                                    return $result['response']['results'][0];
-                                }
-                            }
-
-                        }
+                        return $result['response']['results'][0];
                     }
 
                     if ($payment_method_id  != 'efecty' && ($status == 'cancelled' || $status == 'rejected')) {
+
                         return $result['response']['results'][0];
+
                     }
                 }
             }

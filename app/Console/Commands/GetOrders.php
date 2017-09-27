@@ -74,7 +74,7 @@ class GetOrders extends Command
                     ->where('order_id', $order['id'])
                     ->first();
 
-                if ($order['cancelled_at'] != null) {
+                if ($order['cancelled_at'] != null && $order['cancel_reason'] != null) {
 
                     if(count($response) == 0) {
 
@@ -560,7 +560,7 @@ class GetOrders extends Command
                     }
                 }
 
-                if ($order['cancelled_at'] == null) {
+                if ($order['cancelled_at'] == null && $order['cancel_reason'] == null) {
 
                     if(count($response) == 0) {
 
@@ -772,6 +772,7 @@ class GetOrders extends Command
                                         $update->cantidad = $update->cantidad + $item['quantity'];
                                         $update->save();
                                     }
+
                                     $product = Product::find($item['product_id']);
 
                                     if (count($product) > 0) {
@@ -1345,12 +1346,11 @@ class GetOrders extends Command
                                                 'valor' => $item['price']
                                             ]);
                                         }
-                                        
+
                                     }
                                 }
 
                             }
-
                         }
 
                         if ($order['financial_status'] != 'paid') {
