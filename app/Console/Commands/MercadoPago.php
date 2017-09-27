@@ -65,9 +65,11 @@ class MercadoPago extends Command
         define('payments', '/v1/payments/search?external_reference=');
         define('access', '&access_token=');
         define('ACCESS_TOKEN', $mp->get_access_token());
-        $orders = Order::where('financial_status', 'pending')->get();
+        $orders = Order::where('financial_status', 'pending')->where('cancelled_at', null)->get();
         $contador = 0;
+
         Logorder::truncate();
+
         foreach ($orders as $order) {
             $result = array();
             $results = Logorder::where('order_id', $order->order_id)->where('checkout_id', $order->checkout_id)->first();

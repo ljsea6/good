@@ -22,13 +22,10 @@
                         <thead>
                         <tr>
                             <th>#</th>
-                            <th>Nombre</th>
-                            <th>Apellido</th>
-                            <th>Código</th>
-                            <th>Tus referidos</th>
-                            <th>Ordenes de tus referidos</th>
-                            <th>Valor compras de tus referidos</th>
-                            <th>Tus ganancias</th>
+                            <th>Producto</th>
+                            <th>Unidades Vendias</th>
+                            <th>Ventas</th>
+
                         </tr>
                         </thead>
                     </table>
@@ -58,12 +55,9 @@
                     
                     { data: 'id', name: 'id', orderable: true, searchable: false },
                     { data: 'name', name: 'name', orderable: true, searchable: true },
-                    { data: 'last_name', name: 'last_name', orderable: true, searchable: true },
-                    { data: 'code', name: 'code', orderable: true, searchable: true },
-                    { data: 'numero_referido', name: 'numero_referido', orderable: true, searchable: true  },
-                    { data: 'numero_ordenes_referidos', name: 'numero_ordenes_referidos', orderable: true },
-                    { data: 'total_price_orders', name: 'total_price_orders', orderable: true },
-                    { data: 'ganacias', name: 'ganacias', orderable: true },
+                    { data: 'unidades_vendidas', name: 'unidades_vendidas', orderable: true, searchable: true },
+                    { data: 'ventas', name: 'ventas', orderable: true, searchable: true },
+
                 ],
                 language: {
                     url: "{{ asset('css/Spanish.json') }}"

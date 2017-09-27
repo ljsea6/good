@@ -28,67 +28,28 @@ class ReportesController extends Controller {
 
     public function anyCode()
     {
-        ini_set('memory_limit','1000M');
-        $add = array();
-        $customers = Customer::all();
+        $products = Product::with('variants_product')->where('collection', 'Z - Promo Tv')->get();
 
-        $terceros = Tercero::where('email', 'bonitosmsjs')
-            ->orWhere('email', 'sabino')
-            ->orWhere('email', 'anazuluaga')
-            ->orWhere('email', 'paola')
-            ->orWhere('email', 'joa')
-            ->get();
+        $send = collect($products);
 
-        foreach ($customers as $customer) {
-            $finder = Customer::find($customer->id);
-            if (isset($finder['addresses']) && count($finder['addresses']) > 0) {
-                if (strtolower($customer->last_name) != strtolower($finder['addresses'][0]['last_name'])) {
-                    array_push($add, $customer);
-                }
-            }
-        }
-
-        $send = collect($terceros);
         return Datatables::of($send)
             ->addColumn('id', function ($send) {
                 return '<div align=left>' . $send['id'] . '</div>';
             })
             ->addColumn('name', function ($send) {
-                return '<div align=left>' . $send['nombres'] . '</div>';
+                return '<div align=left>' . $send['title'] . '</div>';
             })
-            ->addColumn('last_name', function ($send) {
-                return '<div align=left>' . $send['apellidos'] . '</div>';
+            ->addColumn('unidades', function ($send) {
+                return '<div align=left>' . $send['unidades_venidadas'] . '</div>';
             })
-            ->addColumn('code', function ($send) {
-                return '<div align=left>' . $send['email'] . '</div>';
-            })
-            ->addColumn('numero_referido', function ($send) {
-                return '<div align=left>' . $send['numero_referidos'] . '</div>';
-            })
-            ->addColumn('numero_ordenes_referidos', function ($send) {
-                if ($send['numero_ordenes_referidos']  == null) {
-                    return '<div align=left>0</div>';
-                } else {
-                    return '<div align=left>' . number_format($send['numero_ordenes_referidos'] ). '</div>';
+            ->addColumn('ventas', function ($send) {
+                $total = 0;
+                foreach ($send->variants_product as $value) {
+                    $total = $total + $value->cantidad * $value->valor;
                 }
-
+                return '<div align=left>' . number_format($total) . '</div>';
             })
-            ->addColumn('total_price_orders', function ($send) {
-                if ($send['total_price_orders'] ==  null) {
-                    return '<div align=left>0</div>';
-                } else {
-                    return '<div align=left>' . number_format($send['total_price_orders']) . '</div>';
-                }
 
-            })
-            ->addColumn('ganacias', function ($send) {
-                if ($send['ganacias'] == null) {
-                    return '<div align=left>0</div>';
-                } else {
-                    return '<div align=left>' . number_format($send['ganacias']) . '</div>';
-                }
-
-            })
             ->make(true);
     }
 

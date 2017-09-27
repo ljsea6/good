@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Variant;
 
 class Product extends Model
 {
@@ -14,4 +15,9 @@ class Product extends Model
         'options' => 'array',
     ];
     protected $guarded = [];
+
+    public function variants_product()
+    {
+        return $this->hasMany(Variant::class, 'product_id', 'id');
+    }
 }

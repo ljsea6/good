@@ -35,8 +35,8 @@ use View;
 class UsersController extends Controller
 {
     use Helpers, AuthenticatesAndRegistersUsers, ThrottlesLogins;
-    protected $username = 'usuario';
 
+    protected $username = 'usuario';
     public function verify_code(Request $request)
     {
         if (isset($request['code']) && isset($request['email'])) {
@@ -66,7 +66,6 @@ class UsersController extends Controller
             return $this->response->errorBadRequest();
         }
     }
-
     public function authorizeGet()
     {
         $authParams = Authorizer::getAuthCodeRequestParams();

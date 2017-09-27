@@ -39,7 +39,7 @@ class CustomersController extends Controller {
                     ->where('network_id', 1)
                     ->get();
 
-            if (count($result) === 0) {
+            if (count($result) == 0) {
 
                 Customer::create([
                     'accepts_marketing' => $event_json['accepts_marketing'],
@@ -68,7 +68,7 @@ class CustomersController extends Controller {
 
                 $result = Tercero::where('email', strtolower($event_json['email']))->get();
 
-                if (count($result) === 0) {
+                if (count($result) == 0) {
 
                     /*if ($event_json['email'] == 'soportesoyhello@gmail.com') {
 
@@ -372,9 +372,13 @@ class CustomersController extends Controller {
 
 
                     return response()->json(['status' => 'The resource has been created.'], 200);
-                } else {
+                }
+                else {
                     return response()->json(['status' => 'The resource was not created successfully'], 200);
                 }
+            }
+            else {
+                return response()->json(['status' => 'The resource exist'], 200);
             }
         }
     }
