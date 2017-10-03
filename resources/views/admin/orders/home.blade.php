@@ -28,7 +28,7 @@
                             <th>Dirección</th>
                             <th>Télefono</th>
                             <th>Precio</th>
-
+                            <th>Número</th>
                             <th>Estado Shopify</th>
                             <th>Fecha Shopify</th>
                             <th>Tipo</th>
@@ -76,7 +76,7 @@
                     { data: 'address', name: 'address', orderable: false, searchable: true },
                     { data: 'phone', name: 'phone', orderable: false, searchable: true },
                     { data: 'value', name: 'value', orderable: true, searchable: true  },
-
+                    { data: 'name', name: 'name', orderable: true, searchable: true  },
                     { data: 'financial_status', name: 'financial_status', orderable: true, searchable: true },
                     { data: 'fecha_compra_cliente', name: 'fecha_compra_cliente', orderable: false, searchable: true },
                     { data: 'tipo_orden', name: 'tipo_orden', orderable: true, searchable: true },

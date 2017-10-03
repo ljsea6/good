@@ -42,79 +42,56 @@ class GetCustomers extends Command
      */
     public function handle()
     {
-        $totalCustomers = array();
-
         $api_url = 'https://c17edef9514920c1d2a6aeaf9066b150:afc86df7e11dcbe0ab414fa158ac1767@mall-hello.myshopify.com';
         $client = new \GuzzleHttp\Client();
-        $result_url = explode('.', $api_url);
 
-        if($result_url[1] == 'myshopify') {
+        $res = $client->request('GET', $api_url . '/admin/customers/count.json');
+        $countCustomers = json_decode($res->getBody(), true);
 
-            $res = $client->request('GET', $api_url . '/admin/customers/count.json');
-            $countCustomers = json_decode($res->getBody(), true);
-
-            $pagesNumber = (int)$countCustomers['count']/250;
-            $number = explode( '.', $pagesNumber);
-            $entera = (int)$number[0];
-            $decimal = (int)$number[1];
+        $pagesNumber = (int)$countCustomers['count']/250;
+        $number = explode( '.', $pagesNumber);
+        $entera = (int)$number[0];
+        $decimal = (int)$number[1];
 
 
-            if($decimal !== 0) {
-                $entera = $entera + 1;
-            }
+        if($decimal !== 0) {
+            $entera = $entera + 1;
+        }
 
-            for ($i = 1; $i <= $entera; $i++) {
-                $res = $client->request('GET', $api_url . '/admin/customers.json?limit=250&&page=' . $i);
-                $results = json_decode($res->getBody(), true);
-                array_push($totalCustomers, $results);
-            }
+        for ($i = 1; $i <= $entera; $i++) {
+            $res = $client->request('GET', $api_url . '/admin/customers.json?limit=250&&page=' . $i);
+            $results = json_decode($res->getBody(), true);
 
-            $resultsCustomers = array();
-
-            for ($j = 0; $j < count($totalCustomers); $j++) {
-                $aux = $totalCustomers[$j]['customers'];
-                for ($i = 0; $i < count($aux); $i++) {
-                    array_push($resultsCustomers, $aux[$i]);
-                }
-
-            }
-
-            $customers = array_map(function ($value) {
-                return ['customer' => $value];
-            }, $resultsCustomers);
-
-            $network_id = Network::select('id')->where('name', 'shopify')->get();
-
-            foreach ($customers as $customer) {
-                $response = Customer::where('network_id', $network_id[0]['id'])
-                    ->where('customer_id', $customer['customer']['id'])
+            foreach ($results['customers'] as $customer) {
+                $response = Customer::where('network_id', 1)
+                    ->where('customer_id', $customer['id'])
                     ->get();
 
                 if(count($response) == 0) {
 
                     Customer::create([
-                        'accepts_marketing' => $customer['customer']['accepts_marketing'],
-                        'addresses' => $customer['customer']['addresses'],
-                        'created_at' => Carbon::parse($customer['customer']['created_at']),
-                        'default_address' => (isset($customer['customer']['default_address'])) ? $customer['customer']['default_address'] : null,
-                        'email' => strtolower($customer['customer']['email']),
-                        'phone' => $customer['customer']['phone'],
-                        'first_name' => $customer['customer']['first_name'],
-                        'customer_id' => $customer['customer']['id'],
+                        'accepts_marketing' => $customer['accepts_marketing'],
+                        'addresses' => $customer['addresses'],
+                        'created_at' => Carbon::parse($customer['created_at']),
+                        'default_address' => (isset($customer['default_address'])) ? $customer['default_address'] : null,
+                        'email' => strtolower($customer['email']),
+                        'phone' => $customer['phone'],
+                        'first_name' => $customer['first_name'],
+                        'customer_id' => $customer['id'],
                         'metafield' => null,
-                        'multipass_identifier' => $customer['customer']['multipass_identifier'],
-                        'last_name' => strtolower($customer['customer']['last_name']),
-                        'last_order_id' => $customer['customer']['last_order_id'],
-                        'last_order_name' => $customer['customer']['last_order_name'],
-                        'network_id' => $network_id[0]['id'],
-                        'note' => $customer['customer']['note'],
-                        'orders_count' => $customer['customer']['orders_count'],
-                        'state' => $customer['customer']['state'],
-                        'tags' => $customer['customer']['tags'],
-                        'tax_exempt' => $customer['customer']['tax_exempt'],
-                        'total_spent' => $customer['customer']['total_spent'],
-                        'updated_at' => Carbon::parse($customer['customer']['updated_at']),
-                        'verified_email' => $customer['customer']['verified_email'],
+                        'multipass_identifier' => $customer['multipass_identifier'],
+                        'last_name' => strtolower($customer['last_name']),
+                        'last_order_id' => $customer['last_order_id'],
+                        'last_order_name' => $customer['last_order_name'],
+                        'network_id' => 1,
+                        'note' => $customer['note'],
+                        'orders_count' => $customer['orders_count'],
+                        'state' => $customer['state'],
+                        'tags' => $customer['tags'],
+                        'tax_exempt' => $customer['tax_exempt'],
+                        'total_spent' => $customer['total_spent'],
+                        'updated_at' => Carbon::parse($customer['updated_at']),
+                        'verified_email' => $customer['verified_email'],
                     ]);
                 }
             }
@@ -143,6 +120,7 @@ class GetCustomers extends Command
                     }
                 }
             }
+
         }
         
         $this->info('Los clientes han sido descargados correctamente');
