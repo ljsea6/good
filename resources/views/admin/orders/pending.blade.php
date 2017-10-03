@@ -42,7 +42,7 @@
     <script>
 
 
-            $('#orders_pending').DataTable({
+            var table = $('#orders_pending').DataTable({
                 dom: 'Bfrtip',
                 responsive: true,
                 processing: true,
@@ -68,6 +68,10 @@
                 },
 
             });
+            table
+                .column( '0:visible' )
+                .order( 'desc' )
+                .draw();
 
     </script>
 @endpush

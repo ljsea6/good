@@ -23,7 +23,7 @@
 
                         <div class="col-lg-6 col-lg-offset-3 col-md-6 col-md-offset-3 text-left">
                             <div class="form-group">
-                                <label for="name" class="text-left"># orden</label>
+                                <label for="name" class="text-left">Número de Orden</label>
                                 <input type="text" class="form-control" id="name" name="name" value="{{$order->name}}" disabled>
                             </div>
                         </div>
@@ -55,7 +55,7 @@
 
                             <div class="col-lg-6 col-lg-offset-3 col-md-6 col-md-offset-3 text-left">
                                 <button type="submit" class="btn btn-danger text-left">Guardar</button>
-                                <a href="{{route('admin.orders.home')}}" class="btn btn-danger text-right">Atrás</a>
+                                <a href="{{route('admin.orders.home')}}" class="btn btn-danger text-right" >Atrás</a>
                             </div>
                         @endif
                         @if($order->fecha_compra != null && $order->tipo_orden != 'nacional' && $order->codigo_envio == null && $order->codigo_envio_internacional != null)
@@ -170,15 +170,17 @@
                         @if($order->codigo_envio == null && $order->codigo_envio_internacional == null && $order->fecha_compra == null)
                             <div class="col-lg-6 col-lg-offset-3 col-md-6 col-md-offset-3 text-left">
                                 <div class="form-group">
+                                    <label for="tipo_orden">Fecha de Compra:</label>
                                     <div class='input-group date' id='datetimepicker1'>
+
                                         <input required id="date" name="date" type='text' class="form-control" />
                                         <span class="input-group-addon">
-                                        <span class="glyphicon glyphicon-calendar">Fecha</span>
+                                        <span class="glyphicon glyphicon-calendar"></span>
                                     </span>
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label for="tipo_orden">Tipo Orden:</label>
+                                    <label for="tipo_orden">Tipo de Orden:</label>
                                     <select  class="form-control"name="tipo_orden" id="tipo_orden" required>
 
                                             @if ($order->tipo_orden == 'nacional')
@@ -237,7 +239,7 @@
                 });
             });
 
-            $("#orden").validate();
+
 
         });
 

@@ -40,7 +40,7 @@
 @push('scripts')
     <script>
         $(document).ready(function(){
-            $('#orders').DataTable({
+            var table = $('#orders').DataTable({
                 dom: 'Bfrtip',
                 responsive: true,
                 processing: true,
@@ -66,6 +66,11 @@
                 },
 
             });
+
+            table
+                .column( '0:visible' )
+                .order( 'desc' )
+                .draw();
 
         });
     </script>

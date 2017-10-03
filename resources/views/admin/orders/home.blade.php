@@ -28,10 +28,9 @@
                             <th>Dirección</th>
                             <th>Télefono</th>
                             <th>Precio</th>
-                            <th>Detalle Orden</th>
+
                             <th>Estado Shopify</th>
                             <th>Fecha Shopify</th>
-                            <th>Fecha Good</th>
                             <th>Tipo</th>
                             <th>Código Envio Internacional</th>
                             <th>Código Envio Nacional</th>
@@ -54,11 +53,12 @@
 
         $(document).ready(function(){
 
-           $('#orders').DataTable({
+           var table = $('#orders').DataTable({
                 dom: 'Bfrtip',
                 responsive: true,
                 processing: true,
                 serverSide: true,
+
                 buttons: [
                   'copy', 'csv', 'excel', 'pdf', 'print', 'pageLength'
                 ],
@@ -70,16 +70,15 @@
                 pagingType: "full_numbers",
                 ajax: '{{route('admin.orders.paid')}}',
                 columns: [
-                    { data: 'name', name: 'name', orderable: true, searchable: true },
+                    { data: 'order', name: 'order', orderable: false, searchable: true  },
                     { data: 'customer', name: 'customer', orderable: false, searchable: true },
                     { data: 'email', name: 'email', orderable: false, searchable: true },
                     { data: 'address', name: 'address', orderable: false, searchable: true },
                     { data: 'phone', name: 'phone', orderable: false, searchable: true },
                     { data: 'value', name: 'value', orderable: true, searchable: true  },
-                    { data: 'order', name: 'order', orderable: true, searchable: true  },
+
                     { data: 'financial_status', name: 'financial_status', orderable: true, searchable: true },
-                    { data: 'fecha_compra_cliente', name: 'fecha_compra_cliente', orderable: true, searchable: true },
-                    { data: 'fecha_compra', name: 'fecha_compra', orderable: true, searchable: true },
+                    { data: 'fecha_compra_cliente', name: 'fecha_compra_cliente', orderable: false, searchable: true },
                     { data: 'tipo_orden', name: 'tipo_orden', orderable: true, searchable: true },
                     { data: 'codigo_envio_internacional', name: 'codigo_envio_internacional', orderable: true, searchable: true },
                     { data: 'codigo_envio', name: 'codigo_envio', orderable: true, searchable: true },
@@ -94,6 +93,11 @@
                 }
 
             });
+
+            table
+                .column( '0:visible' )
+                .order( 'desc' )
+                .draw();
 
         });
     </script>
