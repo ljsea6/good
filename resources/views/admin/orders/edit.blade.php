@@ -229,7 +229,7 @@
             });
 
             $(function () {
-                $('#datetimepicker1').datetimepicker({
+                $('#date').datetimepicker({
                     icons: {
                         time: "fa fa-clock-o",
                         date: "fa fa-calendar",

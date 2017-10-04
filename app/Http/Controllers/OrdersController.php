@@ -557,9 +557,6 @@ class OrdersController extends Controller
                 ->addColumn('financial_status', function ($send) {
                     return '<div align=left>' . $send->financial_status. '</div>';
                 })
-                ->addColumn('name', function ($send) {
-                    return '<div align=left>'. $send->name .'</div>';
-                })
                 ->addColumn('fecha_compra_cliente', function ($send) {
                     return '<div align=left>' . Carbon::parse($send->created_at)->toFormattedDateString() . '</div>';
                 })
@@ -1161,9 +1158,6 @@ class OrdersController extends Controller
                 ->addColumn('financial_status', function ($send) {
                     return '<div align=left>' . $send->financial_status. '</div>';
                 })
-                ->addColumn('name', function ($send) {
-                    return '<div align=left>'. $send->name .'</div>';
-                })
                 ->addColumn('fecha_compra_cliente', function ($send) {
                     return '<div align=left>' . Carbon::parse($send->created_at)->toFormattedDateString() . '</div>';
                 })
@@ -1654,8 +1648,6 @@ class OrdersController extends Controller
                 })
                 ->make(true);
         }
-
-
     }
     public function index()
     {
