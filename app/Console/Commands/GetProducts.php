@@ -99,6 +99,7 @@ class GetProducts extends Command
 
                     $response->image = $product['image'];
                     $response->images = $product['images'];
+                    $response->vendor = $product['vendor'];
                     $response->save();
 
                     $this->info('saliendo actualizando producto');

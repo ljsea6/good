@@ -19,17 +19,17 @@
 
                 <div id="datatable_wrapper" class="dataTables_wrapper form-inline dt-bootstrap no-footer">
 
-                    <table data-order='[[ 0, "asc" ]]' id="orders" class="table table-striped font-12 dataTable no-footer" role="grid" aria-describedby="datatable_info">
+                    <table data-order='[[ 0, "desc" ]]' id="orders" class="table table-striped font-12 dataTable no-footer" role="grid" aria-describedby="datatable_info">
                         <thead>
                         <tr>
-                            <th># Orden</th>
+                            <th>Número de Orden</th>
                             <th>Cliente</th>
                             <th>Email</th>
                             <th>Dirección</th>
                             <th>Télefono</th>
                             <th>Precio</th>
-                            <th>Estado Shopify</th>
-                            <th>Fecha Shopify</th>
+                            <th>Estado</th>
+                            <th>Fecha</th>
                             <th>Tipo</th>
                             <th>Código Envio Internacional</th>
                             <th>Código Envio Nacional</th>
@@ -69,7 +69,7 @@
                 pagingType: "full_numbers",
                 ajax: '{{route('admin.orders.paid')}}',
                 columns: [
-                    { data: 'order', name: 'order', orderable: true, searchable: true  },
+                    { data: 'order', name: 'order', orderable: false, searchable: true  },
                     { data: 'customer', name: 'customer', orderable: false, searchable: true },
                     { data: 'email', name: 'email', orderable: false, searchable: true },
                     { data: 'address', name: 'address', orderable: false, searchable: true },
@@ -92,10 +92,7 @@
 
             });
 
-            table
-                .column( '0:visible' )
-                .order( 'desc' )
-                .draw();
+
 
         });
     </script>

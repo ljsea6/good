@@ -28,7 +28,7 @@ class ReportesController extends Controller {
 
     public function anyCode()
     {
-        /*$terceros = Tercero::where('email', 'sabino')
+        $terceros = Tercero::where('email', 'sabino')
             ->orWhere('email', 'anazuluaga')
             ->orWhere('email', 'paola')
             ->orWhere('email', 'joa')
@@ -59,8 +59,8 @@ class ReportesController extends Controller {
             ->addColumn('ganancias', function ($send) {
                 return '<div align=left>' . number_format($send['ganacias']) . '</div>';
             })
-            ->make(true);*/
-
+            ->make(true);
+/*
         $products = Product::with('variants_product')->where('collection', 'Z - Promo Tv')->get();
 
         $send = collect($products);
@@ -83,7 +83,7 @@ class ReportesController extends Controller {
                 return '<div align=left>' . number_format($total) . '</div>';
             })
 
-            ->make(true);
+            ->make(true);*/
     }
 
     public function products()
