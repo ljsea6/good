@@ -553,6 +553,9 @@ class OrdersController extends Controller
                 ->addColumn('value', function ($send) {
                     return '<div align=left>' . number_format($send->total_price) . '</div>';
                 })
+                ->addColumn('name', function ($send) {
+                    return '<div align=left>'. $send->name . '</div>';
+                })
 
                 ->addColumn('financial_status', function ($send) {
                     return '<div align=left>' . $send->financial_status. '</div>';
@@ -1077,7 +1080,7 @@ class OrdersController extends Controller
                             return '
                   
                             <div class="text-left">
-                                <button style="color: #f60620" class="btn-link" data-toggle="modal" data-target="#myModal'. $send->order_number .'">'. $send->order_number .'</button>
+                                <button style="color: #f60620" class="btn-link" data-toggle="modal" data-target="#myModal'. $send->order_number .'">Ver</button>
                                 <!-- Modal -->
                                 <div id="myModal'. $send->order_number .'" class="modal fade" role="dialog">
                                     <div class="modal-dialog">
@@ -1106,7 +1109,7 @@ class OrdersController extends Controller
                         return '
                   
                     <div class="text-left">
-                        <button style="color: #f60620" class="btn-link" data-toggle="modal" data-target="#myModal'. $send->order_number .'">'. $send->order_number .'</button>
+                        <button style="color: #f60620" class="btn-link" data-toggle="modal" data-target="#myModal'. $send->order_number .'">Ver</button>
                         <!-- Modal -->
                         <div id="myModal'. $send->order_number .'" class="modal fade" role="dialog">
                             <div class="modal-dialog">
@@ -1154,6 +1157,9 @@ class OrdersController extends Controller
                 ->addColumn('value', function ($send) {
                     return '<div align=left>' . number_format($send->total_price) . '</div>';
                 })
+                ->addColumn('name', function ($send) {
+                    return '<div align=left>'. $send->name . '</div>';
+                })
                 ->addColumn('order', function ($send) {
                     $result = '';
                     foreach ($send->line_items as $item ){
@@ -1186,7 +1192,7 @@ class OrdersController extends Controller
                             return '
                   
                             <div class="text-left">
-                                <button style="color: #f60620" class="btn-link" data-toggle="modal" data-target="#myModal'. $send->order_number .'">'. $send->name .'</button>
+                                <button style="color: #f60620" class="btn-link" data-toggle="modal" data-target="#myModal'. $send->order_number .'">Ver</button>
                                 <!-- Modal -->
                                 <div id="myModal'. $send->order_number .'" class="modal fade" role="dialog">
                                     <div class="modal-dialog">
@@ -1215,7 +1221,7 @@ class OrdersController extends Controller
                         return '
                   
                     <div class="text-left">
-                        <button style="color: #f60620" class="btn-link" data-toggle="modal" data-target="#myModal'. $send->order_number .'">'. $send->name .'</button>
+                        <button style="color: #f60620" class="btn-link" data-toggle="modal" data-target="#myModal'. $send->order_number .'">Ver</button>
                         <!-- Modal -->
                         <div id="myModal'. $send->order_number .'" class="modal fade" role="dialog">
                             <div class="modal-dialog">

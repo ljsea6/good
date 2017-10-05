@@ -23,6 +23,7 @@
                         <thead>
                         <tr>
                             <th>Número de Orden</th>
+                            <th>Detalle</th>
                             <th>Cliente</th>
                             <th>Email</th>
                             <th>Dirección</th>
@@ -69,6 +70,7 @@
                 pagingType: "full_numbers",
                 ajax: '{{route('admin.orders.paid')}}',
                 columns: [
+                    { data: 'name', name: 'name', orderable: true, searchable: true  },
                     { data: 'order', name: 'order', orderable: false, searchable: true  },
                     { data: 'customer', name: 'customer', orderable: false, searchable: true },
                     { data: 'email', name: 'email', orderable: false, searchable: true },
@@ -76,7 +78,7 @@
                     { data: 'phone', name: 'phone', orderable: false, searchable: true },
                     { data: 'value', name: 'value', orderable: true, searchable: true  },
                     { data: 'financial_status', name: 'financial_status', orderable: true, searchable: true },
-                    { data: 'fecha_compra_cliente', name: 'fecha_compra_cliente', orderable: false, searchable: true },
+                    { data: 'fecha_compra_cliente', name: 'fecha_compra_cliente', orderable: true, searchable: true },
                     { data: 'tipo_orden', name: 'tipo_orden', orderable: true, searchable: true },
                     { data: 'codigo_envio_internacional', name: 'codigo_envio_internacional', orderable: true, searchable: true },
                     { data: 'codigo_envio', name: 'codigo_envio', orderable: true, searchable: true },
