@@ -37,8 +37,18 @@ class UsersController extends Controller
     use Helpers, AuthenticatesAndRegistersUsers, ThrottlesLogins;
 
     protected $username = 'usuario';
+
+    public function __construct()
+    {
+        header('Access-Control-Allow-Origin: *');
+        header('Access-Control-Allow-Credentials', true);
+        header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
+        header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    }
+
     public function verify_code(Request $request)
     {
+
         if (isset($request['code']) && isset($request['email'])) {
 
             $code = $request['code'];
@@ -46,24 +56,24 @@ class UsersController extends Controller
 
             if ($code != $email) {
 
-                $result = Tercero::where('email', $code)->first();
+                $result = Tercero::where('email', strtolower($code))->first();
 
                 if (count($result) > 0) {
 
-                    return $this->response->array([
-                        'message' => 'The code is valid'
-                    ]);
+
+                    return $this->response->array(['message' => 'El código es valido']);
 
                 } else {
 
-                    return $this->response->errorUnauthorized();
+                    return $this->response->array(['error' => 'El código no es valido']);
                 }
+
             } else {
-                return $this->response->errorUnauthorized();
+                return $this->response->array(['error' => 'El código no es valido']);
             }
 
         } else {
-            return $this->response->errorBadRequest();
+            return $this->response->array(['error' => 'El código no es valido']);
         }
     }
     public function authorizeGet()

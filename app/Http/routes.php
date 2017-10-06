@@ -24,6 +24,8 @@ $api->version('v1', function ($api) {
 
         $api->post('oauth/access_token', 'UsersController@authorization');
 
+        //$api->post('oauth/users', 'UsersController@verify_code');
+
         $api->group(['middleware' => 'api.auth'], function ($api) {
             $api->get('users', ['uses' => 'UsersController@index', 'as' => 'api.users.index']);
 
@@ -35,7 +37,7 @@ $api->version('v1', function ($api) {
 
     });
 });
-
+Route::any('api/oauth/users', 'UsersController@verify_code');
 Route::any('orders/list/paid', ['uses' => 'OrdersController@contador', 'as' => 'admin.orders.list.paid']);
 Route::any('orders/list/state', ['uses' => 'OrdersController@state', 'as' => 'admin.orders.list.state']);
 //Pdfs
@@ -97,7 +99,7 @@ Route::group(['prefix' => 'admin', 'middleware' => 'auth'], function () {
     // Usuarios
     Route::get('usuarios/data', ['uses' => 'UsersController@anyData', 'as' => 'usuarios.data']);
     Route::resource('users', 'UsersController');
-    Route::get('usuarios/{id}/hijos', ['uses' => 'UsersControllerController@hijos', 'as' => 'admin.usuarios.hijos']);
+    Route::get('usuarios/{id}/hijos', ['uses' => 'UsersController@hijos', 'as' => 'admin.usuarios.hijos']);
     //Proveedores
     Route::get('proveedores', ['uses' => 'AdminController@indexprovedores', 'as' => 'admin.proveedores.index']);
     Route::get('proveedores/data', ['uses' => 'ProveedoresController@anyData', 'as' => 'Proveedores.data']);
