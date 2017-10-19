@@ -47,19 +47,23 @@ class GetProducts extends Command
 
         $this->info('Cantidad Productos' . $countProducts['count']);
 
-        $pagesNumber = (int)$countProducts['count']/250;
-        $number = explode( '.', $pagesNumber);
-        $entera = (int)$number[0];
-        $decimal = (int)$number[1];
+        $result = true;
+        $h = 1;
 
-        if($decimal !== 0) {
-            $entera = $entera + 1;
-        }
+        do {
+            $this->info('Entrando al do');
 
-        for ($i = 1; $i <= $entera; $i++) {
-            $res = $client->request('GET', $api_url . 'admin/products.json?limit=250&&page=' . $i);
+            $res = $client->request('GET', $api_url . 'admin/products.json?limit=250&&page=' . $h);
+
+            $headers = $res->getHeaders()['X-Shopify-Shop-Api-Call-Limit'];
+            $x = explode('/', $headers[0]);
+            $diferencia = $x[1] - $x[0];
+            if ($diferencia < 20) {
+                $this->info('Durmiendo');
+                usleep(20000000);
+            }
+
             $results = json_decode($res->getBody(), true);
-
 
             foreach ($results['products'] as  $product) {
 
@@ -106,7 +110,16 @@ class GetProducts extends Command
                 }
                 $this->info('saliendo el ciclo');
             }
-        }
+
+            $h++;
+
+            if (count($results['products']) < 1) {
+                $result = false;
+            }
+
+            $this->info('Saliendo del do');
+
+        } while($result);
 
         $this->info('Los productos han sido descargados correctamente');
     }

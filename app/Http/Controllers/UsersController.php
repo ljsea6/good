@@ -386,3 +386,6 @@ class UsersController extends Controller
         return view('admin.payu.payu',compact('usuario', 'tipos', 'usuario_id'));
     }
 }
+
+
+

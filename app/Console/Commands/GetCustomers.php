@@ -44,30 +44,37 @@ class GetCustomers extends Command
     {
         $api_url = 'https://c17edef9514920c1d2a6aeaf9066b150:afc86df7e11dcbe0ab414fa158ac1767@mall-hello.myshopify.com';
         $client = new \GuzzleHttp\Client();
+        $resa = $client->request('GET', $api_url . '/admin/customers/count.json');
+        $countCustomers = json_decode($resa->getBody(), true);
+        $this->info('Customers: ' . $countCustomers['count']);
 
-        $res = $client->request('GET', $api_url . '/admin/customers/count.json');
-        $countCustomers = json_decode($res->getBody(), true);
+        $result = true;
+        $h = 1;
 
-        $pagesNumber = (int)$countCustomers['count']/250;
-        $number = explode( '.', $pagesNumber);
-        $entera = (int)$number[0];
-        $decimal = (int)$number[1];
+        do {
+            $this->info('Entrando al do');
 
+            $res = $client->request('GET', $api_url . '/admin/customers.json?limit=250&&page=' . $h);
 
-        if($decimal !== 0) {
-            $entera = $entera + 1;
-        }
+            $headers = $res->getHeaders()['X-Shopify-Shop-Api-Call-Limit'];
+            $x = explode('/', $headers[0]);
+            $diferencia = $x[1] - $x[0];
+            if ($diferencia < 20) {
 
-        for ($i = 1; $i <= $entera; $i++) {
-            $res = $client->request('GET', $api_url . '/admin/customers.json?limit=250&&page=' . $i);
+                usleep(10000000);
+            }
+
             $results = json_decode($res->getBody(), true);
 
             foreach ($results['customers'] as $customer) {
+                $this->info('Entrando al for');
+
                 $response = Customer::where('network_id', 1)
                     ->where('customer_id', $customer['id'])
                     ->get();
 
                 if(count($response) == 0) {
+                    $this->info('Customer no existe');
 
                     Customer::create([
                         'accepts_marketing' => $customer['accepts_marketing'],
@@ -96,33 +103,43 @@ class GetCustomers extends Command
                 }
             }
 
-            $customersresults = Customer::all();
+            $h++;
 
-            foreach ($customersresults as $customer) {
-
-                if ($customer['email'] != 'soportesoyhello@gmail.com') {
-
-                    $result = Tercero::where('email', $customer['email'])->get();
-
-                    if(count($result) == 0) {
-
-                        $aux = explode('@', strtolower($customer['email']));
-                        $tercero = new Tercero();
-                        $tercero->nombres = (empty($customer['first_name']) || $customer['first_name'] == null || $customer['first_name'] == '') ? $customer['email'] : $customer['first_name'];
-                        $tercero->apellidos = strtolower($customer['last_name']);
-                        $tercero->email = strtolower($customer['email']);
-                        $tercero->usuario = strtolower($customer['email']);
-                        $tercero->contraseña = bcrypt($aux[0]);
-                        $tercero->tipo_id = 1;
-                        $tercero->customer_id = $customer['customer_id'];
-                        $tercero->network_id = $customer['network_id'];
-                        $tercero->save();
-                    }
-                }
+            if (count($results['customers']) < 1) {
+                $result = false;
             }
 
+            $this->info('Saliendo del do');
+
+        } while($result);
+
+        $customersresults = Customer::all();
+
+        foreach ($customersresults as $customer) {
+            $this->info('Pasanto a terceros');
+
+            if ($customer['email'] != 'soportesoyhello@gmail.com') {
+
+                $result = Tercero::where('email', $customer['email'])->get();
+
+                if(count($result) == 0) {
+
+                    $aux = explode('@', strtolower($customer['email']));
+                    $tercero = new Tercero();
+                    $tercero->nombres = (empty($customer['first_name']) || $customer['first_name'] == null || $customer['first_name'] == '') ? $customer['email'] : $customer['first_name'];
+                    $tercero->apellidos = strtolower($customer['last_name']);
+                    $tercero->email = strtolower($customer['email']);
+                    $tercero->usuario = strtolower($customer['email']);
+                    $tercero->contraseña = bcrypt($aux[0]);
+                    $tercero->tipo_id = 1;
+                    $tercero->customer_id = $customer['customer_id'];
+                    $tercero->network_id = $customer['network_id'];
+                    $tercero->save();
+                }
+            }
+            $this->info('Saliendo de pasanto a terceros');
         }
-        
+
         $this->info('Los clientes han sido descargados correctamente');
     }
 }

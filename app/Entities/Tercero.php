@@ -105,7 +105,7 @@ class Tercero extends Model implements AuthenticatableContract, CanResetPassword
     }
 
     public function getNombreCompletoAttribute() {
-        return $this->nombres . ' ' . $this->apellidos;
+        return $this->nombres;
     }
 
     public function orders()
