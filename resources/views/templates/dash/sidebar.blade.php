@@ -90,7 +90,7 @@
             </li>
             @endrole
 
-            @permission('configuracion')
+
 
             {{--<li class="has-submenu">
                 <a href="{{ route('admin.reglas.index') }}" class="text-left">
@@ -99,7 +99,7 @@
                     <span class="nav-text">Reglas</span>
                 </a>
             </li>--}}
-
+            @permission('configuracion')
             <li class="has-submenu">
                 <a href="#reportes" data-toggle="collapse" aria-expanded="false" class="text-left">
                     <i class="fa fa-bar-chart">
@@ -115,7 +115,6 @@
                                 <span class="nav-text">Bonos Digitales</span>
                             </a>
                         </li>
-
 
                         <li>
                             <a href="{{ route('admin.reportes.codes') }}" class="text-left">
@@ -151,8 +150,32 @@
                     </ul>
                 </div>
             </li>
-
             @endpermission('configuracion')
+
+            @permission('listado.de.famosos')
+            <li class="has-submenu">
+                <a href="#reportes" data-toggle="collapse" aria-expanded="false" class="text-left">
+                    <i class="fa fa-bar-chart">
+                    </i>
+                    <span class="nav-text">Informers</span>
+                </a>
+                <div class="sub-menu collapse secondary list-style-circle" id="reportes">
+                    <ul>
+                        <li>
+                            <a href="{{ route('admin.reportes.codes') }}" class="text-left">
+                                <i class="fa fa-money">
+                                </i>
+                                Código
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </li>
+
+            @endpermission('listado.de.famosos')
+
+
+
 
             @permission('configuracion')
             <!-- <li class="has-submenu">

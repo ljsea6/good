@@ -13,6 +13,7 @@ use App\Entities\Envio;
 use DB;
 use Excel;
 use Yajra\Datatables\Datatables;
+use Auth;
 
 class ReportesController extends Controller {
     
@@ -28,38 +29,44 @@ class ReportesController extends Controller {
 
     public function anyCode()
     {
-        $terceros = Tercero::where('email', 'sabino')
-            ->orWhere('email', 'anazuluaga')
-            ->orWhere('email', 'paola')
-            ->orWhere('email', 'joa')
-            ->orWhere('email', 'mara')
-            ->get();
+        if (Auth::user()->hasRole('influenciador') || Auth::user()->hasRole('administrador')) {
+            $terceros = Tercero::where('email', 'sabino')
+                ->orWhere('email', 'anazuluaga')
+                ->orWhere('email', 'paola')
+                ->orWhere('email', 'joa')
+                ->orWhere('email', 'mara')
+                ->orWhere('email', 'marilyn')
+                ->orWhere('email', 'lina')
+                ->orWhere('email', 'alarcon')
+                ->get();
 
-        $send = collect($terceros);
+            $send = collect($terceros);
 
-        return Datatables::of($send)
-            ->addColumn('nombres', function ($send) {
-                return '<div align=left>' . $send['nombres'] . '</div>';
-            })
-            ->addColumn('apellidos', function ($send) {
-                return '<div align=left>' . $send['apellidos'] . '</div>';
-            })
-            ->addColumn('email', function ($send) {
-                return '<div align=left>' . $send['email'] . '</div>';
-            })
-            ->addColumn('referidos', function ($send) {
-                return '<div align=left>' . $send['numero_referidos'] . '</div>';
-            })
-            ->addColumn('ordenes_referidos', function ($send) {
-                return '<div align=left>' . number_format($send['numero_ordenes_referidos']) . '</div>';
-            })
-            ->addColumn('total_precio_ordenes_referidos', function ($send) {
-                return '<div align=left>' . number_format($send['total_price_orders']) . '</div>';
-            })
-            ->addColumn('ganancias', function ($send) {
-                return '<div align=left>' . number_format($send['ganacias']) . '</div>';
-            })
-            ->make(true);
+            return Datatables::of($send)
+                ->addColumn('nombres', function ($send) {
+                    return '<div align=left>' . $send['nombres'] . '</div>';
+                })
+                ->addColumn('apellidos', function ($send) {
+                    return '<div align=left>' . $send['apellidos'] . '</div>';
+                })
+                ->addColumn('email', function ($send) {
+                    return '<div align=left>' . $send['email'] . '</div>';
+                })
+                ->addColumn('referidos', function ($send) {
+                    return '<div align=left>' . number_format($send['numero_referidos']) . '</div>';
+                })
+                ->addColumn('ordenes_referidos', function ($send) {
+                    return '<div align=left>' . number_format($send['numero_ordenes_referidos']) . '</div>';
+                })
+                ->addColumn('total_precio_ordenes_referidos', function ($send) {
+                    return '<div align=left>' . number_format($send['total_price_orders']) . '</div>';
+                })
+                ->addColumn('ganancias', function ($send) {
+                    return '<div align=left>' . number_format($send['ganacias']) . '</div>';
+                })
+                ->make(true);
+        }
+
 /*
         $products = Product::with('variants_product')->where('collection', 'Z - Promo Tv')->get();
 
