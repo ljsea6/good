@@ -4836,7 +4836,7 @@ class OrdersController extends Controller
                         }
                     }
 
-                    foreach ($order['line_items'] as $item) {
+                    /*foreach ($order['line_items'] as $item) {
 
                         //if ($item['product_id'] == 9956592513) {
 
@@ -4860,7 +4860,7 @@ class OrdersController extends Controller
 
                         //}
 
-                    }
+                    }*/
 
                     return response()->json(['status' => 'The resource is created successfully'], 200);
                 }
@@ -4870,7 +4870,7 @@ class OrdersController extends Controller
     public function contador()
     {
 
-        /*$api_url = 'https://c17edef9514920c1d2a6aeaf9066b150:afc86df7e11dcbe0ab414fa158ac1767@mall-hello.myshopify.com';
+        $api_url = 'https://c17edef9514920c1d2a6aeaf9066b150:afc86df7e11dcbe0ab414fa158ac1767@mall-hello.myshopify.com';
         $client = new \GuzzleHttp\Client();
 
         $send = [
@@ -4880,7 +4880,7 @@ class OrdersController extends Controller
                     "initial_value" => 1,
                     "template_suffix" => "gift_cards.birthday.liquid",
                     "currency" => "COP",
-                    "customer_id" => 6275318017 //$customer->customer_id,
+                    "customer_id" => 5894131521 //$customer->customer_id,
                 ]
             ]
         ];
@@ -4888,7 +4888,7 @@ class OrdersController extends Controller
         $res = $client->request('post', $api_url . '/admin/gift_cards.json', $send);
         $result = json_decode($res->getBody(), true);
 
-        return $result;*/
+        return $result;
 
 
 
@@ -5472,5 +5472,4 @@ class OrdersController extends Controller
 
         }*/
     }
-
 }
