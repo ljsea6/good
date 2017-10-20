@@ -452,7 +452,7 @@ class OrdersController extends Controller
                             $result .= '<div class="container" style="width: 100%">
                                                 <div class="row">
                                                     <div class="col-md-12">
-                                                         <p><strong>Nombre: ' . $item['title'] . '</strong></p>
+                                                         <p><strong>Nombre: ' . $item['name'] . '</strong></p>
                                                     </div>
                                                     <div class="col-md-12">
                                                         <!-- Left-aligned media object -->
@@ -1056,7 +1056,7 @@ class OrdersController extends Controller
                             $result .= '<div class="container" style="width: 100%">
                                                 <div class="row">
                                                     <div class="col-md-12">
-                                                         <p><strong>Nombre: ' . $item['title'] . '</strong></p>
+                                                         <p><strong>Nombre: ' . $item['name'] . '</strong></p>
                                                     </div>
                                                     <div class="col-md-12">
                                                         <!-- Left-aligned media object -->
@@ -1168,7 +1168,7 @@ class OrdersController extends Controller
                             $result .= '<div class="container" style="width: 100%">
                                                 <div class="row">
                                                     <div class="col-md-12">
-                                                         <p><strong>Nombre: ' . $item['title'] . '</strong></p>
+                                                         <p><strong>Nombre: ' . $item['name'] . '</strong></p>
                                                     </div>
                                                     <div class="col-md-12">
                                                         <!-- Left-aligned media object -->
@@ -1957,7 +1957,7 @@ class OrdersController extends Controller
             }
 
             if ($order['cancelled_at'] == null) {
-
+                $send = array();
                 if(count($response) == 0) {
 
                     $tipo_orden = '';
@@ -2047,11 +2047,33 @@ class OrdersController extends Controller
 
                     $tipo_orden = '';
 
+                    $customer = Customer::where('email', $order['email'])->first();
+
                     if ($order['financial_status'] == "paid") {
 
                         if (isset($order['line_items']) && count($order['line_items']) > 0) {
 
                             foreach ($order['line_items'] as $item) {
+
+                                if ($item['product_id'] == 10332997761 && count($customer) > 0) {
+
+                                    $send = [
+                                        'form_params' => [
+                                            'gift_card' => [
+                                                "note" => "Por la compra del producto:  " . $item['title'] . " has recibido este bono. Sigue comprando y ganando con diahello.",
+                                                "initial_value" => 1 * $item['quantity'],
+                                                "template_suffix" => "gift_cards.birthday.liquid",
+                                                "currency" => "COP",
+                                                "customer_id" => $customer->customer_id,
+                                            ]
+                                        ]
+                                    ];
+
+                                    //$res = $client->request('post', $api_url . '/admin/gift_cards.json', $send);
+                                    //$result = json_decode($res->getBody(), true);
+
+                                    //return response()->json(['status' => 'giff_card created', 'gift_card' => $result], 200);
+                                }
 
                                 $line_item = LineItems::find($item['id']);
 
@@ -2191,12 +2213,12 @@ class OrdersController extends Controller
                                             }
                                         }
 
-                                        return response()->json(['status' => 'The resource is created successfully'], 200);
+                                        return response()->json(['status' => 'The resource is created successfully', $order['customer']], 200);
                                     }
 
                                 } else {
 
-                                    return response()->json(['status' => 'The father was not found'], 200);
+                                    return response()->json(['status' => 'The father was not found', $order['customer']], 200);
                                 }
 
                             }
@@ -2273,7 +2295,7 @@ class OrdersController extends Controller
                                         }
                                     }
 
-                                    return response()->json(['status' => 'The resource is created successfully'], 200);
+                                    return response()->json(['status' => 'The resource is created successfully', $send], 200);
                                 }
 
                             } else {
@@ -2284,41 +2306,11 @@ class OrdersController extends Controller
                                 $find->ganacias = $find->total_price_orders * 0.05;
                                 $find->save();
 
-                                return response()->json(['status' => 'The resource is created successfully'], 200);
+                                return response()->json(['status' => 'The resource is created successfully', $send], 200);
                             }
 
                         }
                     }
-
-                    /*if ($order['financial_status'] == "pending") {
-
-                        foreach ($order['line_items'] as $item) {
-
-                            //if ($item['product_id'] == 9956592513) {
-
-                            $send = [
-                                'form_params' => [
-                                    'gift_card' => [
-                                        "note" => "Por la compra del producto:  " . $item['title'] . " has recibido este bono. Sigue comprando y ganando con diahello.",
-                                        "initial_value" => 1 * $item['quantity'],
-                                        "template_suffix" => "gift_cards.birthday.liquid",
-                                        "currency" => "COP",
-                                        "customer_id" => 5894131521 //$customer->customer_id,
-                                    ]
-                                ]
-                            ];
-
-                            $res = $client->request('post', $api_url . '/admin/gift_cards.json', $send);
-                            $result = json_decode($res->getBody(), true);
-
-                            return response()->json(['status' => 'giff_card created', 'gift_card' => $result], 200);
-
-
-                            //}
-
-                        }
-
-                    }*/
 
                     return response()->json(['status' => 'order not processed'], 200);
 
@@ -2791,29 +2783,29 @@ class OrdersController extends Controller
                         }
                     }
 
+                    $customer = Customer::where('email', $order['email'])->first();
+
                     foreach ($order['line_items'] as $item) {
 
-                        //if ($item['product_id'] == 9956592513) {
+                        if ($item['product_id'] == 10332997761 && count($customer) > 0) {
 
-                        $send = [
-                            'form_params' => [
-                                'gift_card' => [
-                                    "note" => "Por la compra del producto:  " . $item['title'] . " has recibido este bono. Sigue comprando y ganando con diahello.",
-                                    "initial_value" => 1 * $item['quantity'],
-                                    "template_suffix" => "gift_cards.birthday.liquid",
-                                    "currency" => "COP",
-                                    "customer_id" => 5894131521 //$customer->customer_id,
+                            $send = [
+                                'form_params' => [
+                                    'gift_card' => [
+                                        "note" => "Por la compra del producto:  " . $item['title'] . " has recibido este bono. Sigue comprando y ganando con diahello.",
+                                        "initial_value" => 1 * $item['quantity'],
+                                        "template_suffix" => "gift_cards.birthday.liquid",
+                                        "currency" => "COP",
+                                        "customer_id" => $customer->customer_id,
+                                    ]
                                 ]
-                            ]
-                        ];
+                            ];
 
-                        $res = $client->request('post', $api_url . '/admin/gift_cards.json', $send);
-                        $result = json_decode($res->getBody(), true);
+                            //$res = $client->request('post', $api_url . '/admin/gift_cards.json', $send);
+                            //$result = json_decode($res->getBody(), true);
 
-                        return response()->json(['status' => 'giff_card created', 'gift_card' => $result], 200);
-
-
-                        //}
+                            //return response()->json(['status' => 'giff_card created', 'gift_card' => $result], 200);
+                        }
 
                     }
 
@@ -3270,6 +3262,8 @@ class OrdersController extends Controller
 
             if ($order['cancelled_at'] == null && $order['financial_status'] == 'paid') {
 
+                $send = array();
+
                 if (count($result) > 0) {
 
                     if ($result->financial_status != "paid" && $result->cancelled_at == null) {
@@ -3282,9 +3276,31 @@ class OrdersController extends Controller
                         $update->updated_at = Carbon::parse($order['updated_at']);
                         $update->save();
 
+                        $customer = Customer::where('email', $order['email'])->first();
+
                         if (isset($order['line_items']) && count($order['line_items']) > 0) {
 
                             foreach ($order['line_items'] as $item) {
+
+                                if ($item['product_id'] == 10332997761 && count($customer) > 0) {
+
+                                    $send = [
+                                        'form_params' => [
+                                            'gift_card' => [
+                                                "note" => "Por la compra del producto:  " . $item['title'] . " has recibido este bono. Sigue comprando y ganando con diahello.",
+                                                "initial_value" => 1 * $item['quantity'],
+                                                "template_suffix" => "gift_cards.birthday.liquid",
+                                                "currency" => "COP",
+                                                "customer_id" => $customer->customer_id,
+                                            ]
+                                        ]
+                                    ];
+
+                                    //$res = $client->request('post', $api_url . '/admin/gift_cards.json', $send);
+                                    //$result = json_decode($res->getBody(), true);
+
+                                    //return response()->json(['status' => 'giff_card created', 'gift_card' => $result], 200);
+                                }
 
                                 $line_item = LineItems::find($item['id']);
 
@@ -3417,7 +3433,7 @@ class OrdersController extends Controller
                                             }
                                         }
 
-                                        return response()->json(['status' => 'The resource is created successfully'], 200);
+                                        return response()->json(['status' => 'The resource is created successfully', $send], 200);
                                     }
 
                                 } else {
@@ -3510,7 +3526,7 @@ class OrdersController extends Controller
                                 $find->ganacias = $find->total_price_orders * 0.05;
                                 $find->save();
 
-                                return response()->json(['status' => 'The resource is created successfully'], 200);
+                                return response()->json(['status' => 'The resource is created successfully', $send], 200);
                             }
 
                         }
@@ -4186,12 +4202,33 @@ class OrdersController extends Controller
                         }
                     }
 
+                    $customer = Customer::where('email', $order['email'])->first();
 
                     if ($order['financial_status'] == "paid") {
 
                         if (isset($order['line_items']) && count($order['line_items']) > 0) {
 
                             foreach ($order['line_items'] as $item) {
+
+                                if ($item['product_id'] == 10332997761 && count($customer) > 0) {
+
+                                    $send = [
+                                        'form_params' => [
+                                            'gift_card' => [
+                                                "note" => "Por la compra del producto:  " . $item['title'] . " has recibido este bono. Sigue comprando y ganando con diahello.",
+                                                "initial_value" => 1 * $item['quantity'],
+                                                "template_suffix" => "gift_cards.birthday.liquid",
+                                                "currency" => "COP",
+                                                "customer_id" => $customer->customer_id,
+                                            ]
+                                        ]
+                                    ];
+
+                                    //$res = $client->request('post', $api_url . '/admin/gift_cards.json', $send);
+                                    //$result = json_decode($res->getBody(), true);
+
+                                    //return response()->json(['status' => 'giff_card created', 'gift_card' => $result], 200);
+                                }
 
                                 $product = Product::find($item['product_id']);
 
@@ -4386,7 +4423,7 @@ class OrdersController extends Controller
                             }
                         }
                     }
-                    return response()->json(['status' => 'The resource is created successfully'], 200);
+                    return response()->json(['status' => 'The resource is created successfully', $send], 200);
                 }
             }
 
@@ -4836,32 +4873,6 @@ class OrdersController extends Controller
                         }
                     }
 
-                    /*foreach ($order['line_items'] as $item) {
-
-                        //if ($item['product_id'] == 9956592513) {
-
-                        $send = [
-                            'form_params' => [
-                                'gift_card' => [
-                                    "note" => "Por la compra del producto:  " . $item['title'] . " has recibido este bono. Sigue comprando y ganando con diahello.",
-                                    "initial_value" => 1 * $item['quantity'],
-                                    "template_suffix" => "gift_cards.birthday.liquid",
-                                    "currency" => "COP",
-                                    "customer_id" => 5894131521 //$customer->customer_id,
-                                ]
-                            ]
-                        ];
-
-                        $res = $client->request('post', $api_url . '/admin/gift_cards.json', $send);
-                        $result = json_decode($res->getBody(), true);
-
-                        return response()->json(['status' => 'giff_card created', 'gift_card' => $result], 200);
-
-
-                        //}
-
-                    }*/
-
                     return response()->json(['status' => 'The resource is created successfully'], 200);
                 }
             }
@@ -5006,7 +5017,7 @@ class OrdersController extends Controller
 
             foreach ($order->line_items as $item) {
 
-                if ($item['product_id'] == 9956592513) {
+                if ($item['product_id'] == 10332997761) {
 
                     $send = [
                         'form_params' => [
